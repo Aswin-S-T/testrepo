@@ -1,0 +1,41 @@
+{
+	"info": {
+		"_postman_id": "4d5ef2f6-f0e4-4305-a94f-2d864483a42b",
+		"name": "AQMS",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Insert device data",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n\"deviceId\":\"a002\",\n\"data\" : {\n   \"temperature\":20,\n   \"pressure\":200,\n   \"humidity\":100,\n   \"PM2p5\":20,\n   \"PM10\":100,\n   \"PM1\": 35,\n   \"CO\":1,\n   \"NO2\":1,\n   \"SO2\":1,\n   \"CO2\":120,\n   \"O3\": 500,\n   \"NH3\": 1000,\n   \"noise\": 40,\n   \"rain\": 100,\n   \"time\": \"1584513148\"\n}\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:7001/device/sensor/livedata/",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "7001",
+					"path": [
+						"device",
+						"sensor",
+						"livedata",
+						""
+					]
+				}
+			},
+			"response": []
+		}
+	],
+	"protocolProfileBehavior": {}
+}
