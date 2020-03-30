@@ -26,6 +26,11 @@ function InitExpress(expObj){
     // express.use(bodyParser.json())
     expObj.use(bodyParser.json({limit: '50mb'}))
 
+    expObj.use(function(req, res, next){ 
+        res.header("Access-Control-Allow-Origin", "http://localhost:3000"); // update to match the domain you will make the request from
+        res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
+        next();
+    });
 
     // routing registration.
     expObj.use(express.static(path.join(__dirname, 'public')));
@@ -45,6 +50,9 @@ function InitExpress(expObj){
    //     next();
    //    });
    
+    app.get('*', function(req, res) {
+            res.sendFile('index.html', {root: path.join(__dirname, 'public')});
+    });
 
     expObj.get('/shutdown', function (req, res)
     {
@@ -57,9 +65,9 @@ function InitExpress(expObj){
 }
 	
 	  
-var app = new require('express')();
-InitExpress(app);
-app.use(helmet());
+// var app = new require('express')();
+// InitExpress(app);
+// app.use(helmet());
 //app.use(csrf());
 
 
@@ -68,14 +76,14 @@ app.use(helmet());
 
 
 
-https.createServer({
-    key: fs.readFileSync('cert/key.pem'),
-    cert: fs.readFileSync('cert/cert.pem')
-}, app).listen(8001, function () {
+// https.createServer({
+//     key: fs.readFileSync('cert/key.pem'),
+//     cert: fs.readFileSync('cert/cert.pem')
+// }, app).listen(8001, function () {
 
-    console.log("server created port 8001");
+//     console.log("server created port 8001");
 
-});
+// });
 
 
 
@@ -96,15 +104,15 @@ https.createServer({
 //     }
 //   })
 
-// var app = new require('express')();
-// InitExpress(app);
-// var port = parseInt(config.GeneralSettings.ServerPort, 10);
-// console.log('port',port);
-// var server = app.listen(7001, function () 
-// {
-// 	var host = server.address().address
-// 	var port = server.address().port
+var app = new require('express')();
+InitExpress(app);
+var port = parseInt(config.GeneralSettings.ServerPort, 10);
+console.log('port',port);
+var server = app.listen(7001, function () 
+{
+	var host = server.address().address
+	var port = server.address().port
 
-// 	console.log("Clean Air India server listening at http://%s:%s", host, port)
-// });
+	console.log("Clean Air India server listening at http://%s:%s", host, port)
+});
 
