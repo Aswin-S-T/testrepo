@@ -15,6 +15,7 @@ curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.35.3/install.sh | bash
 3. Install node version 
 ```sh
 nvm install v8.11.4
+npm i
 ```
 4. Install MongoDB
 5. Add Database ESBHADB and `users` collection with below user entry
