@@ -425,7 +425,7 @@ function SensorApi(express) {
 
 
     express.get('/device/sensor/stats/v1', function (req, res) {
-        //console.log('getting live data for sensor11');
+
         express.use(apiLimiter);
 
         var hubResponse = new responseModule.HubResponse();
@@ -438,7 +438,7 @@ function SensorApi(express) {
 
             }
             else {
-                //console.log("param-->", req.query.params);
+
                 if (req.query != null && req.query.deviceIds != null && req.query.timeFrame != null) {
                     var options = req.query.timeFrame.split(',');
                     var timeStart = req.query.timeStart;
@@ -509,7 +509,7 @@ function SensorApi(express) {
                 res.end(response);
             }
             else {
-                //console.log("param-->", req.query.params);
+
                 if (req.query != null && req.query.deviceIds != null && req.query.timeFrame != null) {
                     var options = req.query.timeFrame.split(',');
                     var timeStart = req.query.timeStart;

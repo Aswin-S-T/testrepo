@@ -19,7 +19,7 @@ function RequestValidation()
 			query['password'] = password;
 			dbInstance.IsDocumentExist('users',query, function(err, result)
 			{
-				console.log('request validation results =',result);
+
 				if(result == 'success')
 				{
 					callBack("success");

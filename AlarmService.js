@@ -10,7 +10,7 @@ var ThirdPartyRequestValidationLimit = thirdPartyRequestValidationModule.ThirdPa
 var ThirdPartyUserJSONModule = require('./ThirdPartyUser/ThirdPartyUserJSON.js')
 var thirdPartyUserJSON = new ThirdPartyUserJSONModule.thirdPartyUserJSON()
 
-console.log('starting alarm service server ');
+
 
 var interval = setInterval(function () {
 

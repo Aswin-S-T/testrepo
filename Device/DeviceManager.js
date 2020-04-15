@@ -149,7 +149,7 @@ function DeviceManager()
 				  callBack("success");
 			}else
 			{
-				console.log('document with projectId already exist adding failed');
+
 				callBack("failed");
 			}
 	  });     

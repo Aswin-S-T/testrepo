@@ -16,17 +16,17 @@ function ThirdPartyUserManager() {
 		ThirdPartyUser = ThirdPartyUserFactory.createThirdPartyUserInstance(ThirdPartyUserDetails);
 		ThirdPartyUser.parse(ThirdPartyUserDetails);
 		// thirdPartyUserJSON.dataJSON(ThirdPartyUser)
-		console.log(ThirdPartyUser)
+
 		var query = {};
 		query['name'] = ThirdPartyUserDetails.name;
 		dbInstance.IsDocumentExist('ThirdPartyUsers', query, function (err, result) {
-			console.log('validation results =', result);
+
 			if (result != 'success') {
 				dbInstance.insertDocument('ThirdPartyUsers', ThirdPartyUser);
 				thirdPartyUserJSON.initArray()
 				callBack("success");
 			} else {
-				console.log('document with projectId already exist adding failed');
+
 				callBack("failed");
 			}
 		});
@@ -41,7 +41,7 @@ function ThirdPartyUserManager() {
 			if (err) {
 				callBack(1, 0);
 			} else {
-				console.log('Document Count: ' + count);
+
 				callBack(null, count);
 			}
 		});
@@ -50,10 +50,10 @@ function ThirdPartyUserManager() {
 	this.getThirdPartyUserAt = function (query, index, callBack) {
 		var ThirdPartyUserQuery ={};
 		if (query != null && query.hasOwnProperty('substring')) {
-			console.log('query.substring =', query.substring);
+
 			var substring = query.substring;
 			var regExp = new RegExp(".*" + substring + ".*");
-			console.log('regular expression = ', regExp);
+
 			ThirdPartyUserQuery = {};
 		}
 
@@ -64,7 +64,7 @@ function ThirdPartyUserManager() {
 			}
 			else {
 				callBack(result);
-				console.log("result",result)
+
 			}
 
 		});

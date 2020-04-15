@@ -11,7 +11,7 @@ function UserApi(express) {
 
 
 	express.post('/user', function (req, res) {
-		console.log('register a new user details');
+
 		var hubResponse = new responseModule.HubResponse();
 		var response = null;
 		
@@ -26,13 +26,13 @@ function UserApi(express) {
 					userManager.saveUser(req.body, function (result) {
 						var hubResponse = new responseModule.HubResponse();
 						var response = null;
-						console.log('user added result', result);
+
 						if (result == 'success') {
-							console.log("user added into server database");
+
 							res.end(hubResponse.getOkResponse());
 						}
 						else {
-							console.log("Adding user failed");
+
 							res.end(hubResponse.getErrorResponse(-1, "A project with same id already exist"));
 
 						}
@@ -46,7 +46,7 @@ function UserApi(express) {
 	});
 
 	express.get('/user/count', function (req, res) {
-		console.log('fetching user count..');
+
 		var hubResponse = new responseModule.HubResponse();
 		var response = null;
 		requestValidation.isValidUser(req.query.userId, req.query.authPassword, function (result) {
@@ -101,7 +101,7 @@ function UserApi(express) {
 	});
 
 	express.put('/user', function (req, res) {
-		console.log('update - user details ');
+
 		var hubResponse = new responseModule.HubResponse();
 		var response = null;
 		requestValidation.isValidUser(req.query.userId, req.query.authPassword, function (result) {
@@ -135,7 +135,7 @@ function UserApi(express) {
 
 
 	express.delete('/user', function (req, res) {
-		console.log('Delete request:query=', req.query);
+
 		var slpResponse = new responseModule.HubResponse();
 		var response = null;
 		requestValidation.isValidUser(req.query.userId, req.query.authPassword, function (result) {

@@ -16,7 +16,7 @@ function StatisticsManager()
             var date = zoneChanged.date();
             var year = zoneChanged.year();
             var month = zoneChanged.month();
-            //console.log("&&&&&&&&&&&&&&&&&&& date", date, mtz.utcOffset());
+
             
             res = new Date(year, month, date);
 
@@ -24,10 +24,10 @@ function StatisticsManager()
             res.setMinutes(res.getMinutes()+30)
 
             var currentEpoch = res.valueOf();
-            //console.log("&&&&&&&&&&&&&&&&&&& currentEpoch ", currentEpoch);
+
             //res = new Date(currentEpoch - (mtz.utcOffset() * 60000));
-            //console.log("&&&&&&&&&&&&&&&&&&& res.epoch", res.valueOf());
-            //console.log("&&&&&&&&&&&&&&&&&&&");
+
+
         }
         return res;
     }
@@ -317,7 +317,7 @@ function StatisticsManager()
 
     this.getStatParam = function(collectionName,paramNameList,timeFrom,timeTo,limit,offset,callBack)
     {
-	console.log("%%%% getstat	",collectionName,paramNameList,timeFrom,timeTo,limit,offset)
+
 	var timeFrom1=parseInt(timeFrom)-parseInt(19800000*2)
 	var timeTo1=parseInt(timeTo)-parseInt(19800000*2)
 	var timemax
@@ -364,7 +364,7 @@ function StatisticsManager()
             }
             else
             {
-		console.log("^^^db	",result)
+
                 callBack(null, result)
             }
 

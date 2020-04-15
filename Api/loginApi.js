@@ -15,7 +15,7 @@ function LoginApi(express) {
         var response = null;
         //loggedname=req.query.userName
         //loggedname={'userName':loggedname}
-        //console.log(req.query,req.query.userName,req.query.password)
+
         requestValidation.isValidUser(req.query.userName, req.query.password, function (result) {
             
 
@@ -81,7 +81,7 @@ function LoginApi(express) {
                     response = arr
                 }
                 hubResponse.data = response;
-                //console.log("role is as follows",result)
+
                 response1 = hubResponse.getOkResponse();
                 res.end(response1)
                

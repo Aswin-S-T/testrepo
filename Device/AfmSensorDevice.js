@@ -201,7 +201,7 @@ function AfmSensorDevice() {
             var tempAvg = currentData[paramName];
             // get value ug /meter cube(m3)
             //var ugPerM3 = unitConverter.convertPPMtoUgM3(paramName.toUpperCase(), tempAvg, null, null);
-            //console.log("UGPERM3", tempAvg);
+
 
             var aqiVal = unitConverter.convertUgM3ToAqi(paramName.toUpperCase(), tempAvg);
            

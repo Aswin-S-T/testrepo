@@ -124,7 +124,7 @@ function DeviceApi(express)
     express.get('/device/count', function (req, res) 
 	{
 		
-		console.log('fetching device count..');
+
 		var hubResponse = new responseModule.HubResponse();
 		var response = null;
 		requestValidation.isValidUser(req.query.userId,req.query.authPassword,function(result)
@@ -224,12 +224,12 @@ function DeviceApi(express)
 						
 						if (result == 'success')
 						{
-							console.log("device added into server database");
+
 							res.end(hubResponse.getOkResponse());
 						}
 						else
 						{
-							console.log("Adding device failed");
+
 							res.end(hubResponse.getErrorResponse(-1,"A project with same id already exist"));
 							
 						}
@@ -247,7 +247,7 @@ function DeviceApi(express)
   
   express.put('/device', function (req, res)
   {
-		console.log('update - device details ');
+
 		var hubResponse = new responseModule.HubResponse();
 		var response = null;
 		requestValidation.isValidUser(req.query.userId, req.query.authPassword, function (result)

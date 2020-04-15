@@ -48,7 +48,7 @@ function ThirdPartyRequestValidation()
 	// 		query['apikey'] = apikey;
 			
 	// 			dbInstance.GetDocumentByName('ThirdPartyUsers',query,function(err,result1){
-	// 				console.log("@@@fnofwenciornvoernv,",myInstance.counter2,result1,result1.limit)
+
 	// 				if (myInstance.counter2>result1.limit){
 	// 					callBack("limit")
 	// 				}
@@ -72,7 +72,7 @@ function ThirdPartyRequestValidation()
 	// 		query['apikey'] = apikey;
 			
 	// 			dbInstance.GetDocumentByName('ThirdPartyUsers',query,function(err,result1){
-	// 				console.log("@@@fnofwenciornvoernv,",myInstance.counter3,result1,result1.limit)
+
 	// 				if (myInstance.counter3>result1.limit){
 	// 					callBack("limit")
 	// 				}
@@ -96,7 +96,7 @@ function ThirdPartyRequestValidation()
 	// 		query['apikey'] = apikey;
 			
 	// 			dbInstance.GetDocumentByName('ThirdPartyUsers',query,function(err,result1){
-	// 				console.log("@@@fnofwenciornvoernv,",myInstance.counter4,result1,result1.limit)
+
 	// 				if (myInstance.counter4>result1.limit){
 	// 					callBack("limit")
 	// 				}

@@ -29,12 +29,12 @@ function DatabaseHandler()
 
                 } else {
                     //HURRAY!! We are connected. :)
-                    //console.log('Connection established to', url);
+
                     dbInst = db;
                     db.on("close", function (error) {
                         dbInst = null;
                         db = null;
-                        //console.log('MongoDB Connection Lost');
+
                     });
                     callBack(null, dbInst);
                 }
@@ -57,7 +57,7 @@ function DatabaseHandler()
             } else 
 			{
                 //HURRAY!! We are connected. :)
-                //console.log('Connection established to', url);
+
                 db.dropDatabase();
                 db.close();
                 return true;
@@ -201,7 +201,7 @@ function DatabaseHandler()
 						} else
 						{
 							callBack(null);
-							//console.log('Document inserted');
+
 						}
 
 					});
@@ -228,7 +228,7 @@ function DatabaseHandler()
                 return false;
             } else {
 
-                //console.log('Connection established to', url);
+
 
                 var collection = db.collection(collectionName);
 				JsonData['_id'] = mongodb.ObjectID();
@@ -241,7 +241,7 @@ function DatabaseHandler()
 						callback(null, null);
                     } else {
                      
-						//console.log('Document inserted');
+
                     }
 									
 					callback(null, result);
@@ -264,8 +264,8 @@ function DatabaseHandler()
                 return false;
             }else 
 			{
-                //console.log('Connection established to', url);
-				//console.log('remove one document query =', query);
+
+
                 var collection = db.collection(collectionName);
 				
                 collection.remove(query,{justOne : true} );
@@ -302,8 +302,8 @@ function DatabaseHandler()
                 return false;
             }else 
 			{
-                //console.log('Connection established to', url);
-				//console.log('remove document query =', query);
+
+
                 var collection = db.collection(collectionName);
 				
                 collection.remove(query, function(err, result)
@@ -314,11 +314,11 @@ function DatabaseHandler()
                     } else
 					{
                        
-					   //console.log('Document removed');
+
                     }
 
 					db.close();
-					console.log('Document removed = ' );
+
 					callback(null, result);
                 });
 
@@ -374,7 +374,7 @@ function DatabaseHandler()
                     } else 
 					{
                  
-				//		console.log('Document updated');
+
 						return true;
                     }
 					
@@ -390,7 +390,7 @@ function DatabaseHandler()
         this.connectDatabase( function (err, db) {
             if (err)
 			{
-			console.log('Unable to connect to the mongoDB server. Error:', err);
+
 			return null;
 			}
             var collection = db.collection(collectionName);
@@ -400,7 +400,7 @@ function DatabaseHandler()
                 db.close();
 				if (err)
 				{
-					console.log(err);
+
                	}
                 // call the callback here (err as the first parameter, and the value as the second)
                 callback(null, count);
@@ -458,10 +458,10 @@ function DatabaseHandler()
                     } else if (result.length && result[index]!= null)
                     {
 					
-						//console.log('Document found');
+
 						callback( null, result[index]);
                     } else {
-                        //console.log('No document(s) found with defined "find" criteria!');
+
 						callback(1, null);
                     }
 
@@ -475,7 +475,7 @@ function DatabaseHandler()
         this.connectDatabase( function (err, db) {
             if (err)
 			{
-			console.log('Unable to connect to the mongoDB server. Error:', err);
+
 			return null;
 			}
             var collection = db.collection(collectionName);
@@ -485,7 +485,7 @@ function DatabaseHandler()
                 db.close();
 				if (err)
 				{
-					console.log(err);
+
                	}
 
                 // call the callback here (err as the first parameter, and the value as the second)
@@ -683,7 +683,7 @@ function DatabaseHandler()
 				    db.close();
 					if (err) 
 					{
-						console.log(err);
+
 						callback( null);
 						
                     } else if (result.length && result!= null)
@@ -770,7 +770,7 @@ function DatabaseHandler()
                 return null;
             } else 
 			{
-                //console.log('Connection established to', url);
+
 				
                 
                 var collection = db.collection(collectionName);

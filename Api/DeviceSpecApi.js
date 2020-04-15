@@ -17,7 +17,7 @@ function DeviceSpecApi(express)
     express.get('/device/spec', function (req, res) 
 	{
 		
-		console.log('fetching device spec..');
+
 		var hubResponse = new responseModule.HubResponse();
 		var response = null;
 		requestValidation.isValidUser(req.query.userId,req.query.authPassword,function(result)

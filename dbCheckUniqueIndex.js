@@ -11,7 +11,7 @@ var item = {
 dbInstance.createUniqueIndex( "must",{ name: 1, age: 1 },function(errIndex,nameIndex){
 
 
-console.log("index creation",errIndex,nameIndex);
+
 dbInstance.insertDocument("must", item);
 
 

@@ -470,18 +470,18 @@ this.pushSensorData = function (sensorId,data1,callBack){
 					{
 						var specificDevice = devFactory.createDeviceInstanceFromSubType(device.subType);
                         specificDevice.parse(device);
-                        //console.log("PARSE2",specificDevice.parse(device))
+
 
 						if (device != null && device.logicalDeviceId!= null)
 						{
 							var collectionName = device.logicalDeviceId;
-							//console.log("inserting sensor data to collection:", collectionName);
+
 
 							// use time of server for this live data.
 							var currentdate = new Date();
                             data1["receivedTime"] = currentdate.valueOf();
                             //when no lat and long not posted
-                            //console.log("Location..",device.location);
+
 
 
                             var panicDataServerLoc = function(body){
@@ -637,7 +637,7 @@ this.pushSensorData = function (sensorId,data1,callBack){
                                     process.env["NODE_TLS_REJECT_UNAUTHORIZED"] = 0;
                                     var req = https.request(options, (res) => {
                                      
-                                      //console.log('headers:', res.headers);
+
                                     
                                       res.on('data', (d) => {
                                         process.stdout.write(d);
@@ -645,7 +645,7 @@ this.pushSensorData = function (sensorId,data1,callBack){
                                     });
                                     
                                     req.on('error', (e) => {
-                                      console.error(e);
+
                                     });
                                     
                                     req.write(postData);
@@ -691,7 +691,7 @@ this.pushSensorData = function (sensorId,data1,callBack){
                                     });
                                     
                                     req.on('error', (e) => {
-                                      console.error(e);
+
                                     });
                                     
                                     req.write(postData);
@@ -707,7 +707,7 @@ this.pushSensorData = function (sensorId,data1,callBack){
 										logicalDeviceId: device.logicalDeviceId,
 										data: filteredData
                                     };
-                                    //console.log("Data.....",insetRowFiltered);
+
 
                                     panicDataServer(insetRowFiltered);
                                     //panicGeoCard(insetRowFiltered);

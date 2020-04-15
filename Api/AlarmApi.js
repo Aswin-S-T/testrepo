@@ -10,7 +10,7 @@ var alarmManager = new AlarmManagerModule.AlarmManager();
 function AlarmApi(express)
 {
 
-console.log("alarmApi")
+
     express.put('/alarm/rules/device', function (req, res) {
 
         var hubResponse = new responseModule.HubResponse();
@@ -180,7 +180,7 @@ console.log("alarmApi")
                     })
                 }
                 else{
-                    console("No device id");
+
                 }
 
                }

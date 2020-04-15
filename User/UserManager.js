@@ -11,19 +11,19 @@ function UserManager() {
 
 		var user = null;
 		user = userFactory.createUserInstance(userDetails);
-		//console.log("FIRST", user);
+
 		user.parse(userDetails);
-		//console.log("USERRR",user)
+
 
 		var query = {};
 		query['userName'] = userDetails.userName;
 		dbInstance.IsDocumentExist('users', query, function (err, result) {
-			console.log('validation results =', result);
+
 			if (result != 'success') {
 				dbInstance.insertDocument('users', user);
 				callBack("success");
 			} else {
-				console.log('document with projectId already exist adding failed');
+
 				callBack("failed");
 			}
 		});
@@ -31,16 +31,16 @@ function UserManager() {
 
 	this.getUserCount = function (query, callback) {
 		var userQuery;
-		console.log("reached GETUSERCOUNT")
+
 		if (query != null) {
 			userQuery = {};
 		}
 		dbInstance.getDocumentCountByCriteria('users', userQuery, function (err, count) {
 			if (err) {
 				callback(1, 0);
-				console.log("errror displayed GETUSERCOUNT")
+
 			} else {
-				console.log('Document Count: ' + count);
+
 				callback(null, count);
 			}
 		});
@@ -48,12 +48,12 @@ function UserManager() {
 
 	this.getUserAt = function (query, index, callBack) {
 		var userQuery ={};
-		console.log("reached GETUSERAT")
+
 		if (query != null && query.hasOwnProperty('substring')) {
-			console.log('query.substring =', query.substring);
+
 			var substring = query.substring;
 			var regExp = new RegExp(".*" + substring + ".*");
-			console.log('regular expression = ', regExp);
+
 			userQuery = {};
 		}
 
@@ -61,11 +61,11 @@ function UserManager() {
 
 			if (err) {
 				callBack(null);
-				console.log("ERROR GETUSERAT ")
+
 			}
 			else {
 				callBack(result);
-				console.log("userresult",result)
+
 			}
 
 		});

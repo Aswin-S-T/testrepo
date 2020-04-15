@@ -11,7 +11,7 @@ function ThirdPartyUserApi(express) {
 
 
 	express.post('/thirdpartyuser', function (req, res) {
-		console.log('register a new ThirdPartyUser details');
+
 		var hubResponse = new responseModule.HubResponse();
 		var response = null;
 		requestValidation.isValidUser(req.query.userId, req.query.authPassword, function (result) {
@@ -27,11 +27,11 @@ function ThirdPartyUserApi(express) {
 						var response = null;
 						
 						if (result == 'success') {
-							console.log("ThirdPartyUser added into server database");
+
 							res.end(hubResponse.getOkResponse());
 						}
 						else {
-							console.log("Adding ThirdPartyUser failed");
+
 							res.end(hubResponse.getErrorResponse(-1, "A project with same id already exist"));
 
 						}
@@ -45,7 +45,7 @@ function ThirdPartyUserApi(express) {
 	});
 
 	express.get('/thirdpartyuser/count', function (req, res) {
-		console.log('fetching ThirdPartyUser count..');
+
 		var hubResponse = new responseModule.HubResponse();
 		var response = null;
 		requestValidation.isValidUser(req.query.userId, req.query.authPassword, function (result) {
@@ -86,7 +86,7 @@ function ThirdPartyUserApi(express) {
 				ThirdPartyUserManager.getThirdPartyUserAt(req.query, req.params.index, function (result) {
 					var hubResponse = new responseModule.HubResponse();
 					var response = null;
-					console.log(result)
+
 					if(result != null) {
 						hubResponse.data = result;
 						response = hubResponse.getOkResponse();
@@ -100,7 +100,7 @@ function ThirdPartyUserApi(express) {
 	});
 
 	express.delete('/thirdpartyuser', function (req, res) {
-		console.log('Delete request:query=', req.query);
+
 		var slpResponse = new responseModule.HubResponse();
 		var response = null
 		requestValidation.isValidUser(req.query.userId, req.query.authPassword, function (result) {
