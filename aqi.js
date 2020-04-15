@@ -6,5 +6,4 @@ var unitConverter = new UnitConverterModule.UnitConverter();
  var ugPerM3 = unitConverter.convertPPMtoUgM3(paramName, valueInPPm, null, null);
  var aqiVal = unitConverter.convertUgM3ToAqi(paramName.toUpperCase(), ugPerM3);
  
- console.log("ug per m3 :",ugPerM3);
- console.log("aqiVal :",aqiVal);
+

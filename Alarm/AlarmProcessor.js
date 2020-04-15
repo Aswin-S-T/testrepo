@@ -6,7 +6,7 @@ var AlarmManagerModule = require('./AlarmManager.js'),
 
 
 function AlarmProcessor() {
-    console.log("Alarm processor")
+
     this.lastRunTimeEpoch = null;
     this.startTime = new Date().valueOf();
     this.deviceRuleTimeStamp = {};
@@ -105,7 +105,7 @@ function AlarmProcessor() {
     }
 
     var checkIfAlarmActive = function (rule,genstatus,timeStamp, callBackStatus) {
-        console.log("Alarm active")
+
         var status = false;
         alarmManager.getAlarmRecords(rule.ruleName, 1, 0, null,null, function (err, records) {
             if (!err && records.length > 0) {
@@ -361,7 +361,7 @@ function AlarmProcessor() {
 
                 if (checkIfAlarmActive(rule,0,0, function (isActive) {
                     process()
-                    // console.log("nextRule in fetchlivedata")
+
                    // nextRule()
                    /*
                     if (!isActive) {
@@ -378,7 +378,7 @@ function AlarmProcessor() {
                     
                     myInst.findLastRunEpoch(rule, deviceIds[j].deviceId, function (lastRunEpochForDevice) {
 
-                        // console.log("\nProcessing find lastRunEpoch", rule, deviceIds[j].deviceId, lastRunEpochForDevice)
+
                         if (lastRunEpochForDevice == null) {
                             // no record present for this rule, so take last 5 min sample from current time
                             var t0 = new Date().valueOf() - (myInst.noAlarmTimePeriod * 60 *100)//* 1000);
@@ -444,7 +444,7 @@ function AlarmProcessor() {
                                 })
                              
                                 finalchecks.then((s)=>{nextRule()})
-                                    // console.log("next rule in processalarm")
+
                                     // nextRule();
                                 });
                             }
@@ -518,7 +518,7 @@ function AlarmProcessor() {
                     if (i < count)
                         fetchDeviceAlarm();
                     else {
-                        // console.log("devicealarmrules",deviceAlarmRules.info)
+
                         myInst.processDeviceRules(deviceAlarmRules, function (alarmRecords) {
                             // alarmRecords hold the list
                             if (alarmRecords.length > 0) {

@@ -37,7 +37,7 @@ function SensorLiveDataHandler() {
     this.getLiveData = function (sensorId, limit, offset, timeStart, timeEnd, callBackData) {
 
         var collectionName = sensorId;
-        console.log('getLiveData------------------------', collectionName);
+
 
         this.getLiveDataHelper(collectionName, sensorId, limit, offset, timeStart, timeEnd, callBackData);
     }

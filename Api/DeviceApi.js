@@ -9,7 +9,7 @@ var deviceManager = new  DeviceManagerModule.DeviceManager();
 //deviceManager.getDeviceFromId("f3e22c7fcf5c",function(res){
 //    if (res!=null)
 //    {
-//        console.log('device:', res);
+
 //    }
 
 //});
@@ -18,7 +18,7 @@ function DeviceApi(express)
 {
 
     express.get('/device/deployment', function (req, resHttp) {
-        console.log('making deployment details..');
+
 
         var hubResponse = new responseModule.HubResponse();
         var response = null;
@@ -199,10 +199,10 @@ function DeviceApi(express)
 
   });
   
-  console.log('device api',express);
+
   express.post('/device', function (req, res)
   {
-	    console.log('register a new device details');
+
 		var hubResponse = new responseModule.HubResponse();
 		var response = null;
 		requestValidation.isValidUser(req.query.userId, req.query.authPassword, function (result)

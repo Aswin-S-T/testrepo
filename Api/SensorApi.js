@@ -144,7 +144,7 @@ function SensorApi(express) {
     }
 
     express.get('/device/sensor/livedata/count', function (req, res) {
-        console.log('getting live data count for sensor');
+
         getLiveDataCount(req, res, true);
 
     });
@@ -190,13 +190,13 @@ function SensorApi(express) {
                                 delete value[0].data.er_read_sensor;
                                 delete value[0].data.build_ver;
                                 delete value[0].data.sig_strength;
-                                // console.log("YES",value.length-1)
+
                                 // for(var m=0; m<1; m++){
-                                //     console.log("LEN",value.length)
+
                                 //     for(z in value[0].data){
                                         
                                 //         value[0].data[z] = value[0].data[z].toFixed(3);
-                                //         console.log("Z",value[0].data[z]);
+
                                 //     }
                                    
                                 // }
@@ -295,7 +295,7 @@ function SensorApi(express) {
     }
 
     express.get('/device/sensor/livedata', function (req, res) {
-        console.log('getting live data for sensor11');
+
 
         getLiveData(req, res, true);
 
@@ -304,7 +304,7 @@ function SensorApi(express) {
 
 
     express.post('/device/sensor/livedata', function (req, res) {
-        console.log('updating live data for sensor');
+
 
         var hubResponse = new responseModule.HubResponse();
 
@@ -386,7 +386,7 @@ function SensorApi(express) {
         return result;
     }
     express.post('/device/sensor/livedata/oldformat', function (req, res) {
-        console.log('updating live data for sensor');
+
 
         var hubResponse = new responseModule.HubResponse();
 
@@ -498,7 +498,7 @@ function SensorApi(express) {
     });
 
     express.get('/device/sensor/stats', function (req, res) {
-        console.log('getting live data for sensor11');
+
 
         var hubResponse = new responseModule.HubResponse();
 

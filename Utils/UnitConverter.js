@@ -180,7 +180,7 @@ function UnitConverter()
             
             result = paramFuncs[temp](value);
         }
-       // console.log("C6H6ug" +C6H6);
+
         return result;
         
     }

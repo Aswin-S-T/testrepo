@@ -22,7 +22,7 @@ function ThirdPartyRequestValidation()
 					
 					result.counter[num-1]= result.counter[num-1]+1;
 					 dbInstance.updateDocument('ThirdPartyUsers',query,{"counter":result.counter},function(err,r){
-						 console.log("in update counter db 	",r)
+
 					 })
 					
 					if (result.counter[num-1]>result.limit){

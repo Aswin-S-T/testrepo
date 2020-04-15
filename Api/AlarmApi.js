@@ -361,7 +361,7 @@ function AlarmApi(express)
 
                 if (req.body != null) {
 
-                    console.log("alarm post", req.body);
+
                     alarmManager.addAlarmRule(req.body, function (err) {
 
                         var hubResponse = new responseModule.HubResponse();

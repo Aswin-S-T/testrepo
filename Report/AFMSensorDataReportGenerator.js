@@ -23,7 +23,7 @@ function AFMSensorDataReportGenerator() {
 
             if (device != null) {
 
-                console.log('date split start');
+
                 var dts = dateString.split('.');
 
                 var date = parseInt(dts[0]);

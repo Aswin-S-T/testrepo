@@ -15,12 +15,12 @@ this.initArray= function(){
 
 this.resetCounter=function(){
     var i=[];
-    console.log("entered thirdpartyuserjson reset coutner")
+
     dbInstance.updateDocuments('ThirdPartyUsers',{},{"counter":[0,0,0,0]},function(err,result){
-        console.log("result",result)
+
         // for (i in result){
         //     result[i].counter=[0,0,0,0]
-        //     console.log("i",result)
+
         // }
     })
         

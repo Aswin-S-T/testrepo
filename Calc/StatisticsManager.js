@@ -81,7 +81,7 @@ function StatisticsManager()
     this.getStatItemFromList = function (list, key)
     {
         var result = null;
-       // console.log("%%%%%%%%%%%%%%", list);
+
         for (var i = 0; i < list.length; i++) {
             if (list[i].key == key) {
                 result = list[i];
@@ -305,7 +305,7 @@ function StatisticsManager()
 
     //        if (err)
     //        {
-    //            console.log("getsensor stat");
+
     //            callBack(1, null)
     //        }
     //        else {

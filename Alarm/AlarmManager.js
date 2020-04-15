@@ -36,7 +36,7 @@ function AlarmManager()
                 record.clearedTime = new Date().valueOf();
             }
 
-            console.log("----------------->updateAlarmRecords", record)
+
             dbInstance.updateDocument('alarm_records', query, record, function (err1) {
                 if (err1) {
                     callBack(1);
@@ -111,7 +111,7 @@ function AlarmManager()
 
     this.addAlarmRecord = function (record, callBack) {
 
-        console.log("alarmmanager record",record)
+
         dbInstance.insertDocument('alarm_records', record);
         callBack(null);
             

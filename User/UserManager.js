@@ -74,7 +74,7 @@ function UserManager() {
 	this.updateUser = function (userDetails,callBack) {
 
 	    var user = null;
-	    console.log("value of USERDEATILS IN USERMANAGER userDetails",userDetails)
+
 	    //user.parse(userDetails);
 		user=userDetails
 		

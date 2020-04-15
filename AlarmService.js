@@ -16,17 +16,17 @@ var interval = setInterval(function () {
 
     var date = new Date()
 
-    console.log("date   ", date.getHours(), date.getMinutes(), typeof (date.getHours()), typeof (date.getMinutes()))
+
 
     if (date.getHours() == 00 && (date.getMinutes() == 00 || date.getMinutes() == 01)) { // for IST midnight
-        console.log("reseting at midnight")
+
         thirdPartyUserJSON.resetCounter();
     }
 
-    console.log("processing alarms");
+
     alarmProcessor.process(function () {
 
-        console.log("processing completed");
+
     })
 
 }, 15000);

@@ -24,7 +24,7 @@ function DatabaseHandler()
             // Use connect method to connect to the Server
             MongoClient.connect(url, function (err, db) {
                 if (err) {
-                    console.log('Unable to connect to the mongoDB server. Error:', err);
+
                     callBack(err, null);
 
                 } else {
@@ -52,7 +52,7 @@ function DatabaseHandler()
 		{
             if (err)
 			{
-                console.log('Unable to connect to the mongoDB server. Error:', err);
+
                 return false;
             } else 
 			{
@@ -147,7 +147,7 @@ function DatabaseHandler()
 	    this.connectDatabase(function (err, db)
 	    {
 	            if (err) {
-	                console.log('Unable to connect to the mongoDB server. Error:', err);
+
 	                callback(null);
 	            }
 	            var collection = db.collection(collectionName);
@@ -156,7 +156,7 @@ function DatabaseHandler()
 	            {
 	                db.close();
 	                if (err) {
-	                    console.log(err);
+
 	                    callback(null);
 	                } else
 	                {
@@ -177,7 +177,7 @@ function DatabaseHandler()
 	    // Use connect method to connect to the Server
 	    this.connectDatabase(function (err, db) {
 	        if (err) {
-	            console.log('Unable to connect to the mongoDB server. Error:', err);
+
 	            callBack(1);
 	        } else {
 
@@ -224,7 +224,7 @@ function DatabaseHandler()
         // Use connect method to connect to the Server
         this.connectDatabase( function (err, db) {
             if (err) {
-                console.log('Unable to connect to the mongoDB server. Error:', err);
+
                 return false;
             } else {
 
@@ -237,7 +237,7 @@ function DatabaseHandler()
 				{
 				    db.close();
                     if (err) {
-                        console.log(err);
+
 						callback(null, null);
                     } else {
                      
@@ -260,7 +260,7 @@ function DatabaseHandler()
 		{
             if (err) 
 			{
-                console.log('Unable to connect to the mongoDB server. Error:', err);
+
                 return false;
             }else 
 			{
@@ -279,7 +279,7 @@ function DatabaseHandler()
 	    this.connectDatabase( function (err, db) {
 
 	        if (err) {
-	            console.log('Unable to connect to the mongoDB server. Error:', err);
+
 	            callback(1);
 	        }
 	        else {
@@ -298,7 +298,7 @@ function DatabaseHandler()
 		{
             if (err) 
 			{
-                console.log('Unable to connect to the mongoDB server. Error:', err);
+
                 return false;
             }else 
 			{
@@ -310,7 +310,7 @@ function DatabaseHandler()
 				{
                     if (err)
 					{
-                        console.log(err);
+
                     } else
 					{
                        
@@ -330,7 +330,7 @@ function DatabaseHandler()
 	    // Use connect method to connect to the Server
 	    this.connectDatabase( function (err, db) {
 	        if (err) {
-	            console.log('Unable to connect to the mongoDB server. Error:', err);
+
 	            callBack(1);
 	        } else {
 	            var collection = db.collection(collectionName);
@@ -358,11 +358,11 @@ function DatabaseHandler()
         this.connectDatabase( function (err, db) {
             if (err)
 			{
-                console.log('Unable to connect to the mongoDB server. Error:', err);
+
                 return false;
             }else 
 			{
-          //      console.log('Connection established to', url);
+
                 var collection = db.collection(collectionName);
 			
 				collection.update(query,{ $set:field}, function (err, result)
@@ -370,7 +370,7 @@ function DatabaseHandler()
 				    db.close();
                     if (err)
 					{
-                        console.log(err);
+
                     } else 
 					{
                  
@@ -412,7 +412,7 @@ function DatabaseHandler()
 	    // Use connect method to connect to the Server
 	    this.connectDatabase( function (err, db) {
 	        if (err) {
-	            console.log('Unable to connect to the mongoDB server. Error:', err);
+
 	            return null;
 	        } else {
 
@@ -423,7 +423,7 @@ function DatabaseHandler()
 	                db.close();
 	                if (err)
 	                {
-	                    console.log(err);
+
 	                } else if (result.length > 0)
 	                {
 	                    callback(null, result);
@@ -444,7 +444,7 @@ function DatabaseHandler()
         this.connectDatabase( function (err, db)
 		{
             if (err) {
-                console.log('Unable to connect to the mongoDB server. Error:', err);
+
                 return null;
             } else {
 				
@@ -454,7 +454,7 @@ function DatabaseHandler()
                 {
                     db.close();
 					if (err) {
-                        console.log(err);
+
                     } else if (result.length && result[index]!= null)
                     {
 					
@@ -540,9 +540,9 @@ function DatabaseHandler()
         //    else
         //    {
         //        var doc = null;
-        //        console.log('Connection established to', url);
-        //        console.log('query', query);
-        //        console.log('fields', fields);
+
+
+
 
         //        var collection = db.collection(collectionName);
         //        collection.find(query, fields, { sort: { _id: -1 } }).toArray(function (err, result)
@@ -569,7 +569,7 @@ function DatabaseHandler()
 		{
             if (err) 
 			{
-                console.log('Unable to connect to the mongoDB server. Error:', err);
+
                 return null;
             } else 
 			{
@@ -581,7 +581,7 @@ function DatabaseHandler()
                 {
                     db.close();
 					if (err) {
-                        console.log(err);
+
                     } else if (result.length )
                     {
 			
@@ -603,7 +603,7 @@ function DatabaseHandler()
         // Use connect method to connect to the Server
         this.connectDatabase( function (err, db) {
             if (err) {
-                console.log('Unable to connect to the mongoDB server. Error:', err);
+
                 return null;
             } else {
                 var doc = null;
@@ -614,7 +614,7 @@ function DatabaseHandler()
                 {
                     db.close();
 					if (err) {
-                        console.log(err);
+
                     } else if (result.length && result[index]!= null)
                     {
 		
@@ -638,7 +638,7 @@ function DatabaseHandler()
         // Use connect method to connect to the Server
         this.connectDatabase( function (err, db) {
             if (err) {
-                console.log('Unable to connect to the mongoDB server. Error:', err);
+
                 return null;
             } else {
                 var doc = null;
@@ -648,7 +648,7 @@ function DatabaseHandler()
                 {
                     db.close();
 					if (err) {
-                        console.log(err);
+
                     } else if (result.length && result!= null)
                     {
 						callback( null, result);
@@ -671,7 +671,7 @@ function DatabaseHandler()
 		{
             if (err) 
 			{
-                console.log('Unable to connect to the mongoDB server. Error:', err);
+
                 callback( null);
             } else
 			{
@@ -707,7 +707,7 @@ function DatabaseHandler()
         // Use connect method to connect to the Server
         this.connectDatabase( function (err, db) {
             if (err) {
-                console.log('Unable to connect to the mongoDB server. Error:', err);
+
                 return null;
             } else {
 				
@@ -718,7 +718,7 @@ function DatabaseHandler()
                     db.close();
                     if (err)
 					{
-                        console.log(err);
+
                     } else
                     {
                     
@@ -737,7 +737,7 @@ function DatabaseHandler()
         this.connectDatabase( function (err, db) 
 		{
             if (err) {
-                console.log('Unable to connect to the mongoDB server. Error:', err);
+
                 return null;
             } else 
 			{
@@ -766,7 +766,7 @@ function DatabaseHandler()
         this.connectDatabase( function (err, db) 
 		{
             if (err) {
-                console.log('Unable to connect to the mongoDB server. Error:', err);
+
                 return null;
             } else 
 			{
@@ -778,7 +778,7 @@ function DatabaseHandler()
 				{
 				    db.close();
                     if (err) {
-                        console.log(err);
+
 						callback(null, "database error");
                     } else
                     {

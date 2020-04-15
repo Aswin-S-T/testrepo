@@ -29,6 +29,7 @@ function InitExpress(expObj){
     expObj.use(function(req, res, next){ 
         res.header("Access-Control-Allow-Origin", "http://localhost:3000"); // update to match the domain you will make the request from
         res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
+        res.header("Access-Control-Allow-Methods",  "GET,HEAD,POST,PUT,DELETE");
         next();
     });
 
@@ -56,7 +57,7 @@ function InitExpress(expObj){
 
     expObj.get('/shutdown', function (req, res)
     {
-        console.log('Exiting server');
+
         process.exit()
 
     });
@@ -81,7 +82,7 @@ function InitExpress(expObj){
 //     cert: fs.readFileSync('cert/cert.pem')
 // }, app).listen(8001, function () {
 
-//     console.log("server created port 8001");
+
 
 // });
 

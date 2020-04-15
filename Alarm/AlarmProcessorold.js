@@ -10,7 +10,7 @@ var sensorManager = new SensorManagerModule.SensorManager();
 
 
 function AlarmProcessor() {
-    console.log("Alarm processor")
+
     this.lastRunTimeEpoch = null;
     this.startTime = new Date().valueOf();
     this.deviceRuleTimeStamp = {};
@@ -113,7 +113,7 @@ function AlarmProcessor() {
     }
 
     var checkIfAlarmActive = function (rule, callBackStatus) {
-        console.log("Alarm active")
+
         var status = false;
         alarmManager.getAlarmRecords(rule.ruleName, 1, 0, null,null, function (err, records) {
             if (!err && records.length > 0) {

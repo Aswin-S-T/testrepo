@@ -6,11 +6,11 @@ var DatabaseHandlerModule = require('../DatabaseHandler.js');
 var dbInstance = new DatabaseHandlerModule.DatabaseHandler();
 
 function LoginApi(express) {
-    console.log("loginApi")
+
     var loggedname
     var path
     express.post('/login', function (req, res) {
-        console.log("in login api")
+
         var hubResponse = new responseModule.HubResponse();
         var response = null;
         //loggedname=req.query.userName
@@ -118,7 +118,7 @@ function LoginApi(express) {
                         response = true
                     }
                     else if (result == 'Administrator') {
-                        console.log("admin")
+
                         if (path1 != '/thirdpartyuser') {
                             response = true
                         }
@@ -126,13 +126,13 @@ function LoginApi(express) {
                             response = false
                     }
                     else if (result == 'Supervisor') {
-                        console.log("serv")
+
                         if (path1 != '/alarm_manage' && path1 != '/active_alarms' && path1 != '/thirdpartyuser' && path1 != '/user_management') {
-                            console.log("inside serv if ")
+
                             response = true
                         }
                         else {
-                            console.log("inside serv else")
+
                             response = false
                         }
                     }

@@ -137,7 +137,7 @@ function SensorManager()
 
     this.getLiveDataCount = function (logicalSensorId, timeStart, timeEnd, callBack) {
 
-        console.log("Inside--------getLiveDataCount")
+
         var deviceId = logicalSensorId;
         var myInstance = this;
        // deviceManager.getDeviceFromId(deviceId, function (device) {
@@ -593,7 +593,7 @@ this.pushSensorData = function (sensorId,data1,callBack){
                                             xml += "</" + prop + ">";
                                         }
                                         var xml = xml.replace(/<\/?[0-9]{1,}>/g,'');
-                                       // console.log(xml);
+
                                         return xml;
                                     }
                                         
@@ -602,8 +602,8 @@ this.pushSensorData = function (sensorId,data1,callBack){
                                 }
 
                                     var panicPost = function(jsonpost){
-				    console.log("\n SOS PANIC \n");
-				    console.log("--------------- \n");
+
+
 				    const querystring = require('querystring');
                                     const https = require('https');
                                     var pHost = config.PanicPostSettings.panHost;
@@ -683,7 +683,7 @@ this.pushSensorData = function (sensorId,data1,callBack){
                                     //process.env["NODE_TLS_REJECT_UNAUTHORIZED"] = 0;
                                     var req = http.request(options, (res) => {
                                      
-                                     // console.log('headers:', res.headers);
+
                                     
                                       res.on('data', (d) => {
                                         process.stdout.write(d);

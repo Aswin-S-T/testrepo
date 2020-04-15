@@ -14,12 +14,12 @@ function DateUtils()
             var date = zoneChanged.date();
             var year = zoneChanged.year();
             var month = zoneChanged.month();
-           // console.log("&&&&&&&&&&&&&&&&&&&");
+
             //console.log("&&&&&&&&&&&&&&&&&&& date", date, mtz.utcOffset());
             
             res = new Date(year, month, date);
             var currentEpoch = res.valueOf();
-            console.log("&&&&&&&&&&&&&&&&&&& currentEpoch ", currentEpoch);
+
             res = new Date(currentEpoch - (mtz.utcOffset() * 60000));
             //console.log("&&&&&&&&&&&&&&&&&&& res.epoch", res.valueOf());
             //console.log("&&&&&&&&&&&&&&&&&&&");

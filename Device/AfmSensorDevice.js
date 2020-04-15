@@ -60,7 +60,7 @@ function AfmSensorDevice() {
     }
 
     var processCalibration = function (val, paramDefItem) {
-        console.log("processing calibaraton");
+
         if (paramDefItem.calibration != null) {
             if (paramDefItem.calibration.type == "curve") {
                 for (var i = 0; i < paramDefItem.calibration.data.length; i++) {
@@ -95,7 +95,7 @@ function AfmSensorDevice() {
         var myInstance = this;
         var filterFunc = function () {
 
-            console.log('FilterSensorData------------------------', paramDefs[i].paramName);
+
 
             filterResult[paramDefs[i].paramName] = currentData[paramDefs[i].paramName];
 
@@ -234,7 +234,7 @@ function AfmSensorDevice() {
         /*old code
                 if (count >= 3 && (statForPm2p5 != null || statForPm10 != null)) {
                     // enough parameter for aqi calc
-                    console.log("Aqi value------------->", aqiValue);
+
                     resAqi = aqiValue;
                 }
         
@@ -243,7 +243,7 @@ function AfmSensorDevice() {
         if (count >= 1) {
             // enough parameter for aqi calc
 
-            console.log("Aqi value------------->", aqiValue);
+
             resAqi = aqiValue;
         }
 
@@ -297,14 +297,14 @@ function AfmSensorDevice() {
         /*
                 if (count >=3  && (statForPm2p5 != null || statForPm10 != null)) {
                     // enough parameter for aqi calc
-                    console.log("Aqi value------------->", aqiValue);
+
                     statManager.updateDailyStats(collectionNamePrefix + "_daily", "AQI", aqiValue, date, this.timeZone, function (err) {
                         // ignore error.
                     });
                 } */
         if (count >= 1) {
             // enough parameter for aqi calc
-            console.log("Aqi value------------->", aqiValue);
+
             statManager.updateDailyStats(collectionNamePrefix + "_daily", "AQI", aqiValue, date, this.timeZone, function (err) {
                 // ignore error.
             });
