@@ -17,7 +17,6 @@ const apiLimiter = rateLimit({
 
 });
 */
-var config = require('./ServerSettings.json');
 const helmet= new require('helmet')
 
 function InitExpress(expObj){
@@ -26,15 +25,19 @@ function InitExpress(expObj){
     // express.use(bodyParser.json())
     expObj.use(bodyParser.json({limit: '50mb'}))
 
-    expObj.use(function(req, res, next){ 
-        res.header("Access-Control-Allow-Origin", "http://localhost:3000"); // update to match the domain you will make the request from
-        res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
-        res.header("Access-Control-Allow-Methods",  "GET,HEAD,POST,PUT,DELETE");
-        next();
-    });
+    if (process.env.NODE_ENV === "development" ) {
+        expObj.use(function(req, res, next){ 
+            res.header("Access-Control-Allow-Origin", process.env.FRONT_END_APP_ADDR);
+            res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
+            res.header("Access-Control-Allow-Methods",  "GET,HEAD,POST,PUT,DELETE");
+            next();
+        });
+    }
 
     // routing registration.
-    expObj.use(express.static(path.join(__dirname, 'public')));
+    expObj.use('/app/', express.static(path.join(__dirname, 'public')));
+    expObj.use(express.static(path.join(__dirname, 'public/build')));
+    
   //expObj.use( apiLimiter);
     var deviceSpecApi = new require('./Api/DeviceSpecApi').DeviceSpecApi(expObj);
     var sensorApi = new require('./Api/SensorApi').SensorApi(expObj);
@@ -51,10 +54,6 @@ function InitExpress(expObj){
    //     next();
    //    });
    
-    app.get('*', function(req, res) {
-            res.sendFile('index.html', {root: path.join(__dirname, 'public')});
-    });
-
     expObj.get('/shutdown', function (req, res)
     {
 
@@ -107,13 +106,10 @@ function InitExpress(expObj){
 
 var app = new require('express')();
 InitExpress(app);
-var port = parseInt(config.GeneralSettings.ServerPort, 10);
-console.log('port',port);
-var server = app.listen(7001, function () 
+var server = app.listen(process.env.PORT, function () 
 {
 	var host = server.address().address
 	var port = server.address().port
 
 	console.log("Clean Air India server listening at http://%s:%s", host, port)
 });
-

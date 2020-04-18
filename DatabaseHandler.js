@@ -4,14 +4,11 @@ var mongodb = require('mongodb');
 //We need to work with "MongoClient" interface in order to connect to a mongodb server.
 var MongoClient = mongodb.MongoClient;
 
-var config = require('./ServerSettings.json');
-
-var databaseIp = config.DatabaseSettings.databaseIp;
-var databasePort = config.DatabaseSettings.databasePort;
+var databaseIp = process.env.DB_IP;
+var databaseName = process.env.DB_Name;
 // Connection URL. This is where your mongodb server is running.
 //var url = 'mongodb://localhost:27017/IOT;
-var url = 'mongodb://' + databaseIp + ':' + databasePort + '/ESBHADB';
-
+var url = 'mongodb://' + databaseIp + '/' + databaseName;
 
 var  dbInst = null;
 function DatabaseHandler() 

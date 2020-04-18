@@ -23,7 +23,6 @@ var unitConverter = new UnitConverterModule.UnitConverter();
 var SensorLiveDataHandlerModule = require('../Device/SensorLiveDataHandler.js')
 var sensorLiveDataHandler = new SensorLiveDataHandlerModule.SensorLiveDataHandler();
 var request=require('request');
-var config = require('../ServerSettings');
 
 function SensorManager()
 {
@@ -606,9 +605,9 @@ this.pushSensorData = function (sensorId,data1,callBack){
 
 				    const querystring = require('querystring');
                                     const https = require('https');
-                                    var pHost = config.PanicPostSettings.panHost;
-                                    var pPort = config.PanicPostSettings.panPort;
-                                    var pPath = config.PanicPostSettings.panPath;
+                                    var pHost = process.env.PAN_HOST;
+                                    var pPort = process.env.PAN_PORT;
+                                    var pPath = process.env.PAN_PATH;
 				
                                     var postData = JSON.stringify(jsonpost);
                                     var user = 'sysadmin';
@@ -654,9 +653,9 @@ this.pushSensorData = function (sensorId,data1,callBack){
 
                                 var geoCardPost = function(jsongeopost){
 		
-					var dHost = config.Dial112PostSettings.dialHost;
-					var dPort = config.Dial112PostSettings.dialPort;
-					var dPath = config.Dial112PostSettings.dialPath;
+					var dHost = process.env.DIAL_HOST;
+					var dPort = process.env.DIAL_PORT;
+					var dPath = process.env.DIAL_PATH;
 
 					var postData = '<MSG>' + jsongeopost + '</MSG>';
 					

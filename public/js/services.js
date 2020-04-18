@@ -10,7 +10,7 @@ angular.module('F1FeederApp.services', [])
              }
              */
         ergastAPI.updateAlarmRule = function (rule, callBack) {
-            var url = "/alarm/rules/device?userId=classic&authPassword=classic";
+            var url = "../alarm/rules/device?userId=classic&authPassword=classic";
             $http({
                 method: 'PUT',
                 data: rule,
@@ -35,7 +35,7 @@ angular.module('F1FeederApp.services', [])
                 callBack(1);
             }
             else {
-                var url = '/alarm/rules/device?userId=classic&authPassword=classic';
+                var url = '../alarm/rules/device?userId=classic&authPassword=classic';
                 if (ruleName != null) {
                     url += "&ruleName=" + ruleName;
                 }
@@ -59,7 +59,7 @@ angular.module('F1FeederApp.services', [])
 
         ergastAPI.updateAlarmRecord = function (record, callBack) {
 
-            var url = "/alarm/records?userId=classic&authPassword=classic";
+            var url = "../alarm/records?userId=classic&authPassword=classic";
             $http({
                 method: 'PUT',
                 data: record,
@@ -81,7 +81,7 @@ angular.module('F1FeederApp.services', [])
         ergastAPI.getAlarmRecords = function (ruleName, limit, offset, callBack) {
             
 
-            var url = "/alarm/records?userId=classic&authPassword=classic";
+            var url = "../alarm/records?userId=classic&authPassword=classic";
             if (ruleName != null) {
                 url += "&ruleName=" + ruleName;
             }
@@ -114,7 +114,7 @@ angular.module('F1FeederApp.services', [])
 
 
         ergastAPI.getAlarmRecordCount = function (ruleName, callBack) {
-            var url = "/alarm/records/count?userId=classic&authPassword=classic";
+            var url = "../alarm/records/count?userId=classic&authPassword=classic";
             if (ruleName != null) {
                 url += "&ruleName=" + ruleName;
             }
@@ -138,7 +138,7 @@ angular.module('F1FeederApp.services', [])
         }
 
         ergastAPI.getAlarmRuleAt = function (type, index, callBack) {
-            var url = "/alarm/rules/device/" + index.toString() + '?userId=classic&authPassword=classic';
+            var url = "../alarm/rules/device/" + index.toString() + '?userId=classic&authPassword=classic';
             if (type != null) {
                 url += "&type=" + type;
             }
@@ -161,7 +161,7 @@ angular.module('F1FeederApp.services', [])
         }
         ergastAPI.getAlarmRuleCount = function (type, callBack) {
 
-            var url = '/alarm/rules/device/count?userId=classic&authPassword=classic';
+            var url = '../alarm/rules/device/count?userId=classic&authPassword=classic';
             if (type != null) {
                 url += "&type=" + type;
             }
@@ -186,7 +186,7 @@ angular.module('F1FeederApp.services', [])
 
         ergastAPI.addAlarmRule = function (rule, callBack) {
 
-            var url = '/alarm/rules/device?userId=classic&authPassword=classic';
+            var url = '../alarm/rules/device?userId=classic&authPassword=classic';
 
             $http({
                 method: 'POST',
@@ -208,7 +208,7 @@ angular.module('F1FeederApp.services', [])
         }
 
         ergastAPI.getDeviceDeploymentInfo = function (city, zone, callBack) {
-            var url = '/device/deployment/?userId=classic&authPassword=classic';
+            var url = '../device/deployment/?userId=classic&authPassword=classic';
             if (city != null)
                 url += "&city=" + city;
             if (zone != null)
@@ -233,7 +233,7 @@ angular.module('F1FeederApp.services', [])
         }
         ergastAPI.updateDevice = function (deviceJson, callBack) {
 
-            var url = '/device/?userId=classic&authPassword=classic';
+            var url = '../device/?userId=classic&authPassword=classic';
             $http({
                 method: 'PUT',
                 data: deviceJson,
@@ -253,7 +253,7 @@ angular.module('F1FeederApp.services', [])
         }
         ergastAPI.getDeviceSpec = function (specId, callBack) {
 
-            var url = '/device/spec/?userId=classic&authPassword=classic&type=' + specId;
+            var url = '../device/spec/?userId=classic&authPassword=classic&type=' + specId;
             $http({
                 method: 'GET',
                 url: url
@@ -272,7 +272,7 @@ angular.module('F1FeederApp.services', [])
 
         }
         ergastAPI.removeDevice = function (deviceId, callBack) {
-            var url = '/device?userId=classic&authPassword=classic&deviceId=' + deviceId;
+            var url = '../device?userId=classic&authPassword=classic&deviceId=' + deviceId;
             $http({
                 method: 'DELETE',
                 url: url
@@ -296,7 +296,7 @@ angular.module('F1FeederApp.services', [])
 
             if (deviceIdList != null) {
 
-                var url = '/device/sensor/livedata/count?userId=classic&authPassword=classic&deviceIds=';
+                var url = '../device/sensor/livedata/count?userId=classic&authPassword=classic&deviceIds=';
                 url += deviceIdList[0];
                 for (var i = 1; i < deviceIdList.length; i++) {
                     url += "&" + deviceIdList[i];
@@ -343,7 +343,7 @@ angular.module('F1FeederApp.services', [])
 
             if (deviceIdList != null) {
 
-                var url = '/device/sensor/stats?userId=classic&authPassword=classic&deviceIds=';
+                var url = '../device/sensor/stats?userId=classic&authPassword=classic&deviceIds=';
                 url += deviceIdList[0];
                 for (var i = 1; i < deviceIdList.length; i++) {
                     url += "," + deviceIdList[i];
@@ -393,7 +393,7 @@ angular.module('F1FeederApp.services', [])
 
             if (deviceIdList != null) {
 
-                var url = '/device/sensor/stats/count?userId=classic&authPassword=classic&deviceIds=';
+                var url = '../device/sensor/stats/count?userId=classic&authPassword=classic&deviceIds=';
                 url += deviceIdList[0];
                 for (var i = 1; i < deviceIdList.length; i++) {
                     url += "&" + deviceIdList[i];
@@ -442,7 +442,7 @@ angular.module('F1FeederApp.services', [])
 
             if (deviceIdList != null) {
 
-                var url = '/device/sensor/livedata?userId=classic&authPassword=classic&deviceIds=';
+                var url = '../device/sensor/livedata?userId=classic&authPassword=classic&deviceIds=';
                 url += deviceIdList[0];
                 for (var i = 1; i < deviceIdList.length; i++) {
                     url += "&" + deviceIdList[i];
@@ -489,7 +489,7 @@ angular.module('F1FeederApp.services', [])
                 $http({
                     method: "POST",
                     data: deviceInfo,
-                    url: 'device?userId=classic&authPassword=classic'
+                    url: '../device?userId=classic&authPassword=classic'
                 }).then(function (response) {
 
                     if (response.data != null && response.data.status == "ok") {
@@ -514,7 +514,7 @@ angular.module('F1FeederApp.services', [])
         ergastAPI.getDeviceAt = function (query, index, callBack) {
             $http({
                 method: 'GET',
-                url: 'device/' + index.toString() + '?userId=classic&authPassword=classic'
+                url: '../device/' + index.toString() + '?userId=classic&authPassword=classic'
             }).then(function (response) {
 
                 if (response.data != null && response.data.status == "ok" && response.data.data != null) {
@@ -533,7 +533,7 @@ angular.module('F1FeederApp.services', [])
         ergastAPI.getDeviceCount = function (search, callBack) {
             $http({
                 method: 'GET',
-                url: 'device/count?userId=classic&authPassword=classic'
+                url: '../device/count?userId=classic&authPassword=classic'
             }).then(function (response) {
 
                 if (response.data != null && response.data.status == "ok" && response.data.data != null) {
@@ -551,7 +551,7 @@ angular.module('F1FeederApp.services', [])
         ergastAPI.getThirdPartyUserCount = function (search, callBack) {
             $http({
                 method: 'GET',
-                url: 'thirdpartyuser/count?userId=classic&authPassword=classic'
+                url: '../thirdpartyuser/count?userId=classic&authPassword=classic'
             }).then(function (response) {
 
                 if (response.data != null && response.data.status == "ok" && response.data.data != null) {
@@ -569,7 +569,7 @@ angular.module('F1FeederApp.services', [])
         ergastAPI.getThirdPartyUserAt = function (query, index, callBack) {
             $http({
                 method: 'GET',
-                url: 'thirdpartyuser/' + index.toString() + '?userId=classic&authPassword=classic'
+                url: '../thirdpartyuser/' + index.toString() + '?userId=classic&authPassword=classic'
             }).then(function (response) {
 
                 if (response.data != null && response.data.status == "ok" && response.data.data != null) {
@@ -591,7 +591,7 @@ angular.module('F1FeederApp.services', [])
                 $http({
                     method: "POST",
                     data: ThirdPartyUserDetails,
-                    url: 'thirdpartyuser?userId=classic&authPassword=classic'
+                    url: '../thirdpartyuser?userId=classic&authPassword=classic'
                 }).then(function (response) {
 
                     if (response.data != null && response.data.status == "ok") {
@@ -614,7 +614,7 @@ angular.module('F1FeederApp.services', [])
         }
 
         ergastAPI.removeThirdPartyUser = function (uName, callBack) {
-            var url = '/ThirdPartyUser?userId=classic&authPassword=classic&uName=' + uName;
+            var url = '../ThirdPartyUser?userId=classic&authPassword=classic&uName=' + uName;
             $http({
                 method: 'DELETE',
                 url: url
@@ -639,7 +639,7 @@ angular.module('F1FeederApp.services', [])
                 $http({
                     method: "POST",
                     data: ThirdPartyUserDetails,
-                    url: 'ThirdPartyUser?'
+                    url: '../ThirdPartyUser?'
                 }).then(function (response) {
 
                     if (response.data != null && response.data.status == "ok") {
@@ -664,7 +664,7 @@ angular.module('F1FeederApp.services', [])
         ergastAPI.getUserCount = function (search, callBack) {
             $http({
                 method: 'GET',
-                url: 'user/count?userId=classic&authPassword=classic'
+                url: '../user/count?userId=classic&authPassword=classic'
             }).then(function (response) {
 
                 if (response.data != null && response.data.status == "ok" && response.data.data != null) {
@@ -682,7 +682,7 @@ angular.module('F1FeederApp.services', [])
         ergastAPI.getUserAt = function (query, index, callBack) {
             $http({
                 method: 'GET',
-                url: 'user/' + index.toString() + '?userId=classic&authPassword=classic'
+                url: '../user/' + index.toString() + '?userId=classic&authPassword=classic'
             }).then(function (response) {
 
                 if (response.data != null && response.data.status == "ok" && response.data.data != null) {
@@ -726,7 +726,7 @@ angular.module('F1FeederApp.services', [])
                 $http({
                     method: "POST",
                     data: userDetails,
-                    url: 'user?userId=classic&authPassword=classic'
+                    url: '../user?userId=classic&authPassword=classic'
                 }).then(function (response) {
 
                     if (response.data != null && response.data.status == "ok") {
@@ -747,7 +747,7 @@ angular.module('F1FeederApp.services', [])
 
         };
         ergastAPI.updateUser = function (userDetails, callBack) {
-            var url = '/user/?';
+            var url = '../user/?';
             $http({
                 method: 'PUT',
                 data: userDetails,
@@ -768,7 +768,7 @@ angular.module('F1FeederApp.services', [])
         }
 
         ergastAPI.removeUser = function (uName, callBack) {
-            var url = '/user?userId=classic&authPassword=classic&uName=' + uName;
+            var url = '../user?userId=classic&authPassword=classic&uName=' + uName;
             $http({
                 method: 'DELETE',
                 url: url
@@ -793,7 +793,7 @@ angular.module('F1FeederApp.services', [])
                 $http({
                     method: "POST",
                     data: userDetails,
-                    url: 'user?'
+                    url: '../user?'
                 }).then(function (response) {
 
                     if (response.data != null && response.data.status == "ok") {
@@ -818,7 +818,7 @@ angular.module('F1FeederApp.services', [])
             $http({
                 method: 'POST',
                 params: logindetails,
-                url: 'loginprivilegehide?'
+                url: '../loginprivilegehide?'
             }).then(function (response) {
                 if (response.data != null && response.data.status == 'ok') {
                     callBack(response.data)
@@ -838,7 +838,7 @@ angular.module('F1FeederApp.services', [])
             $http({
                 method: 'POST',
                 params: logindetails,
-                url: 'loginprivilege?'
+                url: '../loginprivilege?'
             }).then(function (response) {
                 if (response.data != null && response.data.status == 'ok') {
                     callBack(response.data)
@@ -862,7 +862,7 @@ angular.module('F1FeederApp.services', [])
                 $http({
                     method: "POST",
                     params: logindetails,
-                    url: 'login?'
+                    url: '../login?'
                 }).then(function (response) {
                     //alert("reached .then")
                     if (response.data != null && response.data.status == "ok") {
