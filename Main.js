@@ -54,6 +54,10 @@ function InitExpress(expObj){
    //     next();
    //    });
    
+    app.get('*', function (req, res) {
+        res.sendFile(path.join(__dirname, 'public/build', 'index.html'));
+    });
+    
     expObj.get('/shutdown', function (req, res)
     {
 

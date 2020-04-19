@@ -45,6 +45,7 @@ angular.module('F1FeederApp.controllers').
 		$location.path('/login');
 		console.log($sessionStorage.loggedIn);
 		delete $sessionStorage.loggedIn;
+		sessionStorage.removeItem("isLoggedIn");
 		console.log($sessionStorage.loggedIn);
 	}
 

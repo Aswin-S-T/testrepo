@@ -50,6 +50,7 @@ angular.module('F1FeederApp.controllers').
 			$scope.loggedIn = true;
 		    $rootScope.userName = $scope.userName;
 			$sessionStorage.loggedIn = true;
+			sessionStorage.setItem("isLoggedIn", true);
 			$sessionStorage.userName=$scope.userName
 			//alert("session storage",JSON.stringify($sessionStorage))
 			$location.path('/home');

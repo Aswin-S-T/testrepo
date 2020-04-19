@@ -23,5 +23,8 @@
             "PAN_PORT":"443",
             "PAN_PATH":"/ibm/ioc/api/data-injection-service/datablocks/76/dataitems"
         }
+    }, {
+        "name": "AlarmService",
+        "script": "AlarmService.js"
     }]
 }

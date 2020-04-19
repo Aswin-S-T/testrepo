@@ -29,13 +29,32 @@ npm i
 ``` 
 6. Run node command to start the app in development mode
 ```sh
-npx shipit dev start:dev
+export FRONTEND_APP_PATH=frontend_app_path
+npx shipit dev start:dev //start app with forntend build
+
+or
+
+npm run start:dev //to start server only
 ```
 7. Add Device in device management page
 8. Use AQMS.postman_collection.json for add live data enrty
 
 ## Deplyment ##
 ```sh
+export GIT_USERNAME=git_username //required
+export GIT_TOKEN=git_token //required
+export GIT_BRANCH=git_branch //Defualt master
+export FRONTEND_APP_BRANCH=git_frontend_app_branch //Defualt master
 npx shipit ENV deploy
-npx shipit staging deploy
+
+EX: npx shipit staging deploy
+
+or
+//To deploy development code 
+export FRONTEND_APP_PATH=frontend_app_path
+export DEPLOY_SERVER=server_username@host //Defualt staging instance
+export BUILD_CMD=node_app_build_cmd //Defualt build:staging
+export FRONTENT_APP_BUILD_CMD=frontend_app_build_cmd //Defualt build:staging
+npx shipit dev_deploy deploy
+
 ```
