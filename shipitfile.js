@@ -1,8 +1,6 @@
 module.exports = shipit => {
     require('shipit-deploy')(shipit)
-    var utils = require('shipit-utils');
 
-  
     shipit.initConfig({
         default: {
             branch: process.env.GIT_BRANCH || 'master',
@@ -26,15 +24,17 @@ module.exports = shipit => {
             servers: process.env.DEPLOY_SERVER || 'ec2-user@ec2-52-66-53-207.ap-south-1.compute.amazonaws.com',
             forntendBuildCmd: process.env.FRONTENT_APP_BUILD_CMD || 'build:staging',
             buildCmd: process.env.BUILD_CMD || 'build:staging',
+            dockerBuildCmd: process.env.DOCKER_BUILD_CMD || 'build:staging_docker'
         },
         staging: {
             servers: 'ec2-user@ec2-52-66-53-207.ap-south-1.compute.amazonaws.com',
             buildCmd: 'build:staging',
-            forntendBuildCmd: 'build:staging'
+            forntendBuildCmd: 'build:staging',
+            dockerBuildCmd: 'build:staging_docker'
         }
     });
 
-    var start_dev = function() {
+    shipit.blTask('startDev', async () => {
         return shipit.local([
             'cd ' + shipit.config.frontendAppPath,
             '. ~/.nvm/nvm.sh',
@@ -43,11 +43,11 @@ module.exports = shipit => {
             'cp -r build/  ' + shipit.config.backendAppPath + '/public/',
             'cd '+ shipit.config.backendAppPath ,
             'nvm use 8',
-            'pm2 stop all',
-            'pm2 delete all',
+            'pm2 stop all || true',
+            'pm2 delete all || true',
             'npm run start:dev'
         ].join('&&'));
-    };
+    });
 
     shipit.blTask('buildLocalTask', async () => {
         shipit.log(shipit.workspace)
@@ -62,9 +62,9 @@ module.exports = shipit => {
     })
 
     shipit.blTask('buildTask', async () => {
-        await shipit.remote('pwd')
         await shipit.local([
-            'mkdir ' + shipit.config.workspace,
+            'rm -rf ' + shipit.config.workspace +' || true',
+            'mkdir ' + shipit.config.workspace + ' || true',
             'cd ' + shipit.config.workspace,
             'git clone ' + shipit.config.frontendAppRepositoryUrl,
             'cd envitusplatformfrontend',
@@ -83,8 +83,8 @@ module.exports = shipit => {
             'cd ' + shipit.config.deployTo + '/current',
             'nvm use 8',
             'npm i',
-            'pm2 stop all',
-            'pm2 delete all',
+            'pm2 stop all || true',
+            'pm2 delete all || true',
             'npm run ' + shipit.config.buildCmd
         ].join('&&'));
     })
@@ -98,9 +98,50 @@ module.exports = shipit => {
         }
     })
 
-    shipit.on('published',function() {
+    shipit.on('deployed',function() {
         shipit.start("remoteUpTask");
     })
-    
-    utils.registerTask(shipit, 'start:dev', start_dev);
+
+    shipit.blTask('devDocker', async () => {
+        return shipit.local([
+            'cd ' + shipit.config.frontendAppPath,
+            '. ~/.nvm/nvm.sh',
+            'nvm use 12',
+            'npm run build:dev',
+            'cp -r build/  ' + shipit.config.backendAppPath + '/public/',
+            'cd '+ shipit.config.backendAppPath,
+            'docker container stop $(docker container ls -a -q --filter name=envitus) || true',
+            'docker rm $(docker container ls -a -q --filter name=envitus) || true',
+            'docker rmi $(docker images "envitus" -q | uniq) || true',
+            'docker build -t envitus . ',
+            'docker run -d --name envitus --network host envitus'
+        ].join('&&'));
+    })
+
+    shipit.blTask('buildDockerImgZip', () => {
+        return shipit.local([
+            'cd ' + shipit.workspace,
+            'docker container stop $(docker container ls -a -q --filter name=envitus) || true',
+            'docker rm $(docker container ls -a -q --filter name=envitus) || true',
+            'docker image rmi $(docker images "envitus" -q | uniq) || true',
+            'docker build -t envitus . --build-arg runCommand='+ shipit.config.dockerBuildCmd,
+            'docker save envitus -o envitus.tar.gz',
+            'ls -I "envitus.tar.gz" | xargs rm -rf'
+        ].join('&&'))
+    });
+
+    shipit.blTask('remoteUpDocker', () => {
+        return shipit.remote([
+            'cd ' + shipit.config.deployTo + '/current',
+            'docker container stop $(docker container ls -a -q --filter name=envitus) || true',
+            'docker rm $(docker container ls -a -q --filter name=envitus) || true',
+            'docker image rmi $(docker images "envitus" -q | uniq) || true',
+            'docker load --input envitus.tar.gz',
+            'docker run -d --name envitus --network host envitus'
+        ].join('&&'))
+    });
+
+    shipit.blTask('deployDocker', () => {
+        shipit.start("deploy:fetch","buildDockerImgZip", "deploy:update", "deploy:publish", "remoteUpDocker", "deploy:clean");
+    })
 }
