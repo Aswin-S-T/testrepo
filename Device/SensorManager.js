@@ -180,7 +180,6 @@ function SensorManager()
     };
 
     this.updateStatistics = function (date, collectionNamePrefix, dataObj,device,cb) {
-
 		var paramNameList = [];
 		for (var propFieldItem in dataObj)
 		{
@@ -191,33 +190,34 @@ function SensorManager()
 		var updateStatItem = function(){
 		
 			
-			var propField = paramNameList[k];
-			statManager.updateDailyStats(collectionNamePrefix+"_daily", propField, dataObj[propField], date, device.timeZone,function (err)
+            var propField = paramNameList[k];
+            statManager.updateHourlyStats(collectionNamePrefix+"_hourly", propField, dataObj[propField], date, device.timeZone,function (err)
 			{
-				// ignore error.
-				statManager.updateMonthlyStats(collectionNamePrefix + "_monthly", propField, dataObj[propField], date, device.timeZone,function (err)
-				{
-					// ignore error.
-					statManager.updateYearlyStats(collectionNamePrefix + "_yearly", propField, dataObj[propField], date, device.timeZone, function (err)
-					{
-						// ignore error.
-						k++;
-						if (k < paramNameList.length)
-						{
-							
-							updateStatItem();
-						}
-						else
-						{
-							cb();
-						}
-					});
-			
-				
-				});
-			
-			});
-				
+                statManager.updateDailyStats(collectionNamePrefix+"_daily", propField, dataObj[propField], date, device.timeZone,function (err)
+                {
+                    // ignore error.
+                    statManager.updateMonthlyStats(collectionNamePrefix + "_monthly", propField, dataObj[propField], date, device.timeZone,function (err)
+                    {
+                        // ignore error.
+                        statManager.updateYearlyStats(collectionNamePrefix + "_yearly", propField, dataObj[propField], date, device.timeZone, function (err)
+                        {
+                            // ignore error.
+                            k++;
+                            if (k < paramNameList.length)
+                            {
+                                
+                                updateStatItem();
+                            }
+                            else
+                            {
+                                cb();
+                            }
+                        });
+                
+                    
+                    });
+                });
+            });
 		}
 		
 		if (k < paramNameList.length)

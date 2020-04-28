@@ -50,6 +50,19 @@ function StatisticsManager()
         return result;
     }
 
+    this.dateToHourlyUsageKey = function(dateObj,timeZoneName)
+    {
+        var hour = dateObj.getHours();
+        var key = dateObj.setHours(hour);
+        
+        if (timeZoneName != null) {
+            var zoneChanged = this.convertDateToTimeZone(dateObj, timeZoneName);//
+            hour = zoneChanged.getHours();
+            key = zoneChanged.setHours(hour)
+        }
+        return key;
+    }
+
     this.dateToMonthlyUsageKey = function (dateObj, timeZoneName) {
         var year = dateObj.getFullYear();
         var month = dateObj.getMonth() + 1;
@@ -222,6 +235,70 @@ function StatisticsManager()
 			dbInstance.createUniqueIndex( collectionName,{ paramName: 1, key: 1 },function(errIndex,nameIndex){
 			
 				var newCollectionItem = myInstance.createNewStatCollection(paramName, value, currentDate, myInstance.dateToDailyUsageKey(originalDate, timeZoneName));
+				dbInstance.insertDocument(collectionName, newCollectionItem, function (addErr) {
+					if(addErr){
+					
+						dbInstance.GetDocumentByCriteria(collectionName, 0, deviceQuery, function (err, result)
+						{
+							if (err) {
+								callBack(err);
+
+							}
+							else
+							{
+							   
+								if (result != null)
+								{
+									result.statParams.count +=  1;
+									result.statParams.sum += parseFloat(value);
+									result.statParams.min = Math.min(result.statParams.min, value);
+									result.statParams.max = Math.max(result.statParams.max, value);
+								}
+								dbInstance.updateDocument(collectionName, deviceQuery, result, function (errUpdate)
+								{
+									callBack(errUpdate);
+								});
+							}
+
+						});
+						
+					}
+					else
+					{
+						callBack(addErr);
+					}
+				});
+			
+			});
+
+			
+            
+        }
+        else {
+
+            // error
+            callBack(1)
+        }
+
+    }
+
+    this.updateHourlyStats = function (collectionName, paramName, value, currentDate, timeZoneName,callBack)
+    {
+        if (collectionName != null && currentDate != null && paramName != null) 
+        {
+		   var myInstance = this;
+            //timeZone
+            var originalDate = new Date(currentDate.valueOf());
+            currentDate =  this.convertDateToTimeZone(currentDate, timeZoneName);
+            //currentDate = new Date(currentDate.getFullYear(), currentDate.getMonth(), currentDate.getDate(), 0, 0, 0, 0);
+            var deviceQuery =
+            {
+                "paramName": { $in: [paramName] },
+                "key": this.dateToHourlyUsageKey(originalDate, timeZoneName)
+            }
+			dbInstance.createUniqueIndex( collectionName,{ paramName: 1, key: 1 },function(errIndex,nameIndex){
+			
+				var newCollectionItem = myInstance.createNewStatCollection(paramName, value, currentDate, myInstance.dateToHourlyUsageKey(originalDate, timeZoneName));
 				dbInstance.insertDocument(collectionName, newCollectionItem, function (addErr) {
 					if(addErr){
 					

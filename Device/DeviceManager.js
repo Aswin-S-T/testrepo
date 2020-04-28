@@ -210,7 +210,7 @@ function DeviceManager()
 			
 					dbInstance.removeDocument('devices',query, function(errFrmDevices, res)
 					{
-						  var docsToRemove = [result.logicalDeviceId, result.logicalDeviceId + "_stat_daily", result.logicalDeviceId + "_stat_monthly",
+						  var docsToRemove = [result.logicalDeviceId, result.logicalDeviceId + "_stat_hourly", result.logicalDeviceId + "_stat_daily", result.logicalDeviceId + "_stat_monthly",
                               result.logicalDeviceId + "_stat_yearly", result.logicalDeviceId+"_raw"
 						  ];
                           

@@ -141,7 +141,7 @@ function AfmSensorDevice() {
                     }
                     else {
                         // insert AQI derived param.
-                        filterResult.AQI = myInstance.findAQIFromLiveData(filterResult);
+                        filterResult.rawAQI = myInstance.findAQIFromLiveData(filterResult);
                         callBack(null, filterResult);
                     }
                 });
@@ -153,7 +153,7 @@ function AfmSensorDevice() {
                 }
                 else {
                     // insert AQI derived param.
-                    filterResult.AQI = myInstance.findAQIFromLiveData(filterResult);
+                    filterResult.rawAQI = myInstance.findAQIFromLiveData(filterResult);
                     callBack(null, filterResult);
                 }
             }
@@ -1066,6 +1066,63 @@ AfmSensorDevice.prototype.getDefaultParamDefinitions = function () {
             isDisplayEnabled: true,
             isPrimary: false,
             hasLimits: false
+        },
+        {
+            filteringMethod: null,
+            filteringMethodDef: null,
+            paramName: "rawAQI",
+            displayName: "Raw AQI",
+            displayNameHtml: "Raw AQI",
+            unit: '',
+            unitDisplayHtml: '',
+            displayImage: "param.png",
+            needsLiveData: false,
+            isDisplayEnabled: true,
+            isPrimary: true,
+            valuePrecision: 0,
+            isDerivedParam: true,
+
+            maxRanges: {
+                min: 0,
+                max: 500
+            },
+            limits: [
+                {
+                    max: 50,
+                    color: "00B050",
+                    description: "Good"
+                },
+                {
+                    min: 51,
+                    max: 100,
+                    color: "92D050",
+                    description: "Satisfactory"
+                },
+                {
+                    min: 101,
+                    max: 200,
+                    color: "FFFF00",
+                    description: "Moderate"
+                },
+                {
+                    min: 201,
+                    max: 301,
+                    color: "FF9A00",
+                    description: "Poor"
+                },
+                {
+                    min: 301,
+                    max: 400,
+                    color: "FF0000",
+                    description: "Very Poor"
+                },
+                {
+                    min: 401,
+                    //   max:500,
+                    color: "800000",
+                    description: "Severe"
+                }
+            ]
         },
         {
             filteringMethod: null,
