@@ -4,6 +4,8 @@ var path = require('path');
 var express = new require('express');
 var fs = require('fs');
 var https = require('https');
+var cron = require('node-cron');
+var AqiCalculation = require('./Device/AqiCalculation.js');
 //const csrf = require('csurf');
 
 
@@ -107,6 +109,11 @@ function InitExpress(expObj){
 //         next({ message: 'Rate limit exceeded', status: 429 })
 //     }
 //   })
+
+cron.schedule('0 * * * *', () => {
+    console.log("*********", new Date().valueOf());
+    AqiCalculation.intilaizeAqiCalculation();
+});
 
 var app = new require('express')();
 InitExpress(app);

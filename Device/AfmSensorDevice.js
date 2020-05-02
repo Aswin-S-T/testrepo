@@ -136,6 +136,7 @@ function AfmSensorDevice() {
                     }
 
                     i++;
+                    (paramDefs[i] && paramDefs[i].paramName === "AQI") ? i++ : '';
                     if (i < paramDefs.length) {
                         filterFunc();
                     }
@@ -148,6 +149,7 @@ function AfmSensorDevice() {
             }
             else {
                 i++;
+                (paramDefs[i] && paramDefs[i].paramName === "AQI") ? i++ : '';
                 if (i < paramDefs.length) {
                     filterFunc();
                 }
@@ -1078,7 +1080,7 @@ AfmSensorDevice.prototype.getDefaultParamDefinitions = function () {
             displayImage: "param.png",
             needsLiveData: false,
             isDisplayEnabled: true,
-            isPrimary: true,
+            isPrimary: false,
             valuePrecision: 0,
             isDerivedParam: true,
 

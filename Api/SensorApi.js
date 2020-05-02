@@ -412,6 +412,9 @@ function SensorApi(express) {
 
     });
 
+    var includeHourlyStats = function (optionList) {
+        return optionList.indexOf('hourly') >= 0;
+    };
     var includeDailyStats = function (optionList) {
         return optionList.indexOf('daily') >= 0;
     };
@@ -480,11 +483,11 @@ function SensorApi(express) {
                                 res.end(response);
                             }
                             else {
-                                sensorManager.getSensorStats(listDevIds[i], paramList, timeStart, timeEnd, includeDailyStats(options), includeMonthlyStats
+                                sensorManager.getSensorStats(listDevIds[i], paramList, timeStart, timeEnd, includeHourlyStats(options), includeDailyStats(options), includeMonthlyStats
                                     (options), includeYearlyStats(options), numberOfRecords, offset, fetchSensor);
                             }
                         };
-                        sensorManager.getSensorStats(listDevIds[i], paramList, timeStart, timeEnd, includeDailyStats(options), includeMonthlyStats
+                        sensorManager.getSensorStats(listDevIds[i], paramList, timeStart, timeEnd, includeHourlyStats(options), includeDailyStats(options), includeMonthlyStats
                             (options), includeYearlyStats(options), numberOfRecords, offset, fetchSensor);
                     }
 
@@ -551,11 +554,11 @@ function SensorApi(express) {
                                 res.end(response);
                             }
                             else {
-                                sensorManager.getSensorStats(listDevIds[i], paramList, timeStart, timeEnd, includeDailyStats(options), includeMonthlyStats
+                                sensorManager.getSensorStats(listDevIds[i], paramList, timeStart, timeEnd, includeHourlyStats(options), includeDailyStats(options), includeMonthlyStats
                                     (options), includeYearlyStats(options), numberOfRecords, offset, fetchSensor);
                             }
                         };
-                        sensorManager.getSensorStats(listDevIds[i], paramList, timeStart, timeEnd, includeDailyStats(options), includeMonthlyStats
+                        sensorManager.getSensorStats(listDevIds[i], paramList, timeStart, timeEnd, includeHourlyStats(options), includeDailyStats(options), includeMonthlyStats
                             (options), includeYearlyStats(options), numberOfRecords, offset, fetchSensor);
                     }
 
@@ -622,11 +625,11 @@ function SensorApi(express) {
                                 res.end(response);
                             }
                             else {
-                                sensorManager.getSensorStatsCount(listDevIds[i], paramList, timeStart, timeEnd, includeDailyStats(options), includeMonthlyStats
+                                sensorManager.getSensorStatsCount(listDevIds[i], paramList, timeStart, timeEnd, includeHourlyStats(options), includeDailyStats(options), includeMonthlyStats
                                     (options), includeYearlyStats(options), fetchSensor);
                             }
                         };
-                        sensorManager.getSensorStatsCount(listDevIds[i], paramList, timeStart, timeEnd, includeDailyStats(options), includeMonthlyStats
+                        sensorManager.getSensorStatsCount(listDevIds[i], paramList, timeStart, timeEnd, includeHourlyStats(options), includeDailyStats(options), includeMonthlyStats
                             (options), includeYearlyStats(options), fetchSensor);
                     }
 
@@ -690,11 +693,11 @@ function SensorApi(express) {
                                 res.end(response);
                             }
                             else {
-                                sensorManager.getSensorStatsCount(listDevIds[i], paramList, timeStart, timeEnd, includeDailyStats(options), includeMonthlyStats
+                                sensorManager.getSensorStatsCount(listDevIds[i], paramList, timeStart, timeEnd, includeHourlyStats(options), includeDailyStats(options), includeMonthlyStats
                                     (options), includeYearlyStats(options), fetchSensor);
                             }
                         };
-                        sensorManager.getSensorStatsCount(listDevIds[i], paramList, timeStart, timeEnd, includeDailyStats(options), includeMonthlyStats
+                        sensorManager.getSensorStatsCount(listDevIds[i], paramList, timeStart, timeEnd, includeHourlyStats(options), includeDailyStats(options), includeMonthlyStats
                             (options), includeYearlyStats(options), fetchSensor);
                     }
 

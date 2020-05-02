@@ -1,6 +1,6 @@
 var DatabaseHandlerModule = require('../DatabaseHandler.js');
 var dbInstance = new  DatabaseHandlerModule.DatabaseHandler();
-var moment = require('moment-timezone');
+var moment = require('moment');
 
 function StatisticsManager()
 {
@@ -16,18 +16,11 @@ function StatisticsManager()
             var date = zoneChanged.date();
             var year = zoneChanged.year();
             var month = zoneChanged.month();
-
+            var hour = zoneChanged.hour();
+            var minute = zoneChanged.minute();
+            var millisecond = zoneChanged.millisecond();
             
-            res = new Date(year, month, date);
-
-            res.setHours(res.getHours()+5)
-            res.setMinutes(res.getMinutes()+30)
-
-            var currentEpoch = res.valueOf();
-
-            //res = new Date(currentEpoch - (mtz.utcOffset() * 60000));
-
-
+            res = new Date(year, month, date, hour, minute, millisecond);
         }
         return res;
     }
@@ -52,13 +45,13 @@ function StatisticsManager()
 
     this.dateToHourlyUsageKey = function(dateObj,timeZoneName)
     {
-        var hour = dateObj.getHours();
-        var key = dateObj.setHours(hour);
+        var utcTime = new Date(dateObj.valueOf())
+        var hour = utcTime.getHours();
+        var key = utcTime.setHours(hour);
         
         if (timeZoneName != null) {
-            var zoneChanged = this.convertDateToTimeZone(dateObj, timeZoneName);//
-            hour = zoneChanged.getHours();
-            key = zoneChanged.setHours(hour)
+            var zoneChanged = this.convertDateToTimeZone(dateObj, timeZoneName);
+            key = zoneChanged.setHours(zoneChanged.getHours(), 0, 0, 0)
         }
         return key;
     }
@@ -296,6 +289,8 @@ function StatisticsManager()
                 "paramName": { $in: [paramName] },
                 "key": this.dateToHourlyUsageKey(originalDate, timeZoneName)
             }
+            console.log("updateHourlyStats deviceQuery", JSON.stringify(deviceQuery))
+            console.log("updateHourlyStats currentDate", currentDate)
 			dbInstance.createUniqueIndex( collectionName,{ paramName: 1, key: 1 },function(errIndex,nameIndex){
 			
 				var newCollectionItem = myInstance.createNewStatCollection(paramName, value, currentDate, myInstance.dateToHourlyUsageKey(originalDate, timeZoneName));
@@ -472,6 +467,34 @@ function StatisticsManager()
                 callBack(null, result)
             }
 
+        });
+    }
+
+    this.getStatParamHourly = function(collectionName, paramNameList, timeFrom, timeTo, limit, offset, callBack)
+    {
+        var  statQuery = {
+            "paramName": { $in: paramNameList },
+            "key":{$gte:parseInt(timeFrom), $lt:parseInt(timeTo)}
+        };
+
+        if(timeFrom == null && timeTo == null){
+            var statQuery= {
+                "paramName":{$in: paramNameList}
+            }
+        }
+    
+        if ( paramNameList == null || paramNameList.length <= 0) {
+            delete statQuery.paramName;
+        }
+        console.log("getStatParamHourly",JSON.stringify(statQuery));
+        dbInstance.GetFilteredDocumentSorted(collectionName, statQuery, { "_id": false, "epoch": false }, { "epoch": -1 }, limit, offset, function (err, result)
+        {          
+            if (err) {
+                callBack(1,null)
+            }
+            else {
+                callBack(null, result)
+            }
         });
     }
 

@@ -248,13 +248,17 @@ function SensorManager()
     }
 
 
-    this.getSensorStats = function (deviceId, paramList, timeFrom, timeTo, includeDaily, includeMonthly, includeYearly, numberOfRecords, offset, callBack) {
+    this.getSensorStats = function (deviceId, paramList, timeFrom, timeTo, includeHourly, includeDaily, includeMonthly, includeYearly, numberOfRecords, offset, callBack) {
 
 
         var result = {};
 
         var funcs = [];
         var funcsStatTimePeriodArg = [];
+        if (includeHourly) {
+            funcs.push(this.getSensorStatsInfo);
+            funcsStatTimePeriodArg.push("_hourly")
+        }
         if (includeDaily) {
             funcs.push(this.getSensorStatsInfo);
             funcsStatTimePeriodArg.push("_daily")
@@ -275,7 +279,8 @@ function SensorManager()
 
                 if (!err)
                 {
-                    
+                    if (funcsStatTimePeriodArg[i] == "_hourly")
+                        result.hourlyStat = res;
                     if (funcsStatTimePeriodArg[i] == "_daily")
                         result.dailyStat = res;
                     if (funcsStatTimePeriodArg[i] == "_monthly")
@@ -305,13 +310,17 @@ function SensorManager()
 
 
 
-    this.getSensorStatsCount = function (deviceId, paramList, timeFrom, timeTo, includeDaily, includeMonthly, includeYearly, callBack) {
+    this.getSensorStatsCount = function (deviceId, paramList, timeFrom, timeTo, includeHourly, includeDaily, includeMonthly, includeYearly, callBack) {
 
 
         var result = {};
 
         var funcs = [];
         var funcsStatTimePeriodArg = [];
+        if (includeHourly) {
+            funcs.push(this.getSensorStatsInfoCount);
+            funcsStatTimePeriodArg.push("_hourly")
+        }
         if (includeDaily) {
             funcs.push(this.getSensorStatsInfoCount);
             funcsStatTimePeriodArg.push("_daily")
@@ -330,7 +339,8 @@ function SensorManager()
             var resCallBack = function (err, res) {
 
                 if (!err) {
-
+                    if (funcsStatTimePeriodArg[i] == "_hourly")
+                        result.hourlyStat = res;
                     if (funcsStatTimePeriodArg[i] == "_daily")
                         result.dailyStat = res;
                     if (funcsStatTimePeriodArg[i] == "_monthly")

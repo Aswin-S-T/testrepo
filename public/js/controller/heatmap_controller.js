@@ -84,10 +84,8 @@ function HeatMapPaneManager() {
         this.scope.mainGraphChartData = new HeatMapChartData();
     }
 
-    this.addSingleLiveDataParamsToChart = function (dataObject) {
-        for (var name in dataObject) {
-            this.scope.liveChartData.addParamValue(name, dataObject[name], dataObject.receivedTime);
-        }
+    this.addSingleLiveDataParamsToChart = function (dataObject) {        
+        this.scope.liveChartData.addParamValueEx(dataObject.paramName, dataObject.statParams.average, new Date(dataObject.key).toLocaleTimeString());
     }
 
     this.showLiveDataChartForParam = function (param) {
@@ -110,8 +108,7 @@ function HeatMapPaneManager() {
     this.addSingleStatDataParamsToChart = function (dataObject) {
 
         for (var name in dataObject.statParams) {
-
-            this.scope.mainGraphChartData.addParamValueEx(name, dataObject.statParams[name], dataObject.key);
+            this.scope.mainGraphChartData.addParamValueEx(name, dataObject.statParams[name], new Date(dataObject.key).toLocaleTimeString());
         }
     }
 
@@ -146,7 +143,7 @@ function HeatMapPaneManager() {
         var myInstance = this;
         //deviceIdList, limit, offset, timeStart, timeEnd, timeFrame, paramsList, callBack
         this.apiService.getStatDataForDevice([deviceId], 7,
-            0, /*$scope.statDataTimeStart*/null, /*$scope.statDataTimeEnd*/null, /*$scope.statTimeFrame*/"daily",
+            0, /*$scope.statDataTimeStart*/null, /*$scope.statDataTimeEnd*/null, /*$scope.statTimeFrame*/"hourly",
             paramName, function (statDataList) {
 
                 if (statDataList.statPerDeviceId != null) {
@@ -154,7 +151,7 @@ function HeatMapPaneManager() {
                         var tempList = statDataList.statPerDeviceId[i];
                         if (tempList.deviceId == deviceId) {
                             var selectedStatList = null;
-                            selectedStatList = tempList.stat.dailyStat;
+                            selectedStatList = tempList.stat.hourlyStat;
 
                             if (selectedStatList != null && selectedStatList.length > 0) {
                                 for (var j = 0; j < selectedStatList.length; j++) {
@@ -174,7 +171,7 @@ function HeatMapPaneManager() {
 
 
 
-    this.refreshLiveDataChart = function (logicalDeviceId, callBack) {
+    this.refreshLiveDataChart = function (deviceId, paramList, callBack) {
 
 
         this.scope.liveChartData.clear();
@@ -182,17 +179,18 @@ function HeatMapPaneManager() {
         isRefreshLiveDatacompleted = false;
 
         var myInstance = this;
-        this.apiService.getLiveData([logicalDeviceId], 7, 0, null, null, function (liveDataList) {
-
-            if (liveDataList.liveDataPerDeviceId != null) {
-                for (var i = 0; i < liveDataList.liveDataPerDeviceId.length; i++) {
-
-                    if (liveDataList.liveDataPerDeviceId[i].deviceId == logicalDeviceId) {
-                        var tempList = liveDataList.liveDataPerDeviceId[i].dataList;
-
+        var paramNameList = paramList.map(function(item) { return item.paramName; }).join(",");
+        var limit = paramList.length * 7;
+        this.apiService.getStatDataForDevice([deviceId], limit, 0, null, null,"hourly", paramNameList, function (liveDataList) {
+            if (liveDataList.statPerDeviceId != null) {
+                for (var i = 0; i < liveDataList.statPerDeviceId.length; i++) {
+                    var tempList = liveDataList.statPerDeviceId[i];
+                    if (tempList.deviceId == deviceId) {
+                        var tempList = tempList.stat.hourlyStat;
                         if (tempList != null && tempList.length > 0) {
                             for (var j = 0; j < tempList.length; j++) {
-                                myInstance.addSingleLiveDataParamsToChart(tempList[j].data);
+                                myInstance.processStatData(tempList[j]);
+                                myInstance.addSingleLiveDataParamsToChart(tempList[j]);
                             }
 
                             callBack();
@@ -1054,7 +1052,7 @@ angular.module('F1FeederApp.controllers').
         $scope.rightParamClicked = function (param, index) {
             $scope.selectedRightParam = param;
             $scope.selectedRightPanelIndex = index;
-            paramChartManager.refreshLiveDataChart($scope.selectedDeviceInfo.logicalDeviceId, function () {
+            paramChartManager.refreshLiveDataChart($scope.selectedDeviceId, $scope.deviceDisplayParamsRight, function () {
                 paramChartManager.showLiveDataChartForParam(param.paramName);
             });
         }

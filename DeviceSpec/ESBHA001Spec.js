@@ -738,7 +738,7 @@ function ESBHA001Spec() {
                 displayImage: "param.png",
                 needsLiveData: false,
                 isDisplayEnabled: true,
-                isPrimary: true,
+                isPrimary: false,
                 valuePrecision: 0,
                 isDerivedParam: true,
 
