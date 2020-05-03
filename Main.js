@@ -110,7 +110,7 @@ function InitExpress(expObj){
 //     }
 //   })
 
-cron.schedule('0 * * * *', () => {
+cron.schedule('30 * * * *', () => {
     console.log("*********", new Date().valueOf());
     AqiCalculation.intilaizeAqiCalculation();
 });
