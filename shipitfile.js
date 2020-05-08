@@ -17,7 +17,14 @@ module.exports = shipit => {
             frontendAppbranch: process.env.FRONTEND_APP_BRANCH || 'master',
         },
         dev: {
-            servers: 'user@localhost'
+            servers: 'user@localhost',
+            buildCmd: 'start:dev',
+            forntendBuildCmd: 'build:dev',
+        },
+        dev_PBMS: {
+            servers: 'user@localhost',
+            buildCmd: 'start:dev_PBMS',
+            forntendBuildCmd: 'build:PBMS',
         },
         dev_deploy: {
             repositoryUrl: '',
@@ -31,6 +38,12 @@ module.exports = shipit => {
             buildCmd: 'build:staging',
             forntendBuildCmd: 'build:staging',
             dockerBuildCmd: 'build:staging_docker'
+        },
+        staging_PBMS: {
+            servers: 'ec2-user@ec2-52-66-53-207.ap-south-1.compute.amazonaws.com',
+            buildCmd: 'build:staging_PBMS',
+            forntendBuildCmd: 'build:PBMS',
+            dockerBuildCmd: 'build:staging_docker_PBMS'
         }
     });
 
@@ -39,13 +52,13 @@ module.exports = shipit => {
             'cd ' + shipit.config.frontendAppPath,
             '. ~/.nvm/nvm.sh',
             'nvm use 12',
-            'npm run build:dev',
+            'npm run ' + shipit.config.forntendBuildCmd,
             'cp -r build/  ' + shipit.config.backendAppPath + '/public/',
             'cd '+ shipit.config.backendAppPath ,
             'nvm use 8',
             'pm2 stop all || true',
             'pm2 delete all || true',
-            'npm run start:dev'
+            'npm run ' + shipit.config.buildCmd
         ].join('&&'));
     });
 

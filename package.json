@@ -35,9 +35,12 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "start:dev": "pm2 start pm2/pm2-dev.json",
+    "start:dev_PBMS": "pm2 start pm2/pm2-dev-PBMS.json",
     "start:dev_docker": "pm2-runtime start pm2/pm2-dev.json",
     "build:staging": "pm2 start pm2/pm2-staging.json",
-    "build:staging_docker": "pm2-runtime start pm2/pm2-staging.json"
+    "build:staging_docker": "pm2-runtime start pm2/pm2-staging.json",
+    "build:staging_PBMS": "pm2 start pm2/pm2-staging-PBMS.json",
+    "build:staging_docker_PBMS": "pm2-runtime start pm2/pm2-staging-PBMS.json"
   },
   "keywords": [],
   "author": "",

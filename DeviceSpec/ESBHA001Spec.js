@@ -753,31 +753,31 @@ function ESBHA001Spec() {
                         description: "Good"
                     },
                     {
-                        min: 51,
-                        max: 100,
+                        min: 51.0,
+                        max: 100.99,
                         color: "92D050",
                         description: "Satisfactory"
                     },
                     {
-                        min: 101,
-                        max: 200,
+                        min: 101.00,
+                        max: 200.99,
                         color: "FFFF00",
                         description: "Moderate"
                     },
                     {
-                        min: 201,
-                        max: 301,
+                        min: 201.00,
+                        max: 301.99,
                         color: "FF9A00",
                         description: "Poor"
                     },
                     {
-                        min: 301,
-                        max: 400,
+                        min: 301.00,
+                        max: 400.99,
                         color: "FF0000",
                         description: "Very Poor"
                     },
                     {
-                        min: 401,
+                        min: 401.00,
                         //   max:500,
                         color: "800000",
                         description: "Severe"
@@ -808,31 +808,31 @@ function ESBHA001Spec() {
                         description: "Good"
                     },
                     {
-                        min: 51,
-                        max: 100,
+                        min: 51.0,
+                        max: 100.99,
                         color: "92D050",
                         description: "Satisfactory"
                     },
                     {
-                        min: 101,
-                        max: 200,
+                        min: 101.00,
+                        max: 200.99,
                         color: "FFFF00",
                         description: "Moderate"
                     },
                     {
-                        min: 201,
-                        max: 301,
+                        min: 201.00,
+                        max: 301.99,
                         color: "FF9A00",
                         description: "Poor"
                     },
                     {
-                        min: 301,
-                        max: 400,
+                        min: 301.00,
+                        max: 400.99,
                         color: "FF0000",
                         description: "Very Poor"
                     },
                     {
-                        min: 401,
+                        min: 401.00,
                         //   max:500,
                         color: "800000",
                         description: "Severe"

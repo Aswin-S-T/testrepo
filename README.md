@@ -31,10 +31,12 @@ npm i
 ```sh
 export FRONTEND_APP_PATH=frontend_app_path
 npx shipit dev startDev //start app with forntend build
+npx shipit dev_PBMS startDev //start app with forntend build
 
 or
 
 npm run start:dev //to start server only
+npm run start:dev_PBMS //to start server only
 
 or
 
@@ -52,11 +54,13 @@ export FRONTEND_APP_BRANCH=git_frontend_app_branch //Defualt master
 npx shipit ENV deploy
 
 EX: npx shipit staging deploy
+EX: npx shipit staging_PBMS deploy
 
 //Docker
 npx shipit ENV deployDocker
 
 EX: npx shipit staging deployDocker
+EX: npx shipit staging_PBMS deployDocker
 
 OR
 
