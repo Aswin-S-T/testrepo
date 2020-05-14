@@ -86,7 +86,6 @@ function HeatMapPaneManager() {
 
     this.addSingleLiveDataParamsToChart = function (dataObject) {        
         let key = new Date(dataObject.key);
-        key.setTime( key.getTime() + key.getTimezoneOffset()*60*1000 );
         this.scope.liveChartData.addParamValueEx(dataObject.paramName, dataObject.statParams.average, key.toLocaleTimeString());
     }
 
@@ -111,7 +110,6 @@ function HeatMapPaneManager() {
 
         for (var name in dataObject.statParams) {
             let key = new Date(dataObject.key);
-            key.setTime( key.getTime() + key.getTimezoneOffset()*60*1000 );
             this.scope.mainGraphChartData.addParamValueEx(name, dataObject.statParams[name], key.toLocaleTimeString());
         }
     }

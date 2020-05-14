@@ -79,6 +79,76 @@ function SPB001Spec() {
                 ]
             },
             {
+                paramName: "letter_no_1",
+                displayName: "No of Letters",
+                displayNameHtml: "No of Letters",
+                unit: '',
+                unitDisplayHtml: '',
+                isDisplayEnabled: true,
+                displayImage: "param.png",
+                isPrimary: false, // for display purpose in heatmap
+                needsLiveData: false, // for display purpose in heatmap (as graph in selection pane)
+                valuePrecision: 1,
+                maxRanges: {
+                    min: 0,
+                    max: 100
+                },
+                limits: [
+                    {
+                        max: 30,
+                        color: "00B050",
+                        description: "Low"
+                    },
+                    {
+                        min: 30,
+                        max: 70,
+                        color: "92D050",
+                        description: "Medium"
+                    },
+                    {
+                        min: 70,
+                        max: 100,
+                        color: "FFFF00",
+                        description: "High"
+                    }
+                ]
+            },
+            {
+                paramName: "letter_no_2",
+                displayName: "No of Letters",
+                displayNameHtml: "No of Letters",
+                unit: '',
+                unitDisplayHtml: '',
+                isDisplayEnabled: true,
+                displayImage: "param.png",
+                isPrimary: false, // for display purpose in heatmap
+                needsLiveData: false, // for display purpose in heatmap (as graph in selection pane)
+                valuePrecision: 1,
+                maxRanges: {
+                    min: 0,
+                    max: 100
+                },
+                limits: [
+                    {
+                        max: 30,
+                        color: "00B050",
+                        description: "Low"
+                    },
+                    {
+                        min: 30,
+                        max: 70,
+                        color: "92D050",
+                        description: "Medium"
+                    },
+                    {
+                        min: 70,
+                        max: 100,
+                        color: "FFFF00",
+                        description: "High"
+                    }
+                ]
+            },
+            {
                 paramName: "ledstat_1",
                 displayName: "LED Stat_1",
                 displayNameHtml: "LED Stat_1",

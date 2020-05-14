@@ -28,10 +28,8 @@ async function intilaizeAqiCalculation() {
 					{
                         var utcToHour = new Date();
                         let aqiParamValues = await getAQIParam(device, utcToHour);
-                        console.log(aqiParamValues);
                         let aqiValue = findAQI(aqiParamValues);
                         utcToHour.setHours(utcToHour.getHours() - 1);
-                        console.log("UTC hour", utcToHour.valueOf());
                         if(aqiValue >= 0) {
                             sensorManager.updateStatistics(utcToHour, device.logicalDeviceId + '_stat', {AQI: aqiValue}, device, function (err, res){
                                 if (err) {
@@ -48,7 +46,7 @@ async function intilaizeAqiCalculation() {
 
 function getAQIParam(device, utcToHour) {
     
-    var toHour = statManager.dateToHourlyUsageKey(utcToHour, device.timeZone);
+    var toHour = statManager.dateToHourlyUsageKey(utcToHour);
     var from24Hour = new Date(toHour.valueOf() - 60 * 60 * 24 * 1000); 
     var from8Hour = new Date(toHour.valueOf() - 60 * 60 * 8 * 1000);
     const aqiCalculationParam = ["PM2p5", "PM10", "SO2", "NO2", "CO", "O3", "NH3"];

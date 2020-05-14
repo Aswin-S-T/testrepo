@@ -191,15 +191,15 @@ function SensorManager()
 		
 			
             var propField = paramNameList[k];
-            statManager.updateHourlyStats(collectionNamePrefix+"_hourly", propField, dataObj[propField], date, device.timeZone,function (err)
+            statManager.updateHourlyStats(collectionNamePrefix+"_hourly", propField, dataObj[propField], date, function (err)
 			{
-                statManager.updateDailyStats(collectionNamePrefix+"_daily", propField, dataObj[propField], date, device.timeZone,function (err)
+                statManager.updateDailyStats(collectionNamePrefix+"_daily", propField, dataObj[propField], date,function (err)
                 {
                     // ignore error.
-                    statManager.updateMonthlyStats(collectionNamePrefix + "_monthly", propField, dataObj[propField], date, device.timeZone,function (err)
+                    statManager.updateMonthlyStats(collectionNamePrefix + "_monthly", propField, dataObj[propField], date, function (err)
                     {
                         // ignore error.
-                        statManager.updateYearlyStats(collectionNamePrefix + "_yearly", propField, dataObj[propField], date, device.timeZone, function (err)
+                        statManager.updateYearlyStats(collectionNamePrefix + "_yearly", propField, dataObj[propField], date,  function (err)
                         {
                             // ignore error.
                             k++;
@@ -435,7 +435,6 @@ this.jsontrialgeopush = {};
 
 this.pushSensorData = function (sensorId,data1,callBack){
     
-	
     this.incomingDataQueue.push( { sensorId : sensorId, data:data1, cb : callBack} );
 
 }	
@@ -532,11 +531,10 @@ this.pushSensorData = function (sensorId,data1,callBack){
 							
 							specificDevice.ProcessSensorData(data1, function (ferr, filteredData) {
 
-                                
-                                var panicDataServer = function(body){
+                                var panicDataServer = function(body) {
                                     
                                     var json = insetRowFiltered;
-				    var moment = require('moment');
+				                    var moment = require('moment');
 
                                     timestamp = moment().format('YYYYMMDDHHmmss');
                                     
@@ -554,7 +552,7 @@ this.pushSensorData = function (sensorId,data1,callBack){
                                     jsonpost["PANIC"]=json["data"]["panic"];
 
                                     var jsongeopost = {
-					"ID":null,
+					                    "ID":null,
                                         "APP_ID":null,
                                         "ALERT_DATETIME": null,
                                         "LON": null,
@@ -564,7 +562,7 @@ this.pushSensorData = function (sensorId,data1,callBack){
                                         "PANIC": null
                                     }
                                     jsontrialgeopush = JSON.parse(jsontrialgeopush);
-				    jsongeopost["ID"] = json["deviceId"] + json["data"]["receivedTime"];
+				                    jsongeopost["ID"] = json["deviceId"] + json["data"]["receivedTime"];
                                     jsongeopost["APP_ID"] = "Panic_Button";
                                     jsongeopost["ALERT_DATETIME"] = timestamp;
                                     jsongeopost["LON"] = jsontrialgeopush["LON"];
@@ -610,10 +608,8 @@ this.pushSensorData = function (sensorId,data1,callBack){
                                     }
                                 }
 
-                                    var panicPost = function(jsonpost){
-
-
-				    const querystring = require('querystring');
+                                var panicPost = function(jsonpost){
+				                    const querystring = require('querystring');
                                     const https = require('https');
                                     var pHost = process.env.PAN_HOST;
                                     var pPort = process.env.PAN_PORT;
@@ -639,9 +635,9 @@ this.pushSensorData = function (sensorId,data1,callBack){
                                            'Access-Control-Allow-Origin': '*',
                                            'Ibm-Session-Id': '-'
                                          },
-					hostname:pHost,
-					port:pPort,
-					path:pPath
+                                        hostname:pHost,
+                                        port:pPort,
+                                        path:pPath
                                     };
                                     process.env["NODE_TLS_REJECT_UNAUTHORIZED"] = 0;
                                     var req = https.request(options, (res) => {
@@ -661,32 +657,32 @@ this.pushSensorData = function (sensorId,data1,callBack){
                                     req.end();           
                                 }
 
-                                var geoCardPost = function(jsongeopost){
+                                var geoCardPost = function(jsongeopost) {
 		
-					var dHost = process.env.DIAL_HOST;
-					var dPort = process.env.DIAL_PORT;
-					var dPath = process.env.DIAL_PATH;
+                                    var dHost = process.env.DIAL_HOST;
+                                    var dPort = process.env.DIAL_PORT;
+                                    var dPath = process.env.DIAL_PATH;
 
-					var postData = '<MSG>' + jsongeopost + '</MSG>';
-					
-					const querystring = require('querystring');
+                                    var postData = '<MSG>' + jsongeopost + '</MSG>';
+                                    
+                                    const querystring = require('querystring');
                                     const http = require('http');
                                     var options = {
-				    hostname: 'dHost',
-				    port: 'dPort',
-				    path: 'dPath',
-                                    //hostname:'202.60.128.169',
-				    //port:'80',
-				    //path:'/RoltaGeoCADIntegrationWebService/api/PanicButton/SendPanicAlert',
-                                     
-                                      method: 'POST',
-                                      headers: {
-                                           'Content-Type': 'application/xml',
-                                           'Content-Length': postData.length
-                                         },
-						hostname:dHost,
-						port : dPort,
-						path : dPath
+                                        hostname: 'dHost',
+                                        port: 'dPort',
+                                        path: 'dPath',
+                                                        //hostname:'202.60.128.169',
+                                        //port:'80',
+                                        //path:'/RoltaGeoCADIntegrationWebService/api/PanicButton/SendPanicAlert',
+                                        
+                                        method: 'POST',
+                                        headers: {
+                                            'Content-Type': 'application/xml',
+                                            'Content-Length': postData.length
+                                        },
+                                        hostname:dHost,
+                                        port : dPort,
+                                        path : dPath
 					
                                     };
                                     //process.env["NODE_TLS_REJECT_UNAUTHORIZED"] = 0;

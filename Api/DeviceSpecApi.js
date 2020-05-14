@@ -10,6 +10,7 @@ var AfmSensorAClassDeviceSpecModule = require('../DeviceSpec/AfmSensorAClassDevi
 
 
 var ESBHA001SpecModule = require('../DeviceSpec/ESBHA001Spec.js');
+var SPB001SpecModule = require('../DeviceSpec/SPB001Spec.js');
 
 
 function DeviceSpecApi(express)
@@ -47,6 +48,13 @@ function DeviceSpecApi(express)
 				
 				else if (req.query.type == "ESBHA001") {
 			        var devSpec = new ESBHA001SpecModule.ESBHA001Spec();
+			        hubResponse.data = devSpec;
+			        response = hubResponse.getOkResponse();
+			        res.end(response);
+				}
+
+				else if (req.query.type == "SPB001") {
+			        var devSpec = new SPB001SpecModule.SPB001Spec();
 			        hubResponse.data = devSpec;
 			        response = hubResponse.getOkResponse();
 			        res.end(response);

@@ -309,47 +309,7 @@ function SensorApi(express) {
         var hubResponse = new responseModule.HubResponse();
 
         if (req.body != null) {
-            if (req.body.data.NO2 != null) {
-
-                req.body.data.NO2 = (req.body.data.NO2 * 0.0409 * 46.01) * 1000;
-            }
-            if (req.body.data.SO2 != null) {
-
-                req.body.data.SO2 = (req.body.data.SO2 * 0.0409 * 64.06) * 1000;
-            }
-            if (req.body.data.O3 != null) {
-
-                req.body.data.O3 = (req.body.data.O3 * 0.0409 * 48) * 1000;
-            }
-            if (req.body.data.CO != null) {
-
-                req.body.data.CO = (req.body.data.CO * 0.0409 * 28.01);
-            }
-            if (req.body.data.NH3 != null) {
-
-                req.body.data.NH3 = (req.body.data.NH3 * 0.0409 * 17.031)*1000;
-            }
-            var dataOfRequest = {
-                "temperature": Number((req.body.data.temperature).toFixed(2)),
-                "pressure": Number((req.body.data.pressure).toFixed(2)),
-                "humidity": Number((req.body.data.humidity).toFixed(2)),
-                "noise": Number((req.body.data.noise).toFixed(2)),
-                "rain": Number((req.body.data.rain).toFixed(3)),
-                "PM10": Number((req.body.data.PM10).toFixed(0)),
-                "PM2p5": Number((req.body.data.PM2p5).toFixed(0)),
-                "PM1": Number((req.body.data.PM1).toFixed(0)),
-                "CO": Number((req.body.data.CO).toFixed(3)),
-                "CO2": Number((req.body.data.CO2).toFixed(0)),
-                "NO2": Number((req.body.data.NO2).toFixed(3)),
-                "SO2": Number((req.body.data.SO2).toFixed(3)),
-                "O3": Number((req.body.data.O3).toFixed(3)),
-                "NH3": Number((req.body.data.NH3).toFixed(3)),
-                "time": req.body.data.time,
-                "er_init_sensor": req.body.data.er_init_sensor,
-                "er_read_sensor": req.body.data.er_read_sensor,
-                "sig_strength":req.body.data.sig_strength,
-                "build_ver":req.body.data.build_ver
-            }
+            var dataOfRequest = (process.env.PROJECT_TYPE === "AQMS") ? getAqmsConversion(req.body.data) : req.body.data;
             sensorManager.pushSensorData(req.body.deviceId, dataOfRequest, function (err) {
 
                 if (err == null) {
@@ -365,6 +325,52 @@ function SensorApi(express) {
             res.end(hubResponse.getErrorResponse(-1, "Invalid request"));
         }
     });
+
+    var getAqmsConversion = function (data) {
+        if (data.NO2 != null) {
+
+            data.NO2 = (data.NO2 * 0.0409 * 46.01) * 1000;
+        }
+        if (data.SO2 != null) {
+
+            data.SO2 = (data.SO2 * 0.0409 * 64.06) * 1000;
+        }
+        if (data.O3 != null) {
+
+            data.O3 = (data.O3 * 0.0409 * 48) * 1000;
+        }
+        if (data.CO != null) {
+
+            data.CO = (data.CO * 0.0409 * 28.01);
+        }
+        if (data.NH3 != null) {
+
+            data.NH3 = (data.NH3 * 0.0409 * 17.031)*1000;
+        }
+        var dataOfRequest = {
+            "temperature": Number((data.temperature).toFixed(2)),
+            "pressure": Number((data.pressure).toFixed(2)),
+            "humidity": Number((data.humidity).toFixed(2)),
+            "noise": Number((data.noise).toFixed(2)),
+            "rain": Number((data.rain).toFixed(3)),
+            "PM10": Number((data.PM10).toFixed(0)),
+            "PM2p5": Number((data.PM2p5).toFixed(0)),
+            "PM1": Number((data.PM1).toFixed(0)),
+            "CO": Number((data.CO).toFixed(3)),
+            "CO2": Number((data.CO2).toFixed(0)),
+            "NO2": Number((data.NO2).toFixed(3)),
+            "SO2": Number((data.SO2).toFixed(3)),
+            "O3": Number((data.O3).toFixed(3)),
+            "NH3": Number((data.NH3).toFixed(3)),
+            "time": data.time,
+            "er_init_sensor": data.er_init_sensor,
+            "er_read_sensor": data.er_read_sensor,
+            "sig_strength":data.sig_strength,
+            "build_ver":data.build_ver
+        }
+
+        return dataOfRequest;
+    }
 
 
     var convertFromOldToNewFormat = function (oldJsonData) {

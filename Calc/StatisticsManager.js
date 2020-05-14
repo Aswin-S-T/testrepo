@@ -47,11 +47,11 @@ function StatisticsManager()
     {
         var utcTime = new Date(dateObj.valueOf())
         var hour = utcTime.getHours();
-        var key = utcTime.setHours(hour);
+        var key = utcTime.setHours(hour, 0, 0, 0);
         
         if (timeZoneName != null) {
             var zoneChanged = this.convertDateToTimeZone(dateObj, timeZoneName);
-            key = zoneChanged.setHours(zoneChanged.getHours(), 0, 0, 0)
+            key = zoneChanged.setHours(zoneChanged.getHours(), 0, 0, 0);
         }
         return key;
     }
@@ -118,22 +118,18 @@ function StatisticsManager()
     }
 
 
-    this.updateYearlyStats = function (collectionName, paramName, value, currentDate,timeZoneName, callBack) {
+    this.updateYearlyStats = function (collectionName, paramName, value, currentDate, callBack) {
         if (collectionName != null && currentDate != null && paramName != null)
         {
-            var originalDate = new Date(currentDate.valueOf());
-            currentDate = this.convertDateToTimeZone(currentDate, timeZoneName);
-            //currentDate = new Date(currentDate.getFullYear(), 0, 1, 0, 0, 0, 0);
-            
             var deviceQuery =
             {
                 "paramName": { $in: [paramName] },
-                "key": this.dateToYearlyUsageKey(originalDate, timeZoneName)
+                "key": this.dateToYearlyUsageKey(currentDate)
             }
             var myInstance = this;
             dbInstance.GetDocumentByCriteria(collectionName, 0, deviceQuery, function (err, result) {
                 if (err) {
-                    var newCollectionItem = myInstance.createNewStatCollection(paramName, value, currentDate, myInstance.dateToYearlyUsageKey(originalDate, timeZoneName));
+                    var newCollectionItem = myInstance.createNewStatCollection(paramName, value, currentDate, myInstance.dateToYearlyUsageKey(currentDate));
                     dbInstance.insertDocument(collectionName, newCollectionItem, function (addErr) {
                         callBack(addErr);
                     });
@@ -163,23 +159,18 @@ function StatisticsManager()
     }
 
 
-    this.updateMonthlyStats = function (collectionName, paramName, value, currentDate, timeZoneName,callBack) {
+    this.updateMonthlyStats = function (collectionName, paramName, value, currentDate, callBack) {
         if (collectionName != null && currentDate != null && paramName != null)
         {
-            var originalDate = new Date(currentDate.valueOf());
-            currentDate = this.convertDateToTimeZone(currentDate, timeZoneName);
-            //currentDate  = new Date(currentDate.getFullYear(), currentDate.getMonth(), 1, 0, 0, 0, 0);
-            //currentDate.setHours(0, 0, 0, 0);
-            //currentDate.setDate(1);;
             var deviceQuery =
             {
                 "paramName": { $in: [paramName] },
-                "key": this.dateToMonthlyUsageKey(originalDate, timeZoneName)
+                "key": this.dateToMonthlyUsageKey(currentDate)
             }
             var myInstance = this;
             dbInstance.GetDocumentByCriteria(collectionName, 0, deviceQuery, function (err, result) {
                 if (err) {
-                    var newCollectionItem = myInstance.createNewStatCollection(paramName, value, currentDate, myInstance.dateToMonthlyUsageKey(originalDate, timeZoneName));
+                    var newCollectionItem = myInstance.createNewStatCollection(paramName, value, currentDate, myInstance.dateToMonthlyUsageKey(currentDate));
                     dbInstance.insertDocument(collectionName, newCollectionItem, function (addErr) {
                         callBack(addErr);
                     });
@@ -209,25 +200,20 @@ function StatisticsManager()
 
     }
 
-    this.updateDailyStats = function (collectionName, paramName, value, currentDate, timeZoneName,callBack)
+    this.updateDailyStats = function (collectionName, paramName, value, currentDate,callBack)
     {
         if (collectionName != null && currentDate != null && paramName != null) 
         {
 		   var myInstance = this;
-            //timeZone
-            var originalDate = new Date(currentDate.valueOf());
-            currentDate =  this.convertDateToTimeZone(currentDate, timeZoneName);
-            //currentDate = new Date(currentDate.getFullYear(), currentDate.getMonth(), currentDate.getDate(), 0, 0, 0, 0);
-            
             var deviceQuery =
             {
                 "paramName": { $in: [paramName] },
-                "key": this.dateToDailyUsageKey(originalDate, timeZoneName)
+                "key": this.dateToDailyUsageKey(currentDate)
             }
 			
 			dbInstance.createUniqueIndex( collectionName,{ paramName: 1, key: 1 },function(errIndex,nameIndex){
 			
-				var newCollectionItem = myInstance.createNewStatCollection(paramName, value, currentDate, myInstance.dateToDailyUsageKey(originalDate, timeZoneName));
+				var newCollectionItem = myInstance.createNewStatCollection(paramName, value, currentDate, myInstance.dateToDailyUsageKey(currentDate));
 				dbInstance.insertDocument(collectionName, newCollectionItem, function (addErr) {
 					if(addErr){
 					
@@ -275,25 +261,19 @@ function StatisticsManager()
 
     }
 
-    this.updateHourlyStats = function (collectionName, paramName, value, currentDate, timeZoneName,callBack)
+    this.updateHourlyStats = function (collectionName, paramName, value, currentDate, callBack)
     {
         if (collectionName != null && currentDate != null && paramName != null) 
         {
-		   var myInstance = this;
-            //timeZone
-            var originalDate = new Date(currentDate.valueOf());
-            currentDate =  this.convertDateToTimeZone(currentDate, timeZoneName);
-            //currentDate = new Date(currentDate.getFullYear(), currentDate.getMonth(), currentDate.getDate(), 0, 0, 0, 0);
+		    var myInstance = this;
             var deviceQuery =
             {
                 "paramName": { $in: [paramName] },
-                "key": this.dateToHourlyUsageKey(originalDate, timeZoneName)
+                "key": this.dateToHourlyUsageKey(currentDate)
             }
-            console.log("updateHourlyStats deviceQuery", JSON.stringify(deviceQuery))
-            console.log("updateHourlyStats currentDate", currentDate)
 			dbInstance.createUniqueIndex( collectionName,{ paramName: 1, key: 1 },function(errIndex,nameIndex){
 			
-				var newCollectionItem = myInstance.createNewStatCollection(paramName, value, currentDate, myInstance.dateToHourlyUsageKey(originalDate, timeZoneName));
+				var newCollectionItem = myInstance.createNewStatCollection(paramName, value, currentDate, myInstance.dateToHourlyUsageKey(currentDate));
 				dbInstance.insertDocument(collectionName, newCollectionItem, function (addErr) {
 					if(addErr){
 					
@@ -345,18 +325,18 @@ function StatisticsManager()
         var res = null;
         if (timeStart != null && timeEnd != null) {
             res = [
-                               { "epoch": { $gte: parseInt(timeStart) } },
-                               { "epoch": { $lte: parseInt(timeEnd) } }
+                { "epoch": { $gte: parseInt(timeStart) } },
+                { "epoch": { $lte: parseInt(timeEnd) } }
             ]
         }
         else if (timeStart != null) {
             res = [
-                               { "epoch": { $gte: parseInt(timeStart) } }
+                { "epoch": { $gte: parseInt(timeStart) } }
             ]
         }
         else if (timeEnd != null) {
             res = [
-                               { "epoch": { $lte: parseInt(timeEnd) } }
+                { "epoch": { $lte: parseInt(timeEnd) } }
             ]
         }
 
@@ -389,35 +369,31 @@ function StatisticsManager()
 
     this.getStatParam = function(collectionName,paramNameList,timeFrom,timeTo,limit,offset,callBack)
     {
-
-	var timeFrom1=parseInt(timeFrom)-parseInt(19800000*2)
-	var timeTo1=parseInt(timeTo)-parseInt(19800000*2)
-	var timemax
-	var timemin
-	if(limit <20 && limit >14) limit =20
-	//if(limit <10) limit =10
+        var timemax
+        var timemin
+        if(limit <20 && limit >14) limit =20
+        //if(limit <10) limit =10
         var  statQuery =
         {
             "paramName": { $in: paramNameList },
-           // $and: this.getReceivedTimeQueryJson(timeFrom,timeTo)
-	   "epoch":{$gte:parseInt(timeFrom1),$lte:parseInt(timeTo1)}
+            "epoch":{$gte:parseInt(timeFrom),$lte:parseInt(timeTo)}
         }
-	if(timeFrom == null && timeTo == null){
-		var statQuery=
-		{
-			"paramName":{$in: paramNameList}
-		}
-	}
-	dbInstance.timeWindow(collectionName,{"epoch":-1},function(err,result){
-	if(!err){
-		timemax = parseInt(result)+parseInt(86400000)
-		}
-	})
-	dbInstance.timeWindow(collectionName,{"epoch":1},function(err,result){
-	if(!err){
-		timemin = parseInt(result)
-		}
-	})
+        if(timeFrom == null && timeTo == null){
+            var statQuery=
+            {
+                "paramName":{$in: paramNameList}
+            }
+        }
+        dbInstance.timeWindow(collectionName,{"epoch":-1},function(err,result){
+            if(!err){
+                timemax = parseInt(result)+parseInt(86400000)
+            }
+        })
+        dbInstance.timeWindow(collectionName,{"epoch":1},function(err,result){
+            if(!err){
+                timemin = parseInt(result)
+            }
+        })
  
         if ( paramNameList == null || paramNameList.length <= 0)
             delete statQuery.paramName;
@@ -426,8 +402,8 @@ function StatisticsManager()
 
         dbInstance.GetFilteredDocumentSorted(collectionName, statQuery, { "_id": false, "epoch": false }, { "epoch": -1 }, limit, offset, function (err, result)
         {
-	    if(timeTo1 >timemax || timeFrom1 <timemin){
-		callBack(1,null)	
+	    if(timeTo >timemax || timeFrom <timemin){
+		    callBack(1,null)	
 	    }           
             if (err)
             {
@@ -474,7 +450,7 @@ function StatisticsManager()
     {
         var  statQuery = {
             "paramName": { $in: paramNameList },
-            "key":{$gte:parseInt(timeFrom), $lt:parseInt(timeTo)}
+            "key": {$gte:parseInt(timeFrom), $lt:parseInt(timeTo)}
         };
 
         if(timeFrom == null && timeTo == null){
@@ -486,7 +462,6 @@ function StatisticsManager()
         if ( paramNameList == null || paramNameList.length <= 0) {
             delete statQuery.paramName;
         }
-        console.log("getStatParamHourly",JSON.stringify(statQuery));
         dbInstance.GetFilteredDocumentSorted(collectionName, statQuery, { "_id": false, "epoch": false }, { "epoch": -1 }, limit, offset, function (err, result)
         {          
             if (err) {
@@ -505,7 +480,6 @@ function StatisticsManager()
 
 
 // export the class
-module.exports =
- {
-     StatisticsManager
- };
+module.exports = {
+    StatisticsManager
+};
