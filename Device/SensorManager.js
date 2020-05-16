@@ -238,7 +238,7 @@ function SensorManager()
 
             var currentDate = dateUtils.convertDateToTimeZone(date, device.timeZone);
 
-            this.getSensorStats(device.deviceId, null, currentDate.valueOf(), currentDate.valueOf(), true, false, false, 100, 0, function (err, res) {
+            this.getSensorStats(device.deviceId, null, currentDate.valueOf(), currentDate.valueOf(), false, true, false, false, 100, 0, function (err, res) {
                 if (!err && res.dailyStat != null) {
 
                     specificDevice.updateDerivedStats(res.dailyStat, collectionNamePrefix, date);

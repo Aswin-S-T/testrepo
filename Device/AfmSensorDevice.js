@@ -563,7 +563,7 @@ AfmSensorDevice.prototype.getDefaultParamDefinitions = function () {
                     description: "Moderate"
                 },
                 {
-                    min: 251,
+                    min: 151,
                     max: 350,
                     color: "FF9A00",
                     description: "Poor"

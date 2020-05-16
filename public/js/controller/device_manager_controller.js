@@ -98,7 +98,8 @@ angular.module('F1FeederApp.controllers').
 	    if ($scope.newDevId == null && $scope.newDevType == null && $scope.newDevFamily == null && 
 			$scope.newDevSubType == null && $scope.newDevCustomerName == null &&
 			$scope.newDevSerialNumber == null && $scope.newDevLatitude == null &&
-			$scope.newDevLongitude == null && $scope.newDevLotNumber == null && $scope.newDevGrade == null
+			$scope.newDevLongitude == null && $scope.newDevSlot == null && $scope.newDevDataPosition == null && 
+			$scope.newDevDataNormal == null && $scope.newDevLotNumber == null && $scope.newDevGrade == null
 			|| $scope.newDevDeployment == null && $scope.newDevTimeZone == null &&
 			$scope.newDevCity == null && $scope.newDevZone == null && $scope.newDevLandMark == null)
 	    {
@@ -147,6 +148,12 @@ angular.module('F1FeederApp.controllers').
 		if ($scope.newDevLongitude == null)
 	    {
 	        alert("Please fill Longitude")
+	        return;
+		}
+
+		if ($scope.newDevSlot == null || $scope.newDevDataPosition == null || $scope.newDevDataNormal == null)
+	    {
+	        alert("Please fill  3D Sensor Position Info")
 	        return;
 		}
 
@@ -276,8 +283,29 @@ angular.module('F1FeederApp.controllers').
 			return;
 		}
 
+		newDevSlotregexExpression = /^[A-Za-z0-9]{3,20}$/;
+		let newDevSlotregexResult = newDevSlotregexExpression.test($scope.newDevSlot)
+		if(newDevSlotregexResult  == false)
+		{
+			alert("Invalid Slot")
+			return;
+		}
 
+		newDevDataPositionregexExpression = /^[ 0-9.-]{3,20}$/;
+		let newDevDataPositionregexResult = newDevDataPositionregexExpression.test($scope.newDevDataPosition)
+		if(newDevDataPositionregexResult  == false)
+		{
+			alert("Invalid DataPosition")
+			return;
+		}
 
+		newDevDataNormalregexExpression = /^[ 0-9.-]{3,20}$/;
+		let newDevDataNormalregexResult = newDevDataNormalregexExpression.test($scope.newDevDataNormal)
+		if(newDevDataNormalregexResult  == false)
+		{
+			alert("Invalid DataNormal")
+			return;
+		}
 
 	    $scope.isAddMode = true;
 	    $scope.isEditMode = false;
@@ -303,7 +331,10 @@ angular.module('F1FeederApp.controllers').
 	            zone:$scope.newDevZone,
 	            landMark: $scope.newDevLandMark,
 	            latitude: $scope.newDevLatitude,
-	            longitude: $scope.newDevLongitude
+				longitude: $scope.newDevLongitude,
+				slot: $scope.newDevSlot,
+				dataPosition: $scope.newDevDataPosition,
+				dataNormal: $scope.newDevDataNormal
 	        },
 	        paramDefinitions: $scope.selectedDeviceParamDefs
 	    };
@@ -383,7 +414,10 @@ angular.module('F1FeederApp.controllers').
 	        $scope.newDevZone = deviceInfo.tag.location.zone;
 	        $scope.newDevLandMark = deviceInfo.tag.location.landMark;
 	        $scope.newDevLatitude= deviceInfo.tag.location.latitude;
-	        $scope.newDevLongitude= deviceInfo.tag.location.longitude;
+			$scope.newDevLongitude= deviceInfo.tag.location.longitude;
+			$scope.newDevSlot= deviceInfo.tag.location.slot;
+			$scope.newDevDataPosition= deviceInfo.tag.location.dataPosition;
+			$scope.newDevDataNormal= deviceInfo.tag.location.dataNormal;
 	    }
 	    paramSettings.setParamSettingsForDeviceClass($scope.newDevSubType, function () {
 
@@ -454,7 +488,8 @@ angular.module('F1FeederApp.controllers').
 	    if ($scope.newDevId == null && $scope.newDevType == null && $scope.newDevFamily == null && 
 			$scope.newDevSubType == null && $scope.newDevCustomerName == null &&
 			$scope.newDevSerialNumber == null && $scope.newDevLatitude == null &&
-			$scope.newDevLongitude == null && $scope.newDevLotNumber == null && $scope.newDevGrade == null
+			$scope.newDevLongitude == null && $scope.newDevSlot == null && $scope.newDevDataPosition == null && 
+			$scope.newDevDataNormal == null && $scope.newDevLotNumber == null && $scope.newDevGrade == null
 			|| $scope.newDevDeployment == null && $scope.newDevTimeZone == null &&
 			$scope.newDevCity == null && $scope.newDevZone == null && $scope.newDevLandMark == null)
 	    {
@@ -503,6 +538,12 @@ angular.module('F1FeederApp.controllers').
 		if ($scope.newDevLongitude == null)
 	    {
 	        alert("Please fill  Longitude")
+	        return;
+		}
+
+		if ($scope.newDevSlot == null || $scope.newDevDataPosition == null || $scope.newDevDataNormal == null)
+	    {
+	        alert("Please fill  3D Sensor Position Info")
 	        return;
 		}
 
@@ -646,6 +687,30 @@ angular.module('F1FeederApp.controllers').
 			alert("Invalid longitude,longitude range should be between +180 and -180")
 			return;
 		}
+		
+		newDevSlotregexExpression = /^[A-Za-z0-9]{3,20}$/;
+		let newDevSlotregexResult = newDevSlotregexExpression.test($scope.newDevSlot)
+		if(newDevSlotregexResult  == false)
+		{
+			alert("Invalid Slot")
+			return;
+		}
+
+		newDevDataPositionregexExpression = /^[ 0-9.-]{3,20}$/;
+		let newDevDataPositionregexResult = newDevDataPositionregexExpression.test($scope.newDevDataPosition)
+		if(newDevDataPositionregexResult  == false)
+		{
+			alert("Invalid DataPosition")
+			return;
+		}
+
+		newDevDataNormalregexExpression = /^[ 0-9.-]{3,20}$/;
+		let newDevDataNormalregexResult = newDevDataNormalregexExpression.test($scope.newDevDataNormal)
+		if(newDevDataNormalregexResult  == false)
+		{
+			alert("Invalid DataNormal")
+			return;
+		}
 
 
 	    var devInfo = {
@@ -667,7 +732,10 @@ angular.module('F1FeederApp.controllers').
 	            zone: $scope.newDevZone,
 	            landMark: $scope.newDevLandMark,
 	            latitude: parseFloat($scope.newDevLatitude),
-	            longitude: parseFloat($scope.newDevLongitude)
+				longitude: parseFloat($scope.newDevLongitude),
+				slot: $scope.newDevSlot,
+				dataPosition: $scope.newDevDataPosition,
+				dataNormal: $scope.newDevDataNormal
 	        },
             paramDefinitions : $scope.selectedDeviceParamDefs
 	    };
