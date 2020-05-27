@@ -267,7 +267,6 @@ angular.module('F1FeederApp', [
 								console.log("reaching ELSE")
 								//$window.location.assign('/home')
 								
-								
 							}
 						})
 					
@@ -278,7 +277,7 @@ angular.module('F1FeederApp', [
 		controller: "thirdpartyuserController"
 	}).
 	
-	when("/", {templateUrl: "views/login.html", controller: "loginController"})
+	 when("/", {redirectTo: '/'}) //{templateUrl: "views/login.html", controller: "loginController"})
 	/*.
 	otherwise({redirectTo: '/login'});*/
 }]).config(['$compileProvider', function ($compileProvider) {

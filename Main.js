@@ -48,7 +48,8 @@ function InitExpress(expObj){
     var alarmApi = new require('./Api/AlarmApi').AlarmApi(expObj);
     var userApi = new require('./Api/UserApi').UserApi(expObj);
     var thirdPartyUserApi=new require('./Api/ThirdPartyUserApi').ThirdPartyUserApi(expObj);
-    var loginApi=new require('./Api/loginApi').LoginApi(expObj)
+    var loginApi=new require('./Api/loginApi').LoginApi(expObj);
+    var travelApi = new require('./Api/TravelApi').TravelApi(expObj);
 
    // expObj.use(function(req, res, next){ 
         // Expose variable to templates via locals

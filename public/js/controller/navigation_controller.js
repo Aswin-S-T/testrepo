@@ -29,7 +29,7 @@ angular.module('F1FeederApp.controllers').
 	}
 
 	$scope.home = function () {
-	    $location.path('/home');
+	    $location.path('/dashboard');
 	}
 
 	$scope.dashboard = function()
@@ -41,12 +41,10 @@ angular.module('F1FeederApp.controllers').
 	}
     $scope.logout = function()
 	 {
-		console.log('Logging out');
-		$location.path('/login');
-		console.log($sessionStorage.loggedIn);
-		delete $sessionStorage.loggedIn;
+		$location.path('/');
+		//delete $sessionStorage.loggedIn;
 		sessionStorage.removeItem("isLoggedIn");
-		console.log($sessionStorage.loggedIn);
+		sessionStorage.removeItem("ngStorage-loggedIn");
 	}
 
 //	$scope.check1=function(){

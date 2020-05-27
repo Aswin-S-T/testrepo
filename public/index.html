@@ -82,11 +82,11 @@
     <div ng-controller="navigationController" id="mySidenav" class="sidenav" ng-mouseleave="closeNav()">
         <a href="javascript:void(0)" class="closebtn" ng-click="closeNav()">&times;</a>
 
-        <a href="/app/#/home" ng-show="check1func(3)" ng-click="closeNav()" >
+        <a href="/dashboard" ng-show="check1func(3)" ng-click="closeNav()" >
             <span style="vertical-align:baseline;display:inline-block;text-align:center;line-height:40px;height:30px"><img  src="images/homeOn.png" style="height:25px;margin-right:5px"></img>Home</span>
         </a>
 
-        <a href="/app/#/live_data" ng-click="closeNav()">
+        <a href="/livedata" ng-click="closeNav()">
             <span  style="vertical-align:baseline;display:inline-block;text-align:center;line-height:40px;height:30px" ><img  src="images/live_icon.png" style="height:30px;margin-right:7px"></img>Live Data</span>
         </a>
         
@@ -97,7 +97,7 @@
             <span style="vertical-align:baseline;display:inline-block;text-align:center;line-height:40px;height:30px"><img src="images/activealarm2.png" style="height:30px;margin-right:7px"></img>Active Alarms</span>
         </a>
 
-        <a href="/app/#/device_admin" ng-show="check1func(2)" ng-click="closeNav()" >
+        <a href="/device" ng-show="check1func(2)" ng-click="closeNav()" >
             <span style="vertical-align:baseline;display:inline-block;text-align:center;line-height:40px;height:30px"><img  src="images/device_icon.png" style="height:30px;margin-right:5px"></img>Manage Devices</span>
         </a>
 
