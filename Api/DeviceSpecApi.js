@@ -32,28 +32,29 @@ function DeviceSpecApi(express)
 			}
 			else
 			{
-			    if (req.query.type == "AFMEthernet")
+				let deviceType =  req.query.type || process.env.DEFAULT_DEVICE_TYPE;
+			    if (deviceType == "AFMEthernet")
 			    {
 			        var devSpec = new AfmDevSpecModule.AfmEthernetDeviceSpec();
 			        hubResponse.data = devSpec;
 			        response = hubResponse.getOkResponse();
 			        res.end(response);
 			    }
-			    else if (req.query.type == "EnvSensorDevice") {
+			    else if (deviceType == "EnvSensorDevice") {
 			        var devSpec = new AfmSensorAClassDeviceSpecModule.AfmSensorAClassDeviceSpec();
 			        hubResponse.data = devSpec;
 			        response = hubResponse.getOkResponse();
 			        res.end(response);
 				}
 				
-				else if (req.query.type == "ESBHA001") {
+				else if (deviceType == "ESBHA001") {
 			        var devSpec = new ESBHA001SpecModule.ESBHA001Spec();
 			        hubResponse.data = devSpec;
 			        response = hubResponse.getOkResponse();
 			        res.end(response);
 				}
 
-				else if (req.query.type == "SPB001") {
+				else if (deviceType == "SPB001") {
 			        var devSpec = new SPB001SpecModule.SPB001Spec();
 			        hubResponse.data = devSpec;
 			        response = hubResponse.getOkResponse();
@@ -64,7 +65,39 @@ function DeviceSpecApi(express)
 			}
 		});
 	
-  });
+	  });
+	  
+	express.get('/device/summary/spec', function (req, res) 
+	{
+		var hubResponse = new responseModule.HubResponse();
+		var response = null;
+		requestValidation.isValidUser(req.query.userId,req.query.authPassword,function(result)
+		{
+			
+			if(result == null)
+			{
+				response  = hubResponse.getErrorResponse(-1,"Invalid request from client");
+				res.end(response);
+				
+			}
+			else
+			{
+			    let deviceType =  req.query.type || process.env.DEFAULT_DEVICE_TYPE;
+				if (deviceType == "SPB001") {
+			        var devSpec = new SPB001SpecModule.SPB001Spec();
+			        hubResponse.data = devSpec.summaryDefinitions;
+			        response = hubResponse.getOkResponse();
+			        res.end(response);
+				} else {
+					response  = hubResponse.getErrorResponse(-1,"Invalid request from client");
+					res.end(response);
+				}
+
+			    
+			}
+		});
+	
+  	});
 }
 
 // export the class

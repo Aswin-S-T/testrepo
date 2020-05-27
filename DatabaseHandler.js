@@ -348,6 +348,32 @@ function DatabaseHandler()
 
 	        }
 	    });
+    }
+    
+    this.insertOrUpdateDocument = function (collectionName, query, JsonData, callBack) {
+	    // Use connect method to connect to the Server
+	    this.connectDatabase( function (err, db) {
+	        if (err) {
+
+	            callBack(1);
+	        } else {
+	            var collection = db.collection(collectionName);
+	            collection.update(query, { $set: JsonData }, { upsert: true }, function (err, result)
+	            {
+	                db.close();
+	                if (err)
+	                {
+                        console.log(err);
+	                    callBack(1);
+	                } else {
+	                    callBack(null);
+	                }
+	                
+	                //callback(null, result);
+	            });
+
+	        }
+	    });
 	}
 	
 	this.updateDocumentField = function (collectionName,query,field) {
@@ -750,6 +776,40 @@ function DatabaseHandler()
                     {
 						callback(null,nameIndex);
                     }
+
+                });
+            }
+        });
+    }
+
+    this.GetDocumentsGroupBy = function (collectionName, groupByField, callback) 
+	{
+        // Use connect method to connect to the Server
+        this.connectDatabase( function (err, db) {
+            if (err) {
+
+                return null;
+            } else {
+                var doc = null;
+                
+                var collection = db.collection(collectionName);
+                collection.aggregate([
+                    {$match: {}},
+                    {$group:
+                      {_id: '$' + groupByField, records: { $push: "$$ROOT"}, "count": {$sum: 1} }
+                    }
+                ]).toArray(function (err, result)
+                {
+                    db.close();
+					if (err) {
+
+                    } else if (result.length && result!= null)
+                    {
+						callback( null, result);
+                    } else {
+						callback(new Error("No Data found"), null);
+                    }
+
 
                 });
             }

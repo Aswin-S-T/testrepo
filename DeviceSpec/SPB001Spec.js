@@ -10,8 +10,8 @@ function SPB001Spec() {
         var paramDefinitions = [
            {
                paramName: "data_1",
-               displayName: "Compartment_1",
-               displayNameHtml: "Compartment_1",
+               displayName: "Compartment 1",
+               displayNameHtml: "Compartment 1",
                unit: '%',
                unitDisplayHtml: '%',
                isDisplayEnabled: true,
@@ -19,6 +19,7 @@ function SPB001Spec() {
                isPrimary: false, // for display purpose in heatmap
                needsLiveData: false, // for display purpose in heatmap (as graph in selection pane)
                valuePrecision: 1,
+               isFilterable: true,
                 maxRanges: {
                     min: 0,
                     max: 100
@@ -45,8 +46,8 @@ function SPB001Spec() {
             },
             {
                 paramName: "data_2",
-                displayName: "Compartment_2",
-                displayNameHtml: "Compartment_2",
+                displayName: "Compartment 2",
+                displayNameHtml: "Compartment 2",
                 unit: '%',
                 unitDisplayHtml: '%',
                 isDisplayEnabled: true,
@@ -54,6 +55,7 @@ function SPB001Spec() {
                 isPrimary: false, // for display purpose in heatmap
                 needsLiveData: false, // for display purpose in heatmap (as graph in selection pane)
                 valuePrecision: 1,
+                isFilterable: true,
                 maxRanges: {
                     min: 0,
                     max: 100
@@ -80,8 +82,8 @@ function SPB001Spec() {
             },
             {
                 paramName: "letter_no_1",
-                displayName: "No of Letters",
-                displayNameHtml: "No of Letters",
+                displayName: "No of Letters 1",
+                displayNameHtml: "No of Letters 1",
                 unit: '',
                 unitDisplayHtml: '',
                 isDisplayEnabled: true,
@@ -89,6 +91,7 @@ function SPB001Spec() {
                 isPrimary: false, // for display purpose in heatmap
                 needsLiveData: false, // for display purpose in heatmap (as graph in selection pane)
                 valuePrecision: 1,
+                isFilterable: true,
                 maxRanges: {
                     min: 0,
                     max: 100
@@ -115,8 +118,8 @@ function SPB001Spec() {
             },
             {
                 paramName: "letter_no_2",
-                displayName: "No of Letters",
-                displayNameHtml: "No of Letters",
+                displayName: "No of Letters 2",
+                displayNameHtml: "No of Letters 2",
                 unit: '',
                 unitDisplayHtml: '',
                 isDisplayEnabled: true,
@@ -124,6 +127,7 @@ function SPB001Spec() {
                 isPrimary: false, // for display purpose in heatmap
                 needsLiveData: false, // for display purpose in heatmap (as graph in selection pane)
                 valuePrecision: 1,
+                isFilterable: true,
                 maxRanges: {
                     min: 0,
                     max: 100
@@ -150,8 +154,8 @@ function SPB001Spec() {
             },
             {
                 paramName: "ledstat_1",
-                displayName: "LED Stat_1",
-                displayNameHtml: "LED Stat_1",
+                displayName: "LED Stat 1",
+                displayNameHtml: "LED Stat 1",
                 unit: '',
                 unitDisplayHtml: '',
                 isDisplayEnabled: true,
@@ -159,6 +163,7 @@ function SPB001Spec() {
                 isPrimary: false, // for display purpose in heatmap
                 needsLiveData: false, // for display purpose in heatmap (as graph in selection pane)
                 valuePrecision: 1,
+                isFilterable: true,
                 maxRanges: {
                     min: 0,
                     max: 1
@@ -178,8 +183,8 @@ function SPB001Spec() {
             },
             {
                 paramName: "ledstat_2",
-                displayName: "LED Stat_2",
-                displayNameHtml: "LED Stat_2",
+                displayName: "LED Stat 2",
+                displayNameHtml: "LED Stat 2",
                 unit: '',
                 unitDisplayHtml: '',
                 isDisplayEnabled: true,
@@ -187,6 +192,7 @@ function SPB001Spec() {
                 isPrimary: false, // for display purpose in heatmap
                 needsLiveData: false, // for display purpose in heatmap (as graph in selection pane)
                 valuePrecision: 1,
+                isFilterable: true,
                 maxRanges: {
                     min: 0,
                     max: 1
@@ -215,6 +221,7 @@ function SPB001Spec() {
                 isPrimary: false,
                 needsLiveData: false,
                 valuePrecision: 2,
+                isFilterable: true,
                 maxRanges: {
                     min: 0,
                     max: 100
@@ -240,6 +247,93 @@ function SPB001Spec() {
                 ]
             },
             {
+                paramName: "signal_strength",
+                displayName: "Signal Strength",
+                displayNameHtml: "Signal Strength",
+                unit: '%',
+                unitDisplayHtml: '%',
+                isDisplayEnabled: true,
+                displayImage: "param.png",
+                isPrimary: false,
+                needsLiveData: false,
+                valuePrecision: 2,
+                isFilterable: true,
+                maxRanges: {
+                    min: 0,
+                    max: 100
+                },
+                limits: [
+                    {
+                        max: 30,
+                        color: "00B050",
+                        description: "Low"
+                    },
+                    {
+                        min: 30,
+                        max: 70,
+                        color: "92D050",
+                        description: "Medium"
+                    },
+                    {
+                        min: 70,
+                        max: 100,
+                        color: "FFFF00",
+                        description: "High"
+                    }
+                ]
+            },
+            {
+                paramName: "need_service_1",
+                displayName: "Need Service",
+                displayNameHtml: "Need Service",
+                unit: '',
+                unitDisplayHtml: '',
+                displayImage: "param.png",
+                needsLiveData: false,
+                isDisplayEnabled: false,
+                isPrimary: false,
+                valuePrecision: 0,
+                maxRanges:null,
+                isDerived: true,
+                derivedParam: "data_1",
+                calculationCond: " >= 75",
+                isFilterable: false
+            },
+            {
+                paramName: "need_service_2",
+                displayName: "Need Service",
+                displayNameHtml: "Need Service",
+                unit: '',
+                unitDisplayHtml: '',
+                displayImage: "param.png",
+                needsLiveData: false,
+                isDisplayEnabled: false,
+                isPrimary: false,
+                valuePrecision: 0,
+                maxRanges:null,
+                isDerived: true,
+                derivedParam: "data_2",
+                calculationCond: " >= 75",
+                isFilterable: false
+            },
+            {
+                paramName: "need_bat_replcmt",
+                displayName: "Need Battery Replacement",
+                displayNameHtml: "Need Battery Replacement",
+                unit: '',
+                unitDisplayHtml: '',
+                displayImage: "param.png",
+                needsLiveData: false,
+                isDisplayEnabled: false,
+                isPrimary: false,
+                valuePrecision: 0,
+                maxRanges:null,
+                isDerived: true,
+                derivedParam: "bat_volt",
+                calculationCond: " <= 30",
+                isFilterable: false
+            },
+            {
                 paramName: "uptime",
                 displayName: "Up-Time",
                 displayNameHtml: "Up-Time",
@@ -250,7 +344,8 @@ function SPB001Spec() {
                 isDisplayEnabled: false,
                 isPrimary: false,
                 valuePrecision: 0,
-                maxRanges:null
+                maxRanges:null,
+                isFilterable: false
             },
             {
                 paramName: "receivedTime",
@@ -263,7 +358,8 @@ function SPB001Spec() {
                 isDisplayEnabled: false,
                 isPrimary: false,
                 valuePrecision: 0,
-                maxRanges:null
+                maxRanges:null,
+                isFilterable: false
             },
             {
                 paramName: "time",
@@ -276,13 +372,159 @@ function SPB001Spec() {
                 isDisplayEnabled: true,
                 isPrimary: false,
                 valuePrecision: 0,
-                maxRanges:null
+                maxRanges:null,
+                isFilterable: false
             }          
         ];
 
         return paramDefinitions;
     }
+
+    this.getSummaryDefinitions = function () {
+
+        var summaryDefinitions = [
+            {
+                paramName: "no_of_empty_box",
+                displayName: "No of Empty Box",
+                displayNameHtml: "No of Empty Box",
+                unit: '%',
+                unitDisplayHtml: '%',
+                calculationType: 'percentage',
+                calculationParam: ["letter_no_1", "letter_no_2"],
+                calculationCond: " === 0",
+                displayImage: "emptyMailBox",
+                 maxRanges: {
+                     min: 0,
+                     max: 100
+                 },
+                 limits: [
+                     {
+                         max: 30,
+                         color: "00B050",
+                         description: "Low"
+                     },
+                     {
+                         min: 30,
+                         max: 70,
+                         color: "92D050",
+                         description: "Medium"
+                     },
+                     {
+                         min: 70,
+                         max: 100,
+                         color: "FFFF00",
+                         description: "High"
+                     }
+                ]
+            },
+            {
+                paramName: "battery_need_replacement",
+                displayName: "Battery Need Replacement",
+                displayNameHtml: "Battery Need Replacement",
+                unit: '%',
+                unitDisplayHtml: '%',
+                calculationType: 'percentage',
+                calculationParam: ["bat_volt"],
+                calculationCond: " <= 30",
+                displayImage: "battery",
+                 maxRanges: {
+                     min: 0,
+                     max: 100
+                 },
+                 limits: [
+                     {
+                         max: 30,
+                         color: "00B050",
+                         description: "Low"
+                     },
+                     {
+                         min: 30,
+                         max: 70,
+                         color: "92D050",
+                         description: "Medium"
+                     },
+                     {
+                         min: 70,
+                         max: 100,
+                         color: "FFFF00",
+                         description: "High"
+                     }
+                ]
+            },
+            {
+                paramName: "signal_strength",
+                displayName: "Signal Strength",
+                displayNameHtml: "Signal Strength",
+                unit: '%',
+                unitDisplayHtml: '%',
+                calculationType: 'percentage',
+                calculationParam: ["signal_strength"],
+                calculationCond: " >= 75",
+                displayImage: "signal",
+                 maxRanges: {
+                     min: 0,
+                     max: 100
+                 },
+                 limits: [
+                     {
+                         max: 30,
+                         color: "00B050",
+                         description: "Low"
+                     },
+                     {
+                         min: 30,
+                         max: 70,
+                         color: "92D050",
+                         description: "Medium"
+                     },
+                     {
+                         min: 70,
+                         max: 100,
+                         color: "FFFF00",
+                         description: "High"
+                     }
+                ]
+            },
+            {
+                paramName: "no_of_box_filledup75",
+                displayName: "No of Box Filledup By 75%",
+                displayNameHtml: "No of Box Filledup By 75%",
+                unit: '%',
+                unitDisplayHtml: '%',
+                calculationType: 'percentage',
+                calculationParam: ["data_1", "data_2"],
+                calculationCond: " >= 75",
+                displayImage: "filledMailBox",
+                 maxRanges: {
+                     min: 0,
+                     max: 100
+                 },
+                 limits: [
+                     {
+                         max: 30,
+                         color: "00B050",
+                         description: "Low"
+                     },
+                     {
+                         min: 30,
+                         max: 70,
+                         color: "92D050",
+                         description: "Medium"
+                     },
+                     {
+                         min: 70,
+                         max: 100,
+                         color: "FFFF00",
+                         description: "High"
+                     }
+                ]
+            }         
+        ];
+
+        return summaryDefinitions;
+    }
     
+    this.summaryDefinitions = this.getSummaryDefinitions();
     this.paramDefinitions = this.getParamDefinitions();
 }
 

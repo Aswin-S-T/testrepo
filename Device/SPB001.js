@@ -113,6 +113,10 @@ function SPB001() {
             var originalVal = filterResult[paramDefs[i].paramName];
             filterResult[paramDefs[i].paramName] = processCalibration(boundValueToLimits(filterResult[paramDefs[i].paramName]), paramDefs[i]);
 
+            if (paramDefs[i].isDerived) {
+                filterResult[paramDefs[i].paramName] = eval(filterResult[paramDefs[i].derivedParam] + paramDefs[i].calculationCond) ? "Yes" : "No";
+            }
+
             if (paramDefs[i].filteringMethod == "WMAFilter") {
 
                 sensorLiveDataHandler.getLiveData(myInstance.logicalDeviceId, 1, 0, null, null, function (err, sensorId, resultList) {
@@ -193,6 +197,11 @@ SPB001.prototype.parent = DeviceModule.Device.prototype;
 SPB001.prototype.getDefaultParamDefinitions = function () {
     var specModule = new  SPB001SpecModule.SPB001Spec();
     return specModule.getParamDefinitions();
+}
+
+SPB001.prototype.getSummaryDefinitions = function () {
+    var specModule = new  SPB001SpecModule.SPB001Spec();
+    return specModule.getSummaryDefinitions();
 }
 
 

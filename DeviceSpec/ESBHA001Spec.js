@@ -19,6 +19,7 @@ function ESBHA001Spec() {
                 isPrimary: false, // for display purpose in heatmap
                 needsLiveData: false, // for display purpose in heatmap (as graph in selection pane)
                 valuePrecision: 1,
+                isFilterable: true,
                 maxRanges: {
                     min: -10,
                     max: 60
@@ -72,6 +73,7 @@ function ESBHA001Spec() {
                 needsLiveData: false,
                 isPrimary: false,
                 valuePrecision: 2,
+                isFilterable: true,
                 maxRanges: {
                     min: 540,
                     max: 1100
@@ -108,6 +110,7 @@ function ESBHA001Spec() {
                 isPrimary: false,
                 displayImage: "humidity.png",
                 valuePrecision: 2,
+                isFilterable: true,
                 maxRanges: {
                     min: 0,
                     max: 90
@@ -143,6 +146,7 @@ function ESBHA001Spec() {
                 isPrimary: false,
                 displayImage: "param.png",
                 valuePrecision: 2,
+                isFilterable: true,
                 maxRanges: {
                     min: 0,
                     max: 450
@@ -197,6 +201,7 @@ function ESBHA001Spec() {
                 isPrimary: false,
                 displayImage: "param.png",
                 valuePrecision: 2,
+                isFilterable: true,
                 maxRanges: {
                     min: 0,
                     max: 230
@@ -250,6 +255,7 @@ function ESBHA001Spec() {
                 isPrimary: false,
                 displayImage: "param.png",
                 valuePrecision: 2,
+                isFilterable: true,
                 maxRanges: {
                     min: 0,
                     max: 100
@@ -306,6 +312,7 @@ function ESBHA001Spec() {
                 filteringMethod: null,
                 isDisplayEnabled: true,
                 valuePrecision: 3,
+                isFilterable: true,
                 maxRanges: {
                     min: 0,
                     max: 5000
@@ -361,6 +368,7 @@ function ESBHA001Spec() {
                 isDisplayEnabled: true,
                 isPrimary: false,
                 valuePrecision: 3,
+                isFilterable: true,
                 maxRanges: {
                     min: 0,
                     max: 2000
@@ -416,6 +424,7 @@ function ESBHA001Spec() {
                 isDisplayEnabled: true,
                 isPrimary: false,
                 valuePrecision: 3,
+                isFilterable: true,
                 maxRanges: {
                     min: 0,
                     max: 3000
@@ -468,6 +477,7 @@ function ESBHA001Spec() {
                 needsLiveData: true,
                 isDisplayEnabled: true,
                 isPrimary: false,
+                isFilterable: true,
                 valuePrecision: 3,
                 maxRanges: {
                     min: 0,
@@ -516,6 +526,7 @@ function ESBHA001Spec() {
                 isDisplayEnabled: true,
                 isPrimary: false,
                 valuePrecision: 3,
+                isFilterable: true,
                 maxRanges: {
                     min: 0,
                     max: 3000
@@ -569,6 +580,7 @@ function ESBHA001Spec() {
                 isDisplayEnabled: true,
                 isPrimary: false,
                 valuePrecision: 3,
+                isFilterable: true,
                 maxRanges: {
                     min: 0,
                     max: 5000
@@ -622,6 +634,7 @@ function ESBHA001Spec() {
                 isPrimary: false,
                 displayImage: "humidity.png",
                 valuePrecision: 2,
+                isFilterable: true,
                 maxRanges: {
                     min: 1,
                     max: 135
@@ -669,6 +682,7 @@ function ESBHA001Spec() {
                 isPrimary: false,
                 displayImage: "raingrey.png",
                 valuePrecision: 2,
+                isFilterable: true,
                 maxRanges: {
                     min: 0,
                     max: 999.8
@@ -712,7 +726,8 @@ function ESBHA001Spec() {
                 isDisplayEnabled: true,
                 isPrimary: false,
                 valuePrecision: 0,
-                maxRanges:null
+                maxRanges:null,
+                isFilterable: false
             },
 
             {
@@ -726,7 +741,8 @@ function ESBHA001Spec() {
                 isDisplayEnabled: false,
                 isPrimary: false,
                 valuePrecision: 0,
-                maxRanges: null
+                maxRanges: null,
+                isFilterable: false
             },
 
             {
@@ -741,7 +757,7 @@ function ESBHA001Spec() {
                 isPrimary: false,
                 valuePrecision: 0,
                 isDerivedParam: true,
-
+                isFilterable: false,
                 maxRanges: {
                     min: 0,
                     max: 500
@@ -796,6 +812,7 @@ function ESBHA001Spec() {
                 isPrimary: true,
                 valuePrecision: 0,
                 isDerivedParam: true,
+                isFilterable: false,
 
                 maxRanges: {
                     min: 0,

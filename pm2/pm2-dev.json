@@ -15,14 +15,9 @@
             "NODE_ENV": "development",
             "PROJECT_TYPE": "AQMS",
             "FRONT_END_APP_ADDR": "http://localhost:3000",
+            "DEFAULT_DEVICE_TYPE": "ESBHA001",
             "DB_Name": "ESBHADB",
-            "DB_IP": "localhost:27017",
-            "DIAL_HOST":"202.60.128.169",
-            "DIAL_PORT":"80",
-            "DIAL_PATH":"/RoltaGeoCADIntegrationWebService/api/PanicButton/SendPanicAlert",
-            "PAN_HOST":"10.10.100.62",
-            "PAN_PORT":"443",
-            "PAN_PATH":"/ibm/ioc/api/data-injection-service/datablocks/76/dataitems"
+            "DB_IP": "localhost:27017"
         }
     }, {
         "name": "AlarmService",

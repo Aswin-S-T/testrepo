@@ -716,6 +716,72 @@ function SensorApi(express) {
 
     });
 
+    express.get('/device/sensor/summary', function (req, res) 
+	{
+		var hubResponse = new responseModule.HubResponse();
+		var response = null;
+		requestValidation.isValidUser(req.query.userId,req.query.authPassword,function(result)
+		{
+			
+			if(result == null)
+			{
+				response  = hubResponse.getErrorResponse(-1,"Invalid request from client");
+				res.end(response);
+				
+			}else
+			{
+			    response = hubResponse.getOkResponse();
+				sensorManager.getSummary(function (err, data)
+				{
+				    if (err!=null)
+				    {
+				        response  = hubResponse.getErrorResponse(-1,"Invalid request from client");
+				        res.end(response);
+				    }
+				    else
+				    {
+				        hubResponse = new responseModule.HubResponse();
+				        var response = null;
+				       
+				        hubResponse.data = data;
+				        response = hubResponse.getOkResponse();
+				        res.end(response);
+				    }
+				});
+				
+			}
+		});
+	
+    });
+
+    express.get('/device/sensor/livedata/all', function (req, res) 
+	{
+		var hubResponse = new responseModule.HubResponse();
+		var response = null;
+		requestValidation.isValidUser(req.query.userId,req.query.authPassword,function(result)
+		{
+			if(result == null)
+			{
+				response  = hubResponse.getErrorResponse(-1,"Invalid request from client");
+				res.end(response);	
+			}else
+			{
+                response = hubResponse.getOkResponse();
+                groupByloc = (req.query.groupByloc) ? 'locId' : null;
+				sensorManager.getAllSensorFilteredData(groupByloc).then(function (data)
+				{
+                    hubResponse = new responseModule.HubResponse();
+                    var response = null;
+                    hubResponse.data = data;
+                    response = hubResponse.getOkResponse();
+                    res.end(response);
+				}, function(err){
+                    response  = hubResponse.getErrorResponse(-1,"Invalid request from client");
+                    res.end(response);
+                });	
+			}
+		});
+    });
 
 }
 

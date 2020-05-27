@@ -41,6 +41,24 @@ function DeviceManager()
 
         });
 
+	};
+	
+	this.getDeviceAtMatchWithFamily = function (devfamily, index, callBack) {
+        var deviceQuery = {};
+
+        if (devfamily != null ) deviceQuery["devFamily"] = devfamily;
+        
+        dbInstance.GetDocumentByCriteria('devices', index, deviceQuery, function (err, result) {
+
+            if (err) {
+                callBack(err,null);
+            }
+            else {
+                callBack(null,result);
+            }
+
+        });
+
     };
 
 

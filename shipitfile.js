@@ -42,7 +42,7 @@ module.exports = shipit => {
         staging_PBMS: {
             servers: 'ec2-user@ec2-52-66-53-207.ap-south-1.compute.amazonaws.com',
             buildCmd: 'build:staging_PBMS',
-            forntendBuildCmd: 'build:PBMS',
+            forntendBuildCmd: 'build:PBMS_staging',
             dockerBuildCmd: 'build:staging_docker_PBMS'
         }
     });

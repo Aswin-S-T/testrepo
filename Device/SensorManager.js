@@ -23,6 +23,7 @@ var unitConverter = new UnitConverterModule.UnitConverter();
 var SensorLiveDataHandlerModule = require('../Device/SensorLiveDataHandler.js')
 var sensorLiveDataHandler = new SensorLiveDataHandlerModule.SensorLiveDataHandler();
 var request=require('request');
+var _ = require('lodash');
 
 function SensorManager()
 {
@@ -429,31 +430,103 @@ function SensorManager()
         return logicalDeviceID + "_raw";
     }
 
-this.jsontrialfpush={};
-this.jsontrialgeopush = {};
+    this.getAllSensorFilteredData = function (groupByField) {
+        return new Promise(function(resolve, reject) {
+            if(groupByField) {
+                return dbInstance.GetDocumentsGroupBy('devices_data', groupByField, function (err, result) {
+                    (result)  ? resolve(result) : reject(err);
+                });
+            } else {
+                return dbInstance.GetDocuments('devices_data', function (err, result) {
+                    (result)  ? resolve(result) : reject(err);
+                });
+            }    
+        });
+    }
 
+    this.updateSummary = async function (date, device) {
 
-this.pushSensorData = function (sensorId,data1,callBack){
-    
-    this.incomingDataQueue.push( { sensorId : sensorId, data:data1, cb : callBack} );
+        if (device.subType == "SPB001") {
+            var summary = {updatedTime: date.valueOf()};
+            var specificDevice = devFactory.createDeviceInstanceFromSubType(device.subType);
+            var summaryDef = specificDevice.getSummaryDefinitions();
+            _.forEach(summaryDef, (sumParamdef) => {
+                summary[sumParamdef.paramName] = 0;
+            });
+            var filteredDeviceData = await this.getAllSensorFilteredData();
+            _.forEach(filteredDeviceData, (filteredData) => {
+                if(filteredData) {
+                    _.forEach(summaryDef, (sumParamdef) => {
+                        let perctOfOneDevice = (1 / (filteredDeviceData.length * sumParamdef.calculationParam.length)) * 100;
+                        _.forEach(sumParamdef.calculationParam, (param) => {
+                            if(filteredData.data[param] !== undefined && eval(filteredData.data[param] + sumParamdef.calculationCond) ) {
+                                if(summary[sumParamdef.paramName]) {
+                                    summary[sumParamdef.paramName] += perctOfOneDevice;
+                                } else {
+                                    summary[sumParamdef.paramName] = perctOfOneDevice;
+                                }
+                            }
+                        });
+                    });
+                }
+            });
 
-}	
+            dbInstance.insertDocument("summary", summary, function(err){
+                (err) ? console.error("Unable to update summary collection") : '';
+            });
+        }
+    }
+
+    this.updateDeviceLatestEntry = function (device, data, callBack)
+    {
+        if (device.subType == "SPB001") { 
+            var collectionName = "devices_data"
+            var deviceQuery =
+            {
+                "deviceId": device.deviceId
+            }
+            delete data._id;
+            data.locId = device.location.locId;
+			dbInstance.createUniqueIndex( collectionName,{ deviceId: 1 }, function(){			
+				dbInstance.insertOrUpdateDocument(collectionName, deviceQuery, data, function(err){
+                    (err) ? console.error("Unable to update deivce latest entry collection") : callBack();
+                });
+			});
+            
+        } 
+    }
+
+    this.getSummary = function (callBack) {
+       
+        dbInstance.GetFilteredDocumentSorted("summary", null, { "_id": false }, { "updatedTime": -1 }, 1, 0, function (err, result) {
+
+            if (err) {
+                callBack(1, null);
+            }
+            else {
+                callBack(null, result);
+            }
+
+        });
+
+        return;
+
+    };
+
+    this.pushSensorData = function (sensorId,data1,callBack){
+        
+        this.incomingDataQueue.push( { sensorId : sensorId, data:data1, cb : callBack} );
+
+    }	
     this.processIncomingData = function ()
     {
 		var myInstance = this;
-		this.jsontrial;
-		
-
 	    var processFunc = function(){
-          
-		
 			if (myInstance.incomingDataQueue.length <= 0 ){
 				return setTimeout(processFunc,2000);
 			}
 				
 			var processSingleItem = function(){
-                
-                
 				var pushItem = myInstance.incomingDataQueue[0];
 				myInstance.incomingDataQueue.splice(0,1);
 				
@@ -478,233 +551,22 @@ this.pushSensorData = function (sensorId,data1,callBack){
 					{
 						var specificDevice = devFactory.createDeviceInstanceFromSubType(device.subType);
                         specificDevice.parse(device);
-
-
 						if (device != null && device.logicalDeviceId!= null)
 						{
 							var collectionName = device.logicalDeviceId;
-
-
 							// use time of server for this live data.
 							var currentdate = new Date();
                             data1["receivedTime"] = currentdate.valueOf();
                             //when no lat and long not posted
 
-
-
-                            var panicDataServerLoc = function(body){
-
-                                var json = device.location;
-                                var jsontrial={
-                                    "NAME":null,
-                                    "LOCATION":null
-                                }
-                                jsontrial["NAME"]=json["landMark"]
-                                jsontrial["LOCATION"]="POINT"+"("+json["longitude"]+" " +json["latitude"]+")"
-                                jsontrial=JSON.stringify(jsontrial);
-                                jsontrialfpush=jsontrial;
-                                
-                                var jsongeo = {
-                                    "LOCATION_NAME":null,
-                                    "LON":null,
-                                    "LAT":null
-                                }
-                                jsongeo["LOCATION_NAME"] = json["landMark"]
-                                jsongeo["LON"] = json["longitude"]
-                                jsongeo["LAT"] = json["latitude"]
-                                jsongeo = JSON.stringify(jsongeo);
-                                jsontrialgeopush = jsongeo;
-                               
-                            }
-
                             if (device.location != null ) {
-                            panicDataServerLoc(device.location);
-                                if ( (data1["latitude"] == null || data1["latitude"] == "") || (data1["longitude"] == null || data1["longitude"] == "" )   ){
-                                            data1["latitude"] = device.location.latitude;
-                                            data1["longitude"] = device.location.longitude;
-                 
-                                        }
-                 
-                                     }
-                 
-
-							
-							specificDevice.ProcessSensorData(data1, function (ferr, filteredData) {
-
-                                var panicDataServer = function(body) {
-                                    
-                                    var json = insetRowFiltered;
-				                    var moment = require('moment');
-
-                                    timestamp = moment().format('YYYYMMDDHHmmss');
-                                    
-                                    var jsonpost={
-                                        "NAME":null,
-                                        "LOCATION":null,
-                                        "DEVICE_ID":null,
-                                        "PANIC":null
-                                    }
-                                   
-                                    jsontrialfpush=JSON.parse(jsontrialfpush);
-                                    jsonpost["NAME"]=jsontrialfpush["NAME"];
-                                    jsonpost["LOCATION"]=jsontrialfpush["LOCATION"];
-                                    jsonpost["DEVICE_ID"]=json["deviceId"];
-                                    jsonpost["PANIC"]=json["data"]["panic"];
-
-                                    var jsongeopost = {
-					                    "ID":null,
-                                        "APP_ID":null,
-                                        "ALERT_DATETIME": null,
-                                        "LON": null,
-                                        "LAT": null,
-                                        "LOCATION_NAME": null,
-                                        "DEVICE_ID": null,
-                                        "PANIC": null
-                                    }
-                                    jsontrialgeopush = JSON.parse(jsontrialgeopush);
-				                    jsongeopost["ID"] = json["deviceId"] + json["data"]["receivedTime"];
-                                    jsongeopost["APP_ID"] = "Panic_Button";
-                                    jsongeopost["ALERT_DATETIME"] = timestamp;
-                                    jsongeopost["LON"] = jsontrialgeopush["LON"];
-                                    jsongeopost["LAT"] = jsontrialgeopush["LAT"];
-                                    jsongeopost["LOCATION_NAME"] = jsontrialgeopush["LOCATION_NAME"];
-                                    jsongeopost["DEVICE_ID"] = json["deviceId"];
-                                    jsongeopost["PANIC"] = json["data"]["panic"];
-
-
-                                    if((jsonpost["PANIC"] =='0') || jsonpost["PANIC"] =='1' ){
-                                 
-                                    panicPost(jsonpost);
-                                    var InputJSON = jsongeopost;
-                                  
-                                    var output = OBJtoXML(InputJSON);
-
-
-                                    function OBJtoXML(obj) {
-                                        var xml = '';
-                                        for (var prop in obj) {
-                                            xml += "<" + prop + ">";
-                                            if(Array.isArray(obj[prop])) {
-                                                for (var array of obj[prop]) {
-                                    
-                                                    xml += "</" + prop + ">";
-                                                    xml += "<" + prop + ">";
-                                    
-                                                    xml += OBJtoXML(new Object(array));
-                                                }
-                                            } else if (typeof obj[prop] == "object") {
-                                                xml += OBJtoXML(new Object(obj[prop]));
-                                            } else {
-                                                xml += obj[prop];
-                                            }
-                                            xml += "</" + prop + ">";
-                                        }
-                                        var xml = xml.replace(/<\/?[0-9]{1,}>/g,'');
-
-                                        return xml;
-                                    }
-                                        
-                                        geoCardPost(output);
-                                    }
+                                if ( (data1["latitude"] == null || data1["latitude"] == "") || (data1["longitude"] == null || data1["longitude"] == "" )   ) {
+                                    data1["latitude"] = device.location.latitude;
+                                    data1["longitude"] = device.location.longitude;
                                 }
-
-                                var panicPost = function(jsonpost){
-				                    const querystring = require('querystring');
-                                    const https = require('https');
-                                    var pHost = process.env.PAN_HOST;
-                                    var pPort = process.env.PAN_PORT;
-                                    var pPath = process.env.PAN_PATH;
-				
-                                    var postData = JSON.stringify(jsonpost);
-                                    var user = 'sysadmin';
-                                    var password = 'ChangeM3N0w!';
-                                    //var base64encodedData = new Buffer(user + ':' + password).toString('base64');
-                                    var auth = 'Basic '+ Buffer.from(user + ':' + password).toString('base64');
-                                    var options = {
-                                    //hostname: '10.10.100.62',
-                                    //port: 443,
-                                    //path: '/ibm/ioc/api/data-injection-service/datablocks/76/dataitems',
-                                      hostname: 'pHost',
-                                      port:'pPort',
-                                      path:'pPath',
-                                      method: 'POST',
-                                      headers: {
-                                           'Content-Type': 'application/json',
-                                           'Content-Length': postData.length,
-                                           'Authorization': auth,
-                                           'Access-Control-Allow-Origin': '*',
-                                           'Ibm-Session-Id': '-'
-                                         },
-                                        hostname:pHost,
-                                        port:pPort,
-                                        path:pPath
-                                    };
-                                    process.env["NODE_TLS_REJECT_UNAUTHORIZED"] = 0;
-                                    var req = https.request(options, (res) => {
-                                     
-
-                                    
-                                      res.on('data', (d) => {
-                                        process.stdout.write(d);
-                                      });
-                                    });
-                                    
-                                    req.on('error', (e) => {
-
-                                    });
-                                    
-                                    req.write(postData);
-                                    req.end();           
-                                }
-
-                                var geoCardPost = function(jsongeopost) {
-		
-                                    var dHost = process.env.DIAL_HOST;
-                                    var dPort = process.env.DIAL_PORT;
-                                    var dPath = process.env.DIAL_PATH;
-
-                                    var postData = '<MSG>' + jsongeopost + '</MSG>';
-                                    
-                                    const querystring = require('querystring');
-                                    const http = require('http');
-                                    var options = {
-                                        hostname: 'dHost',
-                                        port: 'dPort',
-                                        path: 'dPath',
-                                                        //hostname:'202.60.128.169',
-                                        //port:'80',
-                                        //path:'/RoltaGeoCADIntegrationWebService/api/PanicButton/SendPanicAlert',
-                                        
-                                        method: 'POST',
-                                        headers: {
-                                            'Content-Type': 'application/xml',
-                                            'Content-Length': postData.length
-                                        },
-                                        hostname:dHost,
-                                        port : dPort,
-                                        path : dPath
-					
-                                    };
-                                    //process.env["NODE_TLS_REJECT_UNAUTHORIZED"] = 0;
-                                    var req = http.request(options, (res) => {
-                                     
-
-                                    
-                                      res.on('data', (d) => {
-                                        process.stdout.write(d);
-                                      });
-                                    });
-                                    
-                                    req.on('error', (e) => {
-
-                                    });
-                                    
-                                    req.write(postData);
-                                    req.end(); 
-
-				                   
-                                }
-
+                            }						
+                            
+                            specificDevice.ProcessSensorData(data1, function (ferr, filteredData) {
 								if (filteredData != null) {
 
 									var insetRowFiltered = {
@@ -712,19 +574,16 @@ this.pushSensorData = function (sensorId,data1,callBack){
 										logicalDeviceId: device.logicalDeviceId,
 										data: filteredData
                                     };
-
-
-                                    panicDataServer(insetRowFiltered);
-                                    //panicGeoCard(insetRowFiltered);
-
 									dbInstance.insertDocument(collectionName, insetRowFiltered);
-									
-
 									// update stat(based on filtered data) for this sensor params.
 									var collectionNamePrefix = myInstance.getStatCollectionPrefixFromDeviceLogicalId(device.logicalDeviceId);
 									myInstance.updateStatistics(currentdate, collectionNamePrefix,filteredData, device,function(){
 									
-										myInstance.updateDerivedParams(currentdate, collectionNamePrefix, filteredData, device);
+                                        myInstance.updateDerivedParams(currentdate, collectionNamePrefix, filteredData, device);
+                                        
+                                        myInstance.updateDeviceLatestEntry(device, insetRowFiltered, function() {
+                                            myInstance.updateSummary(currentdate, device);
+                                        });
 
 										callBack(null);
 										processNextItem();
@@ -735,43 +594,29 @@ this.pushSensorData = function (sensorId,data1,callBack){
 									logicalDeviceId: device.logicalDeviceId,
 									data: data1
 								};
-
-
 								dbInstance.insertDocument(myInstance.getRawDataCollectionName(device.logicalDeviceId), insetRowRaw);
-
 							});
-						   
-						   
 							return;
 						}
 					}
 					callBack(1);
 					processNextItem();
 				});
-			
-			}
-				
+			}	
 			var j = 0;
 			if ( myInstance.incomingDataQueue.length > 0){
 				processSingleItem();
 			}
-				
-			
-			
 		}
-
 		setTimeout(processFunc,2000);
     }
-	
-	this.processIncomingData();
-
-    
+	this.processIncomingData(); 
 }
 
 
 // export the class
 module.exports =
- {
-     SensorManager
- };
+{
+    SensorManager
+};
 
