@@ -71,19 +71,41 @@ function UserManager() {
 		});
 
 	};
+
+	this.getAllUsers = function (query, limit, offset, callBack) {
+		var userQuery ={};
+
+		if (query != null && query.hasOwnProperty('substring')) {
+
+			var substring = query.substring;
+			var regExp = new RegExp(".*" + substring + ".*");
+
+			userQuery = {};
+		}
+		var excludeFields = { '_id': false };
+		dbInstance.GetAllDocumentByCriteria('users', excludeFields, userQuery, limit, offset, function (err, result) {
+
+			if (err) {
+				callBack(null);
+
+			}
+			else {
+				callBack(result);
+
+			}
+
+		});
+
+	};
+
 	this.updateUser = function (userDetails,callBack) {
+		var user = null;
+		user = userFactory.createUserInstance(userDetails);
+		user.parse(userDetails);
 
-	    var user = null;
-
-	    //user.parse(userDetails);
-		user=userDetails
-		
 	    var query = {};
-	    query['userName'] = user.oldUserName;
+	    query['userName'] = userDetails.updateUserId;
 	    var myInstance = this;
-		delete user.oldUserName
-
-
 
 	    dbInstance.GetDocumentByName('users', query, function (err, oldUser)
 	    {
