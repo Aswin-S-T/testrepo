@@ -9,7 +9,7 @@ function SPB001Spec() {
 
         var paramDefinitions = [
            {
-               paramName: "data_1",
+               paramName: "pb1Status",
                displayName: "Compartment 1",
                displayNameHtml: "Compartment 1",
                unit: '%',
@@ -45,7 +45,7 @@ function SPB001Spec() {
                ]
             },
             {
-                paramName: "data_2",
+                paramName: "pb2Status",
                 displayName: "Compartment 2",
                 displayNameHtml: "Compartment 2",
                 unit: '%',
@@ -81,7 +81,7 @@ function SPB001Spec() {
                 ]
             },
             {
-                paramName: "letter_no_1",
+                paramName: "pb1LetterCount",
                 displayName: "No of Letters 1",
                 displayNameHtml: "No of Letters 1",
                 unit: '',
@@ -94,7 +94,7 @@ function SPB001Spec() {
                 isFilterable: true,
                 maxRanges: {
                     min: 0,
-                    max: 100
+                    max: 99999
                 },
                 limits: [
                     {
@@ -117,7 +117,7 @@ function SPB001Spec() {
                 ]
             },
             {
-                paramName: "letter_no_2",
+                paramName: "pb2LetterCount",
                 displayName: "No of Letters 2",
                 displayNameHtml: "No of Letters 2",
                 unit: '',
@@ -130,7 +130,7 @@ function SPB001Spec() {
                 isFilterable: true,
                 maxRanges: {
                     min: 0,
-                    max: 100
+                    max: 99999
                 },
                 limits: [
                     {
@@ -153,7 +153,7 @@ function SPB001Spec() {
                 ]
             },
             {
-                paramName: "ledstat_1",
+                paramName: "ledstat1",
                 displayName: "LED Stat 1",
                 displayNameHtml: "LED Stat 1",
                 unit: '',
@@ -182,7 +182,7 @@ function SPB001Spec() {
                 ]
             },
             {
-                paramName: "ledstat_2",
+                paramName: "ledstat2",
                 displayName: "LED Stat 2",
                 displayNameHtml: "LED Stat 2",
                 unit: '',
@@ -211,74 +211,91 @@ function SPB001Spec() {
                 ]
             },
             {
-                paramName: "bat_volt",
+                paramName: "battery",
                 displayName: "Battery",
                 displayNameHtml: "Battery",
-                unit: 'V',
-                unitDisplayHtml: 'V',
+                unit: '%',
+                unitDisplayHtml: '%',
                 isDisplayEnabled: true,
-                displayImage: "param.png",
                 isPrimary: false,
                 needsLiveData: false,
                 valuePrecision: 2,
                 isFilterable: true,
+                displayImage: "battery",
                 maxRanges: {
                     min: 0,
                     max: 100
                 },
                 limits: [
                     {
-                        max: 30,
+                        max: 25,
                         color: "00B050",
                         description: "Low"
                     },
                     {
-                        min: 30,
-                        max: 70,
+                        min: 25,
+                        max: 50,
                         color: "92D050",
-                        description: "Medium"
+                        description: "Fair"
                     },
                     {
-                        min: 70,
+                        min: 50,
+                        max: 75,
+                        color: "92D050",
+                        description: "Good"
+                    },
+                    {
+                        min: 75,
                         max: 100,
                         color: "FFFF00",
-                        description: "High"
+                        description: "Excellent"
                     }
                 ]
             },
             {
-                paramName: "signal_strength",
+                paramName: "signal",
                 displayName: "Signal Strength",
                 displayNameHtml: "Signal Strength",
-                unit: '%',
-                unitDisplayHtml: '%',
+                unit: 'dBm',
+                unitDisplayHtml: 'dBm',
                 isDisplayEnabled: true,
-                displayImage: "param.png",
                 isPrimary: false,
                 needsLiveData: false,
                 valuePrecision: 2,
                 isFilterable: true,
+                displayImage: "signal",
                 maxRanges: {
-                    min: 0,
-                    max: 100
+                    min: -110,
+                    max: -70
                 },
                 limits: [
                     {
-                        max: 30,
+                        max: -110,
                         color: "00B050",
-                        description: "Low"
+                        description: "No Signal"
                     },
                     {
-                        min: 30,
-                        max: 70,
+                        min: -110,
+                        max: -100,
                         color: "92D050",
-                        description: "Medium"
+                        description: "Poor"
                     },
                     {
-                        min: 70,
-                        max: 100,
+                        min: -100,
+                        max: -86,
+                        color: "92D050",
+                        description: "Fair"
+                    },
+                    {
+                        min: -86,
+                        max: -70,
+                        color: "92D050",
+                        description: "Good"
+                    },
+                    {
+                        min: -70,
                         color: "FFFF00",
-                        description: "High"
+                        description: "Excellent"
                     }
                 ]
             },
@@ -295,7 +312,7 @@ function SPB001Spec() {
                 valuePrecision: 0,
                 maxRanges:null,
                 isDerived: true,
-                derivedParam: "data_1",
+                derivedParam: "pb1Status",
                 calculationCond: " >= 75",
                 isFilterable: false
             },
@@ -312,7 +329,7 @@ function SPB001Spec() {
                 valuePrecision: 0,
                 maxRanges:null,
                 isDerived: true,
-                derivedParam: "data_2",
+                derivedParam: "pb2Status",
                 calculationCond: " >= 75",
                 isFilterable: false
             },
@@ -334,11 +351,89 @@ function SPB001Spec() {
                 isFilterable: false
             },
             {
-                paramName: "uptime",
-                displayName: "Up-Time",
-                displayNameHtml: "Up-Time",
-                unit: 's',
-                unitDisplayHtml: 's',
+                paramName: "time_filled_75_1",
+                displayName: "Time Filled 75%",
+                displayNameHtml: "Time Filled 75&#37;",
+                unit: '',
+                unitDisplayHtml: '',
+                displayImage: "param.png",
+                needsLiveData: false,
+                isDisplayEnabled: false,
+                isPrimary: false,
+                valuePrecision: 0,
+                maxRanges:null,
+                isDerived: true,
+                derivedParam: "pb1Status",
+                calculationCond: " >= 75",
+                valueType: "date",
+                isPreValCheck: true,
+                isFilterable: false
+            },
+            {
+                paramName: "time_filled_75_2",
+                displayName: "Time Filled 75%",
+                displayNameHtml: "Time Filled 75&#37;",
+                unit: '',
+                unitDisplayHtml: '',
+                displayImage: "param.png",
+                needsLiveData: false,
+                isDisplayEnabled: false,
+                isPrimary: false,
+                valuePrecision: 0,
+                maxRanges:null,
+                isDerived: true,
+                derivedParam: "pb2Status",
+                calculationCond: " >= 75",
+                valueType: "date",
+                isPreValCheck: true,
+                isFilterable: false
+            },
+            {
+                paramName: "expected_time_fill_75_1",
+                displayName: "Expected Time to Fill 75%",
+                displayNameHtml: "Expected Time to Fill 75&#37;",
+                unit: '',
+                unitDisplayHtml: '',
+                displayImage: "param.png",
+                needsLiveData: false,
+                isDisplayEnabled: false,
+                isPrimary: false,
+                valuePrecision: 0,
+                maxRanges:null,
+                isDerived: true,
+                derivedParam: "pb2Status",
+                fetchParam: "time_filled_75_1",
+                calculationCond: " >= 75",
+                valueType: "time",
+                isPrevWeekCheck: true,
+                isFilterable: false
+            },
+            {
+                paramName: "expected_time_fill_75_2",
+                displayName: "Expected Time to Fill 75%",
+                displayNameHtml: "Expected Time to Fill 75&#37;",
+                unit: '',
+                unitDisplayHtml: '',
+                displayImage: "param.png",
+                needsLiveData: false,
+                isDisplayEnabled: false,
+                isPrimary: false,
+                valuePrecision: 0,
+                maxRanges:null,
+                isDerived: true,
+                derivedParam: "pb1Status",
+                fetchParam: "time_filled_75_2",
+                calculationCond: " >= 75",
+                valueType: "time",
+                isPrevWeekCheck: true,
+                isFilterable: false
+            },
+            {
+                paramName: "is_serverd",
+                displayName: "Served",
+                displayNameHtml: "Served",
+                unit: '',
+                unitDisplayHtml: '',
                 displayImage: "param.png",
                 needsLiveData: false,
                 isDisplayEnabled: false,
@@ -348,9 +443,9 @@ function SPB001Spec() {
                 isFilterable: false
             },
             {
-                paramName: "receivedTime",
-                displayName: "Received Time",
-                displayNameHtml: "Received Time",
+                paramName: "expected_volume_1",
+                displayName: "Expected volume",
+                displayNameHtml: "Expected volume",
                 unit: '',
                 unitDisplayHtml: '',
                 displayImage: "param.png",
@@ -359,6 +454,46 @@ function SPB001Spec() {
                 isPrimary: false,
                 valuePrecision: 0,
                 maxRanges:null,
+                isDerived: true,
+                derivedParam: "pb1Status",
+                fetchParam: "pb1Status",
+                valueType: "number",
+                isPrevWeekCheckHourly: true,
+                isFilterable: false
+            },
+            {
+                paramName: "expected_volume_2",
+                displayName: "Expected volume",
+                displayNameHtml: "Expected volume",
+                unit: '',
+                unitDisplayHtml: '',
+                displayImage: "param.png",
+                needsLiveData: false,
+                isDisplayEnabled: false,
+                isPrimary: false,
+                valuePrecision: 0,
+                maxRanges:null,
+                isDerived: true,
+                derivedParam: "pb2Status",
+                fetchParam: "pb1Status",
+                valueType: "number",
+                isPrevWeekCheckHourly: true,
+                isFilterable: false
+            },
+            {
+                paramName: "receivedTime",
+                displayName: "Last Updated At",
+                displayNameHtml: "Last Updated At",
+                unit: '',
+                unitDisplayHtml: '',
+                displayImage: "param.png",
+                needsLiveData: false,
+                isDisplayEnabled: true,
+                showWithAllParam: true,
+                isPrimary: false,
+                valuePrecision: 0,
+                maxRanges:null,
+                valueType: "date",
                 isFilterable: false
             },
             {
@@ -390,7 +525,7 @@ function SPB001Spec() {
                 unit: '%',
                 unitDisplayHtml: '%',
                 calculationType: 'percentage',
-                calculationParam: ["letter_no_1", "letter_no_2"],
+                calculationParam: ["pb1LetterCount", "pb2LetterCount"],
                 calculationCond: " === 0",
                 displayImage: "emptyMailBox",
                  maxRanges: {
@@ -400,19 +535,19 @@ function SPB001Spec() {
                  limits: [
                      {
                          max: 30,
-                         color: "00B050",
+                         color: "95B0B7",
                          description: "Low"
                      },
                      {
                          min: 30,
                          max: 70,
-                         color: "92D050",
+                         color: "95B0B7",
                          description: "Medium"
                      },
                      {
                          min: 70,
                          max: 100,
-                         color: "FFFF00",
+                         color: "95B0B7",
                          description: "High"
                      }
                 ]
@@ -424,7 +559,7 @@ function SPB001Spec() {
                 unit: '%',
                 unitDisplayHtml: '%',
                 calculationType: 'percentage',
-                calculationParam: ["bat_volt"],
+                calculationParam: ["battery"],
                 calculationCond: " <= 30",
                 displayImage: "battery",
                  maxRanges: {
@@ -434,19 +569,19 @@ function SPB001Spec() {
                  limits: [
                      {
                          max: 30,
-                         color: "00B050",
+                         color: "9CDDEE",
                          description: "Low"
                      },
                      {
                          min: 30,
                          max: 70,
-                         color: "92D050",
+                         color: "9CDDEE",
                          description: "Medium"
                      },
                      {
                          min: 70,
                          max: 100,
-                         color: "FFFF00",
+                         color: "9CDDEE",
                          description: "High"
                      }
                 ]
@@ -458,8 +593,8 @@ function SPB001Spec() {
                 unit: '%',
                 unitDisplayHtml: '%',
                 calculationType: 'percentage',
-                calculationParam: ["signal_strength"],
-                calculationCond: " >= 75",
+                calculationParam: ["signal"],
+                calculationCond: " >= -86",
                 displayImage: "signal",
                  maxRanges: {
                      min: 0,
@@ -468,19 +603,19 @@ function SPB001Spec() {
                  limits: [
                      {
                          max: 30,
-                         color: "00B050",
+                         color: "64C586",
                          description: "Low"
                      },
                      {
                          min: 30,
                          max: 70,
-                         color: "92D050",
+                         color: "64C586",
                          description: "Medium"
                      },
                      {
                          min: 70,
                          max: 100,
-                         color: "FFFF00",
+                         color: "64C586",
                          description: "High"
                      }
                 ]
@@ -492,7 +627,7 @@ function SPB001Spec() {
                 unit: '%',
                 unitDisplayHtml: '%',
                 calculationType: 'percentage',
-                calculationParam: ["data_1", "data_2"],
+                calculationParam: ["pb1Status", "pb2Status"],
                 calculationCond: " >= 75",
                 displayImage: "filledMailBox",
                  maxRanges: {
@@ -502,19 +637,19 @@ function SPB001Spec() {
                  limits: [
                      {
                          max: 30,
-                         color: "00B050",
+                         color: "196271",
                          description: "Low"
                      },
                      {
                          min: 30,
                          max: 70,
-                         color: "92D050",
+                         color: "196271",
                          description: "Medium"
                      },
                      {
                          min: 70,
                          max: 100,
-                         color: "FFFF00",
+                         color: "196271",
                          description: "High"
                      }
                 ]

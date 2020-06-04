@@ -363,13 +363,35 @@ function DatabaseHandler()
 	                db.close();
 	                if (err)
 	                {
-                        console.log(err);
 	                    callBack(1);
 	                } else {
 	                    callBack(null);
 	                }
 	                
 	                //callback(null, result);
+	            });
+
+	        }
+	    });
+    }
+    
+    this.findOneAndUpdate = function (collectionName, query, JsonData, sortOption, callBack) {
+	    // Use connect method to connect to the Server
+	    this.connectDatabase( function (err, db) {
+	        if (err) {
+
+	            callBack(1);
+	        } else {
+	            var collection = db.collection(collectionName);
+	            collection.findOneAndUpdate(query, { $set: JsonData }, { sort: sortOption }, function (err, result)
+	            {
+	                db.close();
+	                if (err)
+	                {
+	                    callBack(1, null);
+	                } else {
+	                    callBack(null,result);
+	                }	                
 	            });
 
 	        }

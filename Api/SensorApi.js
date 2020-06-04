@@ -309,7 +309,8 @@ function SensorApi(express) {
         var hubResponse = new responseModule.HubResponse();
 
         if (req.body != null) {
-            var dataOfRequest = (process.env.PROJECT_TYPE === "AQMS") ? getAqmsConversion(req.body.data) : req.body.data;
+            var dataOfRequest = (process.env.PROJECT_TYPE === "AQMS") ? getAqmsConversion(req.body.data) : 
+                (process.env.PROJECT_TYPE === "PBMS")? getPBMSConversion(req.body.data) : req.body.data;
             sensorManager.pushSensorData(req.body.deviceId, dataOfRequest, function (err) {
 
                 if (err == null) {
@@ -325,6 +326,20 @@ function SensorApi(express) {
             res.end(hubResponse.getErrorResponse(-1, "Invalid request"));
         }
     });
+
+    var getPBMSConversion = function(data) {
+        var formattedData;
+        const pb1History = data.pb1History.split('#');
+        const pb2History = data.pb2History.split('#');
+        noOfSamples = pb1History.length - 1;
+        return pb1History.map((pbStatus, index) => {
+            let sensorData = {...data}
+            sensorData.pb1Status = parseInt(pbStatus);
+            sensorData.pb2Status = parseInt(pb2History[index]);
+            sensorData.receivedTime = data.time - ((noOfSamples - index) * data.samplingMin * 60 * 1000);
+            return sensorData;
+        });
+    }
 
     var getAqmsConversion = function (data) {
         if (data.NO2 != null) {
@@ -347,6 +362,7 @@ function SensorApi(express) {
 
             data.NH3 = (data.NH3 * 0.0409 * 17.031)*1000;
         }
+        var currentdate = new Date();
         var dataOfRequest = {
             "temperature": Number((data.temperature).toFixed(2)),
             "pressure": Number((data.pressure).toFixed(2)),
@@ -363,13 +379,14 @@ function SensorApi(express) {
             "O3": Number((data.O3).toFixed(3)),
             "NH3": Number((data.NH3).toFixed(3)),
             "time": data.time,
+            "receivedTime": currentdate.valueOf(),
             "er_init_sensor": data.er_init_sensor,
             "er_read_sensor": data.er_read_sensor,
             "sig_strength":data.sig_strength,
             "build_ver":data.build_ver
         }
 
-        return dataOfRequest;
+        return [dataOfRequest];
     }
 
 
@@ -764,11 +781,13 @@ function SensorApi(express) {
 			{
 				response  = hubResponse.getErrorResponse(-1,"Invalid request from client");
 				res.end(response);	
-			}else
-			{
+			} else {
                 response = hubResponse.getOkResponse();
-                groupByloc = (req.query.groupByloc) ? 'locId' : null;
-				sensorManager.getAllSensorFilteredData(groupByloc).then(function (data)
+                groupByloc = (req.query.groupByloc == "true") ? 'locId' : null;
+                sortByPrcntFilled = (req.query.sortByPrcntFilled == "true") ? true : false;
+                skipEmptyBox = (req.query.skipEmptyBox == "true") ? true : false;
+                isAssigned = (req.query.isAssigned == "true") ? req.query.userId : false;
+				sensorManager.getAllSensorFilteredData(groupByloc, sortByPrcntFilled, skipEmptyBox).then(function (data)
 				{
                     hubResponse = new responseModule.HubResponse();
                     var response = null;

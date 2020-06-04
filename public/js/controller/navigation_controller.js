@@ -3,11 +3,12 @@ angular.module('F1FeederApp.controllers').
   controller('navigationController', function($scope, $routeParams, $location, $rootScope, $sessionStorage,ergastAPIservice) {
     $scope.id = $routeParams.id;
 	$rootScope.check1=[]
-	$scope.check2	
+	$scope.check2
+	$scope.isDeviceTypePB	
 
 	$scope.openNav = function() {
 		document.getElementById("mySidenav").style.width = "250px";
-		
+		$scope.isDeviceTypePB = sessionStorage.getItem("deviceType") === "Postbox";
 		ergastAPIservice.loginprivilegehide([$sessionStorage.userName],function(err){
 			
 			$rootScope.check1=err.data

@@ -430,14 +430,16 @@ function SensorManager()
         return logicalDeviceID + "_raw";
     }
 
-    this.getAllSensorFilteredData = function (groupByField) {
+    this.getAllSensorFilteredData = function (groupByField, sortByPrcntFilled, skipEmptyBox) {
+        const sortOption = (sortByPrcntFilled) ? {"data.data_1": -1, "data.data_2": -1} : {};
+        const query = (skipEmptyBox) ? { $or: [{"data.letter_no_1": { $ne: 0 }}, {"data.letter_no_2": { $ne: 0 }}] } : {};
         return new Promise(function(resolve, reject) {
             if(groupByField) {
                 return dbInstance.GetDocumentsGroupBy('devices_data', groupByField, function (err, result) {
                     (result)  ? resolve(result) : reject(err);
                 });
             } else {
-                return dbInstance.GetDocuments('devices_data', function (err, result) {
+                return dbInstance.GetFilteredDocumentSorted('devices_data', query, { "_id": false }, sortOption, 100, 0, function (err, result) {
                     (result)  ? resolve(result) : reject(err);
                 });
             }    
@@ -513,39 +515,62 @@ function SensorManager()
 
     };
 
-    this.pushSensorData = function (sensorId,data1,callBack){
-        
-        this.incomingDataQueue.push( { sensorId : sensorId, data:data1, cb : callBack} );
+    this.updateRawDataStatus = function (status, _id) {
+       
+        dbInstance.updateDocument('device_raw_data', {"_id": _id}, {"status": status}, function(err){
+            if (err) {
+                console.error("Error occured while updating device raw data status");
+            }
+        });
 
-    }	
+        return;
+
+    };
+
+    this.pushSensorData = function (sensorId,data1,callBack) {
+        deviceManager.getDeviceFromId(sensorId, function (device)
+        {
+            if (device != null) { 
+                data1.forEach(sample => {
+                    if (device.location != null ) {
+                        if ( (sample["latitude"] == null || sample["latitude"] == "") || (sample["longitude"] == null || sample["longitude"] == "" )   ) {
+                            sample["latitude"] = device.location.latitude;
+                            sample["longitude"] = device.location.longitude;
+                        }
+                        sample["location"] = device.location.city;
+                    }
+                    var insetRowRaw = {
+                        deviceId: sensorId,
+                        logicalDeviceId: device.logicalDeviceId,
+                        status: "ready",
+                        data: sample
+                    };
+                    dbInstance.insertDocument("device_raw_data", insetRowRaw);
+                });
+                callBack(null);
+            } else {
+                callBack(1);
+            }
+        });
+    }
+
     this.processIncomingData = function ()
     {
 		var myInstance = this;
-	    var processFunc = function(){
-			if (myInstance.incomingDataQueue.length <= 0 ){
-				return setTimeout(processFunc,2000);
-			}
-				
-			var processSingleItem = function(){
-				var pushItem = myInstance.incomingDataQueue[0];
-				myInstance.incomingDataQueue.splice(0,1);
-				
-				var sensorId = pushItem.sensorId;
-				var deviceId = pushItem.sensorId;
-                var data1 = pushItem.data;
-                
-				var callBack = pushItem.cb;
-				
-				var processNextItem = function(){
-					if ( myInstance.incomingDataQueue.length > 0){
-						processSingleItem();
-					}
-					else{
-						return setTimeout(processFunc,2000);
-					}
-				}
+	    var processFunc = function() {
 
-				deviceManager.getDeviceFromId(deviceId, function (device)
+            dbInstance.findOneAndUpdate("device_raw_data", {"status": "ready"}, {"status": "processing"}, {"data.receivedTime": 1}, function(err, result) {
+                if(err) {
+                    console.error("Unable procees device raw data") 
+                    return setTimeout(processFunc, 2000);
+                } else if(result && result.lastErrorObject.updatedExisting === false) {
+                    return setTimeout(processFunc, 2000);
+                }
+                var pushItem = result.value;
+                var sensorId = pushItem.deviceId;
+                var deviceId = pushItem.deviceId;
+                var data = pushItem.data;
+                deviceManager.getDeviceFromId(deviceId, function (device)
 				{
 					if (device != null)
 					{
@@ -554,63 +579,45 @@ function SensorManager()
 						if (device != null && device.logicalDeviceId!= null)
 						{
 							var collectionName = device.logicalDeviceId;
-							// use time of server for this live data.
-							var currentdate = new Date();
-                            data1["receivedTime"] = currentdate.valueOf();
-                            //when no lat and long not posted
-
-                            if (device.location != null ) {
-                                if ( (data1["latitude"] == null || data1["latitude"] == "") || (data1["longitude"] == null || data1["longitude"] == "" )   ) {
-                                    data1["latitude"] = device.location.latitude;
-                                    data1["longitude"] = device.location.longitude;
-                                }
-                            }						
-                            
-                            specificDevice.ProcessSensorData(data1, function (ferr, filteredData) {
-								if (filteredData != null) {
-
-									var insetRowFiltered = {
-										deviceId: sensorId,
-										logicalDeviceId: device.logicalDeviceId,
-										data: filteredData
+                            specificDevice.ProcessSensorData(data, function (ferr, filteredData) {
+                                if (filteredData != null) {
+                                    var insetRowFiltered = {
+                                        deviceId: sensorId,
+                                        logicalDeviceId: device.logicalDeviceId,
+                                        data: filteredData
                                     };
-									dbInstance.insertDocument(collectionName, insetRowFiltered);
-									// update stat(based on filtered data) for this sensor params.
-									var collectionNamePrefix = myInstance.getStatCollectionPrefixFromDeviceLogicalId(device.logicalDeviceId);
-									myInstance.updateStatistics(currentdate, collectionNamePrefix,filteredData, device,function(){
-									
+                                    const currentdate = new Date(data.receivedTime);
+                                    dbInstance.insertDocument(collectionName, insetRowFiltered);
+                                    var collectionNamePrefix = myInstance.getStatCollectionPrefixFromDeviceLogicalId(device.logicalDeviceId);
+                                    myInstance.updateStatistics(currentdate, collectionNamePrefix,filteredData, device,function(){
+                                    
                                         myInstance.updateDerivedParams(currentdate, collectionNamePrefix, filteredData, device);
                                         
                                         myInstance.updateDeviceLatestEntry(device, insetRowFiltered, function() {
                                             myInstance.updateSummary(currentdate, device);
                                         });
-
-										callBack(null);
-										processNextItem();
-									});
-								}
-								var insetRowRaw = {
+                                    });
+                                } else {
+                                    myInstance.updateRawDataStatus("error", pushItem._id);
+                                }
+                                var insetRowRaw = {
 									deviceId: sensorId,
 									logicalDeviceId: device.logicalDeviceId,
-									data: data1
+									data: data
 								};
 								dbInstance.insertDocument(myInstance.getRawDataCollectionName(device.logicalDeviceId), insetRowRaw);
-							});
-							return;
+                            });
+                            myInstance.updateRawDataStatus("completed", pushItem._id);
+							return setTimeout(processFunc, 2000);
 						}
-					}
-					callBack(1);
-					processNextItem();
-				});
-			}	
-			var j = 0;
-			if ( myInstance.incomingDataQueue.length > 0){
-				processSingleItem();
-			}
+                    } else {
+                        myInstance.updateRawDataStatus("error", pushItem._id);
+                    }
+                });
+            });
 		}
 		setTimeout(processFunc,2000);
     }
-	this.processIncomingData(); 
 }
 
 

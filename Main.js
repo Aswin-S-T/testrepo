@@ -6,6 +6,8 @@ var fs = require('fs');
 var https = require('https');
 var cron = require('node-cron');
 var AqiCalculation = require('./Device/AqiCalculation.js');
+var SensorManagerModule = require('./Device/SensorManager.js');
+var sensorManager = new SensorManagerModule.SensorManager();
 //const csrf = require('csurf');
 
 
@@ -115,6 +117,7 @@ cron.schedule('30 * * * *', () => {
     console.log("*********", new Date().valueOf());
     AqiCalculation.intilaizeAqiCalculation();
 });
+sensorManager.processIncomingData();
 
 var app = new require('express')();
 InitExpress(app);

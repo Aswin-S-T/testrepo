@@ -110,7 +110,8 @@ function StatisticsManager()
                 "sum": parseFloat(value),
                 "count": 1,
                 "min": value,
-                "max": value
+                "max": value,
+                "latestValue": value
              }
         };
         return newDoc;
@@ -142,6 +143,7 @@ function StatisticsManager()
                         result.statParams.count +=  1;
                         result.statParams.min = Math.min(result.statParams.min, value);
                         result.statParams.max = Math.max(result.statParams.max, value);
+                        result.statParams.latestValue = value;
                     }
                     dbInstance.updateDocument(collectionName, deviceQuery, result, function (errUpdate) {
                         callBack(errUpdate);
@@ -184,6 +186,7 @@ function StatisticsManager()
                         result.statParams.count += 1;
                         result.statParams.min = Math.min(result.statParams.min, value);
                         result.statParams.max = Math.max(result.statParams.max, value);
+                        result.statParams.latestValue = value;
                     }
                     dbInstance.updateDocument(collectionName, deviceQuery, result, function (errUpdate) {
                         callBack(errUpdate);
@@ -231,7 +234,8 @@ function StatisticsManager()
 									result.statParams.count +=  1;
 									result.statParams.sum += parseFloat(value);
 									result.statParams.min = Math.min(result.statParams.min, value);
-									result.statParams.max = Math.max(result.statParams.max, value);
+                                    result.statParams.max = Math.max(result.statParams.max, value);
+                                    result.statParams.latestValue = value;
 								}
 								dbInstance.updateDocument(collectionName, deviceQuery, result, function (errUpdate)
 								{
@@ -291,7 +295,8 @@ function StatisticsManager()
 									result.statParams.count +=  1;
 									result.statParams.sum += parseFloat(value);
 									result.statParams.min = Math.min(result.statParams.min, value);
-									result.statParams.max = Math.max(result.statParams.max, value);
+                                    result.statParams.max = Math.max(result.statParams.max, value);
+                                    result.statParams.latestValue = value;
 								}
 								dbInstance.updateDocument(collectionName, deviceQuery, result, function (errUpdate)
 								{
