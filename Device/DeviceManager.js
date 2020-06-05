@@ -222,41 +222,26 @@ function DeviceManager()
 			{
 				if(result != null)
 				{
-				    var query = {
-				        logicalDeviceId: result.logicalDeviceId
-				    }
-			
-					dbInstance.removeDocument('devices',query, function(errFrmDevices, res)
-					{
-						  var docsToRemove = [result.logicalDeviceId, result.logicalDeviceId + "_stat_hourly", result.logicalDeviceId + "_stat_daily", result.logicalDeviceId + "_stat_monthly",
-                              result.logicalDeviceId + "_stat_yearly", result.logicalDeviceId+"_raw"
-						  ];
-                          
-						  var i = 0;
-						  var allDeviceDocRemoved = errFrmDevices ? false : true;
-						  var removeDoc = function (docName,removeCallBack) {
+					dbInstance.removeDocument('devices',query,function(errFrmDevices){
+						var docsToRemove = [result.logicalDeviceId, result.logicalDeviceId + "_stat_hourly", result.logicalDeviceId + "_stat_daily", result.logicalDeviceId + "_stat_monthly",
+                            result.logicalDeviceId + "_stat_yearly", result.logicalDeviceId+"_raw"
+						];
+						var allDeviceDocRemoved = errFrmDevices ? false : true;
+						docsToRemove.forEach(docName => {
+							dbInstance.removeCollection(docName, function (err1) {
+								if(err1){
+									allDeviceDocRemoved = false;
+								}
+							})
+						});
 
-						      dbInstance.removeCollection(docName, function (err1) {
-						          if (err1)
-						              allDeviceDocRemoved = false;
-						          i++;
-						          if (i < docsToRemove.length) {
-						              removeDoc(docsToRemove[i],removeCallBack)
-						          }
-						          else
-						          {
-						              var r = (allDeviceDocRemoved ? null : 1);
-						              removeCallBack( r );
-						          }
-
-						      });
-
-						  };
-
-
-						  removeDoc(docsToRemove[i], callBack);
-
-					});
+						if(allDeviceDocRemoved){
+							callBack(null,"user delete")
+						}
+						else{
+							callBack(1, "Error occured while deleting")
+						}
+					})
 				}
                 else
 				{
