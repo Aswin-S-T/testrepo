@@ -180,7 +180,7 @@ function SensorManager()
 
     };
 
-    this.updateStatistics = function (date, collectionNamePrefix, dataObj,device,cb) {
+    this.updateStatistics = function (date, collectionNamePrefix, dataObj, device, cb) {
 		var paramNameList = [];
 		for (var propFieldItem in dataObj)
 		{
@@ -194,13 +194,13 @@ function SensorManager()
             var propField = paramNameList[k];
             statManager.updateHourlyStats(collectionNamePrefix+"_hourly", propField, dataObj[propField], date, function (err)
 			{
-                statManager.updateDailyStats(collectionNamePrefix+"_daily", propField, dataObj[propField], date,function (err)
+                statManager.updateDailyStats(collectionNamePrefix+"_daily", propField, dataObj[propField], date, device.timeZone, function (err)
                 {
                     // ignore error.
-                    statManager.updateMonthlyStats(collectionNamePrefix + "_monthly", propField, dataObj[propField], date, function (err)
+                    statManager.updateMonthlyStats(collectionNamePrefix + "_monthly", propField, dataObj[propField], date, device.timeZone, function (err)
                     {
                         // ignore error.
-                        statManager.updateYearlyStats(collectionNamePrefix + "_yearly", propField, dataObj[propField], date,  function (err)
+                        statManager.updateYearlyStats(collectionNamePrefix + "_yearly", propField, dataObj[propField], date, device.timeZone,  function (err)
                         {
                             // ignore error.
                             k++;
@@ -430,9 +430,10 @@ function SensorManager()
         return logicalDeviceID + "_raw";
     }
 
-    this.getAllSensorFilteredData = function (groupByField, sortByPrcntFilled, skipEmptyBox) {
+    this.getAllSensorFilteredData = function (groupByField, sortByPrcntFilled, skipEmptyBox, isAssigned) {
         const sortOption = (sortByPrcntFilled) ? {"data.data_1": -1, "data.data_2": -1} : {};
-        const query = (skipEmptyBox) ? { $or: [{"data.letter_no_1": { $ne: 0 }}, {"data.letter_no_2": { $ne: 0 }}] } : {};
+        const query = (skipEmptyBox && isAssigned) ? 
+            {$and : [{ $or: [{"data.letter_no_1": { $ne: 0 }}, {"data.letter_no_2": { $ne: 0 }}] }, {"data.assigned_to": isAssigned} ]} : {};
         return new Promise(function(resolve, reject) {
             if(groupByField) {
                 return dbInstance.GetDocumentsGroupBy('devices_data', groupByField, function (err, result) {
@@ -446,9 +447,10 @@ function SensorManager()
         });
     }
 
-    this.updateSummary = async function (date, device) {
+    this.updateSummary = async function (device) {
 
         if (device.subType == "SPB001") {
+            var date = new Date();
             var summary = {updatedTime: date.valueOf()};
             var specificDevice = devFactory.createDeviceInstanceFromSubType(device.subType);
             var summaryDef = specificDevice.getSummaryDefinitions();
@@ -514,6 +516,21 @@ function SensorManager()
         return;
 
     };
+
+    this.updateSpecficRawParam = function(sensorId, params, values, callBack) {
+        var myInstance = this;
+        dbInstance.GetFilteredDocumentSorted('device_raw_data', {"deviceId": sensorId}, { "_id": false }, {"data.receivedTime": -1}, 1, 0, function (err, result) {
+            if (err) {
+                callBack(1, null);
+            }
+            else {
+                params.forEach((param, index) => {
+                    result[0].data[param] = values[index];
+                });
+                myInstance.pushSensorData(sensorId,[result[0].data], callBack)
+            }
+        });
+    }
 
     this.updateRawDataStatus = function (status, _id) {
        
@@ -594,7 +611,7 @@ function SensorManager()
                                         myInstance.updateDerivedParams(currentdate, collectionNamePrefix, filteredData, device);
                                         
                                         myInstance.updateDeviceLatestEntry(device, insetRowFiltered, function() {
-                                            myInstance.updateSummary(currentdate, device);
+                                            myInstance.updateSummary(device);
                                         });
                                     });
                                 } else {

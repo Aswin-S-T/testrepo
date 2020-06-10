@@ -4,24 +4,41 @@ var solver = require('node-tspsolver');
 
 function TravelManager() {
 
-    this.getDirection = function (slat, slon, callBack) {
-        var current = { id: 's', lat: slat, lon: slon };
+    this.getDirection = function (slat, slon, isAssigned, callBack) {
+        var current = { id: 'starting_location', lat: slat, lon: slon };
         var cords = [];
+        var deviceList = {};
         cords.push(current);
         var location = null;
 
         if (slat != null && slon != null) {
-            dbInstance.GetDocuments('devices', async function (err, val) {
+            const query = (isAssigned) ? {"data.assigned_to": isAssigned} : {};
+            dbInstance.GetFilteredDocumentSorted('devices_data', query, { "_id": false }, null, 100, 0, async function (err, val) {
                 if (!err) {
                     for (var i = 0; i < val.length; i++) {
-                        location = { id: val[i].deviceId, lat: val[i].location.latitude, lon: val[i].location.longitude };
+                        deviceList[val[i].deviceId] = val[i];
+                        location = { id: val[i].deviceId, lat: val[i].data.latitude, lon: val[i].data.longitude };
                         cords.push(location);
                     }
                     var distArray = await getDistance(cords);
-                    console.log(distArray);
-                    callBack(null, distArray);
+                    const response = distArray.map((id) => {
+                        if(id === 'starting_location') {
+                            return {
+                                "deviceId": "starting_location",
+                                "data": {
+                                    "latitude": slat,
+                                    "longitude": slon,
+                                    "location": "starting_location"
+                                }
+                            };
+                        } else {
+                            return deviceList[id];
+                        }
+                    })
+                    callBack(null, response);
                 }
                 else {
+                    console.log(err)
                     callBack(1, null);
                 }
             });
@@ -66,7 +83,6 @@ function TravelManager() {
                 for (var i = 0; i < result.length; i++) {
                     finalRes.push(devList[result[i]]);
                 }
-                console.log(finalRes);
                 return finalRes;
             });
     }

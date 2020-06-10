@@ -73,17 +73,8 @@ function UserManager() {
 	};
 
 	this.getAllUsers = function (query, limit, offset, callBack) {
-		var userQuery ={};
-
-		if (query != null && query.hasOwnProperty('substring')) {
-
-			var substring = query.substring;
-			var regExp = new RegExp(".*" + substring + ".*");
-
-			userQuery = {};
-		}
 		var excludeFields = { '_id': false };
-		dbInstance.GetAllDocumentByCriteria('users', excludeFields, userQuery, limit, offset, function (err, result) {
+		dbInstance.GetAllDocumentByCriteria('users', excludeFields, query, limit, offset, function (err, result) {
 
 			if (err) {
 				callBack(null);

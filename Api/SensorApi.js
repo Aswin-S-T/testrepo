@@ -302,6 +302,23 @@ function SensorApi(express) {
 
     });
 
+    express.post('/device/sensor/livedata/update', function (req, res) {
+        var hubResponse = new responseModule.HubResponse();
+        if (req.body != null || req.body.params.length !== req.body.values.length) {
+            sensorManager.updateSpecficRawParam(req.body.deviceId, req.body.params , req.body.values, function (err) {
+                if (err == null) {
+                    response = hubResponse.getOkResponse();
+                }
+                else
+                    response = hubResponse.getErrorResponse(-2, "Failed to update DB in server");
+
+                res.end(response);
+            });
+        }
+        else {
+            res.end(hubResponse.getErrorResponse(-1, "Invalid request"));
+        }
+    });
 
     express.post('/device/sensor/livedata', function (req, res) {
 
@@ -538,8 +555,12 @@ function SensorApi(express) {
 
                 if (req.query != null && req.query.deviceIds != null && req.query.timeFrame != null) {
                     var options = req.query.timeFrame.split(',');
-                    var timeStart = req.query.timeStart;
-                    var timeEnd = req.query.timeEnd;
+                    var timeStart = null;
+                    var timeEnd = null;
+                    if (req.query.timeStart != 'null')
+                        timeStart = req.query.timeStart;
+                    if (req.query.timeEnd != 'null')
+                        timeEnd = req.query.timeEnd;
                     var listDevIds = req.query.deviceIds.split(',');
                     var paramList = null;//req.query.params.split(',');
                     if (req.query.params != null)
@@ -786,8 +807,8 @@ function SensorApi(express) {
                 groupByloc = (req.query.groupByloc == "true") ? 'locId' : null;
                 sortByPrcntFilled = (req.query.sortByPrcntFilled == "true") ? true : false;
                 skipEmptyBox = (req.query.skipEmptyBox == "true") ? true : false;
-                isAssigned = (req.query.isAssigned == "true") ? req.query.userId : false;
-				sensorManager.getAllSensorFilteredData(groupByloc, sortByPrcntFilled, skipEmptyBox).then(function (data)
+                isAssigned = (req.query.isAssignedBox == "true") ? req.query.userId : false;
+				sensorManager.getAllSensorFilteredData(groupByloc, sortByPrcntFilled, skipEmptyBox, isAssigned).then(function (data)
 				{
                     hubResponse = new responseModule.HubResponse();
                     var response = null;

@@ -13,10 +13,10 @@ function TravelApi(express){
             if(result == null){
                 response = hubResponse.getErrorResponse(-1,"Invalid request");
                 res.end(response);
-            }
-            else{
+            } else {
                 response = hubResponse.getOkResponse();
-                travelManager.getDirection(req.query.lat, req.query.lon, function(err, info){
+                isAssigned = (req.query.isAssignedBox == "true") ? req.query.userId : false;
+                travelManager.getDirection(req.query.lat, req.query.lon, isAssigned, function(err, info){
                     if (err != null) {
                         response = hubResponse.getErrorResponse(-1, "Error in Request");
                         res.end(response);

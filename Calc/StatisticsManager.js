@@ -50,7 +50,7 @@ function StatisticsManager()
         var key = utcTime.setHours(hour, 0, 0, 0);
         
         if (timeZoneName != null) {
-            var zoneChanged = this.convertDateToTimeZone(dateObj, timeZoneName);
+            var zoneChanged = moment.tz(dateObj.valueOf(), timeZoneName);;
             key = zoneChanged.setHours(zoneChanged.getHours(), 0, 0, 0);
         }
         return key;
@@ -119,18 +119,19 @@ function StatisticsManager()
     }
 
 
-    this.updateYearlyStats = function (collectionName, paramName, value, currentDate, callBack) {
+    this.updateYearlyStats = function (collectionName, paramName, value, currentDate, timeZoneName, callBack) {
         if (collectionName != null && currentDate != null && paramName != null)
         {
+            let key = this.dateToYearlyUsageKey(currentDate, timeZoneName)
             var deviceQuery =
             {
                 "paramName": { $in: [paramName] },
-                "key": this.dateToYearlyUsageKey(currentDate)
+                "key": key
             }
             var myInstance = this;
             dbInstance.GetDocumentByCriteria(collectionName, 0, deviceQuery, function (err, result) {
                 if (err) {
-                    var newCollectionItem = myInstance.createNewStatCollection(paramName, value, currentDate, myInstance.dateToYearlyUsageKey(currentDate));
+                    var newCollectionItem = myInstance.createNewStatCollection(paramName, value, currentDate, key);
                     dbInstance.insertDocument(collectionName, newCollectionItem, function (addErr) {
                         callBack(addErr);
                     });
@@ -143,6 +144,7 @@ function StatisticsManager()
                         result.statParams.count +=  1;
                         result.statParams.min = Math.min(result.statParams.min, value);
                         result.statParams.max = Math.max(result.statParams.max, value);
+                        result.epoch = currentDate.valueOf();
                         result.statParams.latestValue = value;
                     }
                     dbInstance.updateDocument(collectionName, deviceQuery, result, function (errUpdate) {
@@ -161,18 +163,19 @@ function StatisticsManager()
     }
 
 
-    this.updateMonthlyStats = function (collectionName, paramName, value, currentDate, callBack) {
+    this.updateMonthlyStats = function (collectionName, paramName, value, currentDate, timeZoneName, callBack) {
         if (collectionName != null && currentDate != null && paramName != null)
         {
+            let key = this.dateToMonthlyUsageKey(currentDate, timeZoneName)
             var deviceQuery =
             {
                 "paramName": { $in: [paramName] },
-                "key": this.dateToMonthlyUsageKey(currentDate)
+                "key": key
             }
             var myInstance = this;
             dbInstance.GetDocumentByCriteria(collectionName, 0, deviceQuery, function (err, result) {
                 if (err) {
-                    var newCollectionItem = myInstance.createNewStatCollection(paramName, value, currentDate, myInstance.dateToMonthlyUsageKey(currentDate));
+                    var newCollectionItem = myInstance.createNewStatCollection(paramName, value, currentDate, key);
                     dbInstance.insertDocument(collectionName, newCollectionItem, function (addErr) {
                         callBack(addErr);
                     });
@@ -186,6 +189,7 @@ function StatisticsManager()
                         result.statParams.count += 1;
                         result.statParams.min = Math.min(result.statParams.min, value);
                         result.statParams.max = Math.max(result.statParams.max, value);
+                        result.epoch = currentDate.valueOf();
                         result.statParams.latestValue = value;
                     }
                     dbInstance.updateDocument(collectionName, deviceQuery, result, function (errUpdate) {
@@ -203,20 +207,21 @@ function StatisticsManager()
 
     }
 
-    this.updateDailyStats = function (collectionName, paramName, value, currentDate,callBack)
+    this.updateDailyStats = function (collectionName, paramName, value, currentDate, timeZoneName, callBack)
     {
         if (collectionName != null && currentDate != null && paramName != null) 
         {
-		   var myInstance = this;
+            let key = this.dateToDailyUsageKey(currentDate, timeZoneName)
+		    var myInstance = this;
             var deviceQuery =
             {
                 "paramName": { $in: [paramName] },
-                "key": this.dateToDailyUsageKey(currentDate)
+                "key": key
             }
 			
 			dbInstance.createUniqueIndex( collectionName,{ paramName: 1, key: 1 },function(errIndex,nameIndex){
 			
-				var newCollectionItem = myInstance.createNewStatCollection(paramName, value, currentDate, myInstance.dateToDailyUsageKey(currentDate));
+				var newCollectionItem = myInstance.createNewStatCollection(paramName, value, currentDate, key);
 				dbInstance.insertDocument(collectionName, newCollectionItem, function (addErr) {
 					if(addErr){
 					
@@ -235,6 +240,7 @@ function StatisticsManager()
 									result.statParams.sum += parseFloat(value);
 									result.statParams.min = Math.min(result.statParams.min, value);
                                     result.statParams.max = Math.max(result.statParams.max, value);
+                                    result.epoch = currentDate.valueOf();
                                     result.statParams.latestValue = value;
 								}
 								dbInstance.updateDocument(collectionName, deviceQuery, result, function (errUpdate)
@@ -296,6 +302,7 @@ function StatisticsManager()
 									result.statParams.sum += parseFloat(value);
 									result.statParams.min = Math.min(result.statParams.min, value);
                                     result.statParams.max = Math.max(result.statParams.max, value);
+                                    result.epoch = currentDate.valueOf();
                                     result.statParams.latestValue = value;
 								}
 								dbInstance.updateDocument(collectionName, deviceQuery, result, function (errUpdate)

@@ -10,6 +10,8 @@ var sensorLiveDataHandler = new SensorLiveDataHandlerModule.SensorLiveDataHandle
 
 var StatisticsManagerModule = require('../Calc/StatisticsManager.js');
 var statManager = new StatisticsManagerModule.StatisticsManager();
+var moment = require('moment');
+
 
 function SPB001() {
     this.getDefaultParamDefinitions = function () {
@@ -121,12 +123,11 @@ function SPB001() {
                 }
                 return value;
             }
-
             var originalVal = filterResult[paramDefs[i].paramName];
             filterResult[paramDefs[i].paramName] = processCalibration(boundValueToLimits(filterResult[paramDefs[i].paramName]), paramDefs[i]);
 
             if (paramDefs[i].isDerived) {
-                filterResult[paramDefs[i].paramName] = await getDerivedParam(myInstance.logicalDeviceId, paramDefs[i], prevLiveData, currentData, filterResult);
+                filterResult[paramDefs[i].paramName] = await getDerivedParam(myInstance.logicalDeviceId, paramDefs[i], prevLiveData, currentData, filterResult, myInstance.timeZone);
             }
 
             if (paramDefs[i].filteringMethod == "WMAFilter") {
@@ -192,16 +193,38 @@ function SPB001() {
         return val;
     }
 
-    var getDerivedParam =  function(logicalDeviceId, paramDefs, prevLiveData, currentData, filterResult) {
+    var getDerivedParam =  function(logicalDeviceId, paramDefs, prevLiveData, currentData, filterResult, timeZone) {
         if (paramDefs.isPreValCheck) {
             if(prevLiveData && prevLiveData.data != null) {
-                return (!eval(prevLiveData.data[paramDefs.derivedParam] + paramDefs.calculationCond) && 
-                    eval(filterResult[paramDefs.derivedParam] + paramDefs.calculationCond))? currentData["receivedTime"] : prevLiveData.data["receivedTime"];
+                if (eval(prevLiveData.data[paramDefs.derivedParam] + paramDefs.calculationCond)) {
+                    return prevLiveData.data[paramDefs.paramName];
+                } else if(eval(filterResult[paramDefs.derivedParam] + paramDefs.calculationCond)) {
+                    return currentData["receivedTime"];
+                } else {
+                    return prevLiveData.data[paramDefs.paramName];
+                }
             } else {
                 return eval(filterResult[paramDefs.derivedParam] + paramDefs.calculationCond) ? currentData["receivedTime"] : "-";
             }
+        } else if(paramDefs.isDailyValueCheck) {
+            if(currentData[paramDefs.paramName]) {
+                return currentData[paramDefs.paramName];
+            }
+            var prevWeekDay = new Date(currentData["receivedTime"]);
+            prevWeekDay = new Date(prevWeekDay.toLocaleString('en-US', { timeZone: timeZone }));
+            prevWeekDay.setHours(0,0,0,0);
+            const timeFrom = prevWeekDay.valueOf();
+            prevWeekDay.setHours(23,59,59,999)
+            const timeTo = prevWeekDay.valueOf();
+            return new Promise(function(resolve, reject) {
+                statManager.getStatParam(logicalDeviceId + "_stat_daily" , [paramDefs.fetchParam], timeFrom, timeTo, 10, 0,function (err, res)
+                {
+                    resolve((!err && res && res[0] && res[0].statParams.latestValue) ?  res[0].statParams.latestValue : "-");
+                });
+            });           
         } else if(paramDefs.isPrevWeekCheck) {
             var prevWeekDay = new Date(currentData["receivedTime"] - 7 * 24 * 60 * 60 * 1000);
+            prevWeekDay = new Date(prevWeekDay.toLocaleString('en-US', { timeZone: timeZone }));
             prevWeekDay.setHours(0,0,0,0);
             const timeFrom = prevWeekDay.valueOf();
             prevWeekDay.setHours(23,59,59,999)

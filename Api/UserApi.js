@@ -110,12 +110,15 @@ function UserApi(express) {
 				res.end(response);
 			} else{
 				var numberOfRecords = 10;
-                var offset = 0;
+				var offset = 0;
+				var query = {}
 				if (req.query.limit != null)
 					numberOfRecords = parseInt(req.query.limit);
 				if (req.query.offset != null)
 					offset = parseInt(req.query.offset);
-				userManager.getAllUsers(req.query, numberOfRecords, offset, function (result) {
+				if (req.query.type != null)
+					query.role = req.query.type;
+				userManager.getAllUsers(query, numberOfRecords, offset, function (result) {
 					var hubResponse = new responseModule.HubResponse();
 					var response = null;
 					if(result != null) {
