@@ -11,7 +11,7 @@
         "instances": 1,
         "watch": true,
         "env": {
-            "PORT": 7001,
+            "PORT": 7002,
             "NODE_ENV": "development",
             "PROJECT_TYPE": "AQMS",
             "FRONT_END_APP_ADDR": "http://localhost:3000",

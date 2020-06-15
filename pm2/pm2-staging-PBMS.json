@@ -19,8 +19,5 @@
             "DB_Name": "SPB001",
             "DB_IP": "localhost:27017"
         }
-    }, {
-        "name": "AlarmService",
-        "script": "AlarmService.js"
     }]
 }

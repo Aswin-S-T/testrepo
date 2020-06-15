@@ -204,7 +204,7 @@ function SPB001() {
                     return prevLiveData.data[paramDefs.paramName];
                 }
             } else {
-                return eval(filterResult[paramDefs.derivedParam] + paramDefs.calculationCond) ? currentData["receivedTime"] : "-";
+                return eval(filterResult[paramDefs.derivedParam] + paramDefs.calculationCond) ? currentData["receivedTime"] : "None";
             }
         } else if(paramDefs.isDailyValueCheck) {
             if(currentData[paramDefs.paramName]) {
@@ -219,7 +219,7 @@ function SPB001() {
             return new Promise(function(resolve, reject) {
                 statManager.getStatParam(logicalDeviceId + "_stat_daily" , [paramDefs.fetchParam], timeFrom, timeTo, 10, 0,function (err, res)
                 {
-                    resolve((!err && res && res[0] && res[0].statParams.latestValue) ?  res[0].statParams.latestValue : "-");
+                    resolve((!err && res && res[0] && res[0].statParams.latestValue) ?  res[0].statParams.latestValue : "None");
                 });
             });           
         } else if(paramDefs.isPrevWeekCheck) {
@@ -232,7 +232,7 @@ function SPB001() {
             return new Promise(function(resolve, reject) {
                 statManager.getStatParam(logicalDeviceId + "_stat_daily" , [paramDefs.fetchParam], timeFrom, timeTo, 10, 0,function (err, res)
                 {
-                    resolve((!err && res && res[0] && res[0].statParams.latestValue) ?  res[0].statParams.latestValue : "-");
+                    resolve((!err && res && res[0] && res[0].statParams.latestValue) ?  res[0].statParams.latestValue : "None");
                 });
             });           
         } else if(paramDefs.isPrevWeekCheckHourly) {
@@ -245,7 +245,7 @@ function SPB001() {
             return new Promise(function(resolve, reject) {
                 statManager.getStatParam(logicalDeviceId + "_stat_hourly" , [paramDefs.fetchParam], timeFrom, timeTo, 10, 0,function (err, res)
                 {
-                    resolve((!err && res && res[0] && res[0].statParams.latestValue) ?  res[0].statParams.latestValue : "-");
+                    resolve((!err && res && res[0] && res[0].statParams.latestValue) ?  res[0].statParams.latestValue : "None");
                 });
             });           
         } else {

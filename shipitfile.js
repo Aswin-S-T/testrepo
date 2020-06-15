@@ -20,30 +20,35 @@ module.exports = shipit => {
             servers: 'user@localhost',
             buildCmd: 'start:dev',
             forntendBuildCmd: 'build:dev',
+            pm2AppNames: 'Envitus-dev AlarmService'
         },
         dev_PBMS: {
             servers: 'user@localhost',
             buildCmd: 'start:dev_PBMS',
             forntendBuildCmd: 'build:PBMS',
+            pm2AppNames: 'Envitus-PBMS-dev'
         },
         dev_deploy: {
             repositoryUrl: '',
             servers: process.env.DEPLOY_SERVER || 'ec2-user@ec2-52-66-53-207.ap-south-1.compute.amazonaws.com',
             forntendBuildCmd: process.env.FRONTENT_APP_BUILD_CMD || 'build:staging',
             buildCmd: process.env.BUILD_CMD || 'build:staging',
+            pm2AppNames: process.env.PM2_APP_NAME || 'Envitus-dev AlarmService',
             dockerBuildCmd: process.env.DOCKER_BUILD_CMD || 'build:staging_docker'
         },
         staging: {
             servers: 'ec2-user@ec2-52-66-53-207.ap-south-1.compute.amazonaws.com',
             buildCmd: 'build:staging',
             forntendBuildCmd: 'build:staging',
-            dockerBuildCmd: 'build:staging_docker'
+            dockerBuildCmd: 'build:staging_docker',
+            pm2AppNames: 'Envitus-staging AlarmService'
         },
         staging_PBMS: {
             servers: 'ec2-user@ec2-52-66-53-207.ap-south-1.compute.amazonaws.com',
             buildCmd: 'build:staging_PBMS',
             forntendBuildCmd: 'build:PBMS_staging',
-            dockerBuildCmd: 'build:staging_docker_PBMS'
+            dockerBuildCmd: 'build:staging_docker_PBMS',
+            pm2AppNames: 'Envitus-PBMS-staging'
         }
     });
 
@@ -56,8 +61,8 @@ module.exports = shipit => {
             'cp -r build/  ' + shipit.config.backendAppPath + '/public/',
             'cd '+ shipit.config.backendAppPath ,
             'nvm use 8',
-            'pm2 stop all || true',
-            'pm2 delete all || true',
+            'pm2 stop ' + shipit.config.pm2AppNames + ' || true',
+            'pm2 delete ' + shipit.config.pm2AppNames + ' || true',
             'npm run ' + shipit.config.buildCmd
         ].join('&&'));
     });
@@ -96,8 +101,8 @@ module.exports = shipit => {
             'cd ' + shipit.config.deployTo + '/current',
             'nvm use 8',
             'npm i',
-            'pm2 stop all || true',
-            'pm2 delete all || true',
+            'pm2 stop ' + shipit.config.pm2AppNames + ' || true',
+            'pm2 delete ' + shipit.config.pm2AppNames + ' || true',
             'npm run ' + shipit.config.buildCmd
         ].join('&&'));
     })
