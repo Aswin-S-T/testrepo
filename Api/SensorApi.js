@@ -240,9 +240,13 @@ function SensorApi(express) {
             else {
 
                 if (req.query != null && req.query.deviceIds != null) {
+                    var timeStart = null;
+                    var timeEnd = null;
                    
-                    var timeStart = req.query.timeStart;
-                    var timeEnd = req.query.timeEnd;
+                    if (req.query.timeStart != 'null')
+                        timeStart = req.query.timeStart;
+                    if (req.query.timeEnd != 'null')
+                        timeEnd = req.query.timeEnd;
                     var listDevIds = req.query.deviceIds.split(',');
                     var listResult = [];
                     var lastDevId = listDevIds[listDevIds.length - 1];
