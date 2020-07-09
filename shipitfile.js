@@ -5,7 +5,7 @@ module.exports = shipit => {
         default: {
             branch: process.env.GIT_BRANCH || 'master',
             workspace: '/tmp/github-monitor',
-            deployTo: '/home/ec2-user/alcodex_deploy',
+            deployTo: '/home/ec2-user/alcodex_deploy/AQMS/React',
             repositoryUrl: 'https://' + process.env.GIT_USERNAME + ':' + process.env.GIT_TOKEN + '@github.com/abdulalcodex/envitusplatformbackend.git',
             ignores: ['.git', 'node_modules'],
             keepReleases: 3,
@@ -20,7 +20,7 @@ module.exports = shipit => {
             servers: 'user@localhost',
             buildCmd: 'start:dev',
             forntendBuildCmd: 'build:dev',
-            pm2AppNames: 'Envitus-dev AlarmService'
+            pm2AppNames: 'Envitus-dev Envitus-AlarmService'
         },
         dev_PBMS: {
             servers: 'user@localhost',
@@ -30,21 +30,24 @@ module.exports = shipit => {
         },
         dev_deploy: {
             repositoryUrl: '',
+            deployTo: process.env.DEPLOY_PATH ||'/home/ec2-user/alcodex_deploy/AQMS/React',
             servers: process.env.DEPLOY_SERVER || 'ec2-user@ec2-52-66-53-207.ap-south-1.compute.amazonaws.com',
             forntendBuildCmd: process.env.FRONTENT_APP_BUILD_CMD || 'build:staging',
             buildCmd: process.env.BUILD_CMD || 'build:staging',
-            pm2AppNames: process.env.PM2_APP_NAME || 'Envitus-dev AlarmService',
+            pm2AppNames: process.env.PM2_APP_NAME || 'Envitus-dev Envitus-AlarmService',
             dockerBuildCmd: process.env.DOCKER_BUILD_CMD || 'build:staging_docker'
         },
         staging: {
             servers: 'ec2-user@ec2-52-66-53-207.ap-south-1.compute.amazonaws.com',
+            deployTo: '/home/ec2-user/alcodex_deploy/AQMS/React',
             buildCmd: 'build:staging',
             forntendBuildCmd: 'build:staging',
             dockerBuildCmd: 'build:staging_docker',
-            pm2AppNames: 'Envitus-staging AlarmService'
+            pm2AppNames: 'Envitus-staging Envitus-AlarmService'
         },
         staging_PBMS: {
             servers: 'ec2-user@ec2-52-66-53-207.ap-south-1.compute.amazonaws.com',
+            deployTo: '/home/ec2-user/alcodex_deploy/PBMS',
             buildCmd: 'build:staging_PBMS',
             forntendBuildCmd: 'build:PBMS_staging',
             dockerBuildCmd: 'build:staging_docker_PBMS',

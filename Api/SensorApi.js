@@ -355,9 +355,10 @@ function SensorApi(express) {
         noOfSamples = pb1History.length - 1;
         return pb1History.map((pbStatus, index) => {
             let sensorData = {...data}
+            sensorData.time = new Date(data.time).valueOf();
             sensorData.pb1Status = parseInt(pbStatus);
             sensorData.pb2Status = parseInt(pb2History[index]);
-            sensorData.receivedTime = data.time - ((noOfSamples - index) * data.samplingMin * 60 * 1000);
+            sensorData.receivedTime = sensorData.time - ((noOfSamples - index) * data.samplingMin * 60 * 1000);
             return sensorData;
         });
     }

@@ -62,9 +62,14 @@ function getAQIParam(device, utcToHour) {
                 _.forEach(res, function  (hourlyData) {
                     if(hourlyData.paramName === 'O3' || hourlyData.paramName === "CO") {
                         if(hourlyData.key >= from8Hour.valueOf()) {
-                            //*8hr Max
-                            aqiParamvalues[hourlyData.paramName] =  Math.max(aqiParamvalues[hourlyData.paramName], 
-                                hourlyData.statParams.max);
+                            //*8hr Avg
+                            if(aqiParamvalues[hourlyData.paramName] !== 0) {
+                                aqiParamvalues[hourlyData.paramName] =  (aqiParamvalues[hourlyData.paramName] + 
+                                (hourlyData.statParams.sum / hourlyData.statParams.count)) / 2;
+                            } else {
+                                aqiParamvalues[hourlyData.paramName] =  aqiParamvalues[hourlyData.paramName] + 
+                                (hourlyData.statParams.sum/hourlyData.statParams.count);
+                            }
                         }
                     } else {
                         //24hr Avg

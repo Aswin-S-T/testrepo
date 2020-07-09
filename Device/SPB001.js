@@ -248,6 +248,44 @@ function SPB001() {
                     resolve((!err && res && res[0] && res[0].statParams.latestValue) ?  res[0].statParams.latestValue : "None");
                 });
             });           
+        } else if(paramDefs.isDailyReportField) {
+            if(currentData[paramDefs.updateParam]) {
+                if(paramDefs.firstValueParam && (prevLiveData.data[paramDefs.paramName] 
+                    && prevLiveData.data[paramDefs.paramName] == 'None')) {
+                        return currentData[paramDefs.updateParam];
+                }  else if(paramDefs.secondValueParam && (prevLiveData.data[paramDefs.firstValueParamName] 
+                    && prevLiveData.data[paramDefs.firstValueParamName] !== 'None')) {
+                        return currentData[paramDefs.updateParam];
+                }
+            }
+            var prevWeekDay = new Date(currentData["receivedTime"]);
+            prevWeekDay = new Date(prevWeekDay.toLocaleString('en-US', { timeZone: timeZone }));
+            prevWeekDay.setHours(0,0,0,0);
+            const timeFrom = prevWeekDay.valueOf();
+            prevWeekDay.setHours(23,59,59,999)
+            const timeTo = prevWeekDay.valueOf();
+            return new Promise(function(resolve, reject) {
+                statManager.getStatParam(logicalDeviceId + "_stat_daily" , [paramDefs.fetchParam], timeFrom, timeTo, 10, 0,function (err, res)
+                {
+                    if (!err && res && res[0] && res[0].statParams.latestValue && res[0].statParams.latestValue !== 'None') {
+                        resolve(res[0].statParams.latestValue); 
+                    } else {
+                        if(prevLiveData && prevLiveData.data != null) {
+                            if(paramDefs.firstValueParam || (prevLiveData.data[paramDefs.firstValueParamName] 
+                                && prevLiveData.data[paramDefs.firstValueParamName] !== 'None')) {
+                                if (eval(prevLiveData.data[paramDefs.derivedParam] + paramDefs.calculationCond)) {
+                                    resolve(prevLiveData.data[paramDefs.paramName]);
+                                } else if(eval(filterResult[paramDefs.derivedParam] + paramDefs.calculationCond)) {
+                                    resolve(currentData["receivedTime"]);
+                                } 
+                            }
+                        } else if(eval(filterResult[paramDefs.derivedParam] + paramDefs.calculationCond)) {
+                            resolve(currentData["receivedTime"]);                            
+                        }
+                        resolve("None");
+                    }
+                });
+            });           
         } else {
             return eval(filterResult[paramDefs.derivedParam] + paramDefs.calculationCond) ? "Yes" : "No";
         }

@@ -20,7 +20,11 @@
             "DB_IP": "localhost:27017"
         }
     }, {
-        "name": "AlarmService",
-        "script": "AlarmService.js"
+        "name": "Envitus-AlarmService",
+        "script": "AlarmService.js",
+        "env": {
+            "DB_Name": "ESBHADB",
+            "DB_IP": "localhost:27017"
+        }
     }]
 }
