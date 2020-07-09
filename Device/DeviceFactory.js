@@ -4,7 +4,8 @@ var AfmSensorDeviceModule = require('./AfmSensorDevice.js');
 var AfmSensorAClassDeviceModule = require('./AfmSensorAClassDevice.js');
 
 
-var ESBHA001Module = require('./ESBHA001.js'); 
+var AHUINDR001Module = require('./AHUINDR001.js'); 
+var AHUOTDR001Module = require('./AHUOTDR001.js'); 
 var SPB001Module = require('./SPB001.js'); 
 
 
@@ -21,8 +22,12 @@ function DeviceFactory() {
             
         }
        
-        else if (subType == "ESBHA001") {
-            result = new ESBHA001Module.ESBHA001();
+        else if (subType == "AHUINDR001") {
+            result = new AHUINDR001Module.AHUINDR001();
+        }
+
+        else if (subType == "AHUOTDR001") {
+            result = new AHUOTDR001Module.AHUOTDR001();
         }
 
         else if (subType == "SPB001") {

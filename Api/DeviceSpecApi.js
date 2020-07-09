@@ -9,7 +9,8 @@ var AfmDevSpecModule = require('../DeviceSpec/AfmEthernetDeviceSpec.js');
 var AfmSensorAClassDeviceSpecModule = require('../DeviceSpec/AfmSensorAClassDeviceSpec.js');
 
 
-var ESBHA001SpecModule = require('../DeviceSpec/ESBHA001Spec.js');
+var AHUOTDR001SpecModule = require('../DeviceSpec/AHUOTDR001Spec.js');
+var AHUINDR001SpecModule = require('../DeviceSpec/AHUINDR001Spec.js');
 var SPB001SpecModule = require('../DeviceSpec/SPB001Spec.js');
 
 
@@ -47,8 +48,15 @@ function DeviceSpecApi(express)
 			        res.end(response);
 				}
 				
-				else if (deviceType == "ESBHA001") {
-			        var devSpec = new ESBHA001SpecModule.ESBHA001Spec();
+				else if (deviceType == "AHUOTDR001") {
+			        var devSpec = new AHUOTDR001SpecModule.AHUOTDR001Spec();
+			        hubResponse.data = devSpec;
+			        response = hubResponse.getOkResponse();
+			        res.end(response);
+				}
+
+				else if (deviceType == "AHUINDR001") {
+			        var devSpec = new AHUINDR001SpecModule.AHUINDR001Spec();
 			        hubResponse.data = devSpec;
 			        response = hubResponse.getOkResponse();
 			        res.end(response);

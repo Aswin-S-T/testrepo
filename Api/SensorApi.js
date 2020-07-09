@@ -385,30 +385,8 @@ function SensorApi(express) {
             data.NH3 = (data.NH3 * 0.0409 * 17.031)*1000;
         }
         var currentdate = new Date();
-        var dataOfRequest = {
-            "temperature": Number((data.temperature).toFixed(2)),
-            "pressure": Number((data.pressure).toFixed(2)),
-            "humidity": Number((data.humidity).toFixed(2)),
-            "noise": Number((data.noise).toFixed(2)),
-            "rain": Number((data.rain).toFixed(3)),
-            "PM10": Number((data.PM10).toFixed(0)),
-            "PM2p5": Number((data.PM2p5).toFixed(0)),
-            "PM1": Number((data.PM1).toFixed(0)),
-            "CO": Number((data.CO).toFixed(3)),
-            "CO2": Number((data.CO2).toFixed(0)),
-            "NO2": Number((data.NO2).toFixed(3)),
-            "SO2": Number((data.SO2).toFixed(3)),
-            "O3": Number((data.O3).toFixed(3)),
-            "NH3": Number((data.NH3).toFixed(3)),
-            "time": data.time,
-            "receivedTime": currentdate.valueOf(),
-            "er_init_sensor": data.er_init_sensor,
-            "er_read_sensor": data.er_read_sensor,
-            "sig_strength":data.sig_strength,
-            "build_ver":data.build_ver
-        }
-
-        return [dataOfRequest];
+        data.receivedTime = currentdate.valueOf();
+        return [data];
     }
 
 

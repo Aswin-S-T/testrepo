@@ -70,11 +70,11 @@ function AfmSensorDevice() {
                         //val += calibItem.offset;
 
                         if (calibItem.funct == null || calibItem.funct == "translate") {
-                            val = val + calibItem.offset;
+                            val = Number((val + calibItem.offset).toFixed(2));
 
                         }
                         else if (calibItem.funct == "scale") {
-                            val = val * calibItem.offset;
+                            val = Number((val * calibItem.offset).toFixed(2));
 
                         }
                        
@@ -129,7 +129,7 @@ function AfmSensorDevice() {
 
                             var res = filteringWMA.filter(oldValue, newValue);
 
-                            filterResult[paramDefs[i].paramName] = boundValueToLimits(res);
+                            filterResult[paramDefs[i].paramName] = Number((boundValueToLimits(res)).toFixed(2));
                             //                            filterResult[paramDefs[i].paramName] = processCalibration(boundValueToLimits(res), paramDefs[i]);
                         }
 
@@ -142,7 +142,7 @@ function AfmSensorDevice() {
                     }
                     else {
                         // insert AQI derived param.
-                        filterResult.rawAQI = myInstance.findAQIFromLiveData(filterResult);
+                        filterResult.rawAQI = Number((myInstance.findAQIFromLiveData(filterResult)).toFixed(2));
                         callBack(null, filterResult);
                     }
                 });
@@ -155,7 +155,7 @@ function AfmSensorDevice() {
                 }
                 else {
                     // insert AQI derived param.
-                    filterResult.rawAQI = myInstance.findAQIFromLiveData(filterResult);
+                    filterResult.rawAQI = Number((myInstance.findAQIFromLiveData(filterResult)).toFixed(2));
                     callBack(null, filterResult);
                 }
             }

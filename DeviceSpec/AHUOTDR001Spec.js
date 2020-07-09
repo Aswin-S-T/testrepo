@@ -1,8 +1,8 @@
 var DeviceSpecModule = require('./DeviceSpec.js');
 
-function ESBHA001Spec() {
+function AHUOTDR001Spec() {
 
-    this.id = "ESBHA001";
+    this.id = "AHUOTDR001";
 
 
     this.getParamDefinitions = function () {
@@ -61,7 +61,6 @@ function ESBHA001Spec() {
                     }
                 ]
             },
-            //to be decided
             {
                 paramName: "pressure",
                 displayName: "Pressure",
@@ -97,8 +96,6 @@ function ESBHA001Spec() {
                     }
                 ]
             },
-
-            //to be decided
             {
                 paramName: "humidity",
                 displayName: "Humidity",
@@ -245,61 +242,6 @@ function ESBHA001Spec() {
                 ]
             },
             {
-                paramName: "PM1",
-                displayName: "PM1",
-                displayNameHtml: "PM<sub>1</sub>",
-                unit: 'µg/m3',
-                unitDisplayHtml: '&mu;g/m<sup>3</sup>',
-                isDisplayEnabled: true,
-                needsLiveData: true,
-                isPrimary: false,
-                displayImage: "param.png",
-                valuePrecision: 2,
-                isFilterable: true,
-                maxRanges: {
-                    min: 0,
-                    max: 100
-                },
-                limits: [
-                    {
-                        max: 30,
-                        color: "00B050",
-                        description: "Good"
-                    },
-                    {
-                        min: 31,
-                        max: 60,
-                        color: "92D050",
-                        description: "Satisfactory"
-                    },
-                    {
-                        min: 61,
-                        max: 90,
-                        color: "FFFF00",
-                        description: "Moderate"
-                    },
-                    {
-                        min: 91,
-                        max: 120,
-                        color: "FF9A00",
-                        description: "Poor"
-                    },
-                    {
-                        min: 121,
-                        max: 250,
-                        color: "FF0000",
-                        description: "Very Poor"
-                    },
-                    {
-                        min: 250,
-
-                        color: "800000",
-                        description: "Severe"
-                    }
-                ]
-            },
-
-            {
                 paramName: "CO",
                 displayName: "CO",
                 displayNameHtml: "CO",
@@ -355,8 +297,6 @@ function ESBHA001Spec() {
                     }
                 ]
             },
-
-
             {
                 paramName: "NO2",
                 displayName: "NO2",
@@ -410,9 +350,6 @@ function ESBHA001Spec() {
                     }
                 ]
             },
-
-
-
             {
                 paramName: "SO2",
                 displayName: "SO2",
@@ -466,7 +403,6 @@ function ESBHA001Spec() {
                     }
                 ]
             },
-
             {
                 paramName: "CO2",
                 displayName: "CO2",
@@ -516,211 +452,11 @@ function ESBHA001Spec() {
                 ]
             },
             {
-                paramName: "O3",
-                displayName: "O3",
-                displayNameHtml: "O<sub>3</sub>",
-                unit: 'ug/m3',
-                unitDisplayHtml: 'ug/m3',
-                needsLiveData: true,
-                displayImage: "param.png",
-                isDisplayEnabled: true,
-                isPrimary: false,
-                valuePrecision: 3,
-                isFilterable: true,
-                maxRanges: {
-                    min: 0,
-                    max: 3000
-                },
-                limits: [
-                    {
-                        max: 500,
-                        color: "00B050",
-                        description: "Good"
-                    },
-                    {
-                        min: 501,
-                        max: 1000,
-                        color: "92D050",
-                        description: "Satisfactory"
-                    },
-                    {
-                        min: 1000,
-                        max: 1500,
-                        color: "FFFF00",
-                        description: "Moderate"
-                    },
-                    {
-                        min: 1501,
-                        max: 2000,
-                        color: "FF9A00",
-                        description: "Poor"
-                    },
-                    {
-                        min: 2001,
-                        max: 2500,
-                        color: "FF0000",
-                        description: "Very Poor"
-                    },
-                    {
-                        min: 2501,
-                        color: "800000",
-                        description: "Severe"
-                    }
-                ]
-            },
-
-            {
-                paramName: "NH3",
-                displayName: "NH3",
-                displayNameHtml: "NH<sup>3</sup>",
-                unit: 'ug/m3',
-                unitDisplayHtml: 'ug/m3',
-                needsLiveData: true,
-                displayImage: "param.png",
-                isDisplayEnabled: true,
-                isPrimary: false,
-                valuePrecision: 3,
-                isFilterable: true,
-                maxRanges: {
-                    min: 0,
-                    max: 5000
-                },
-                limits: [
-                    {
-                        max: 500,
-                        color: "00B050",
-                        description: "Good"
-                    },
-                    {
-                        min: 501,
-                        max: 1000,
-                        color: "92D050",
-                        description: "Satisfactory"
-                    },
-                    {
-                        min: 1000,
-                        max: 1500,
-                        color: "FFFF00",
-                        description: "Moderate"
-                    },
-                    {
-                        min: 1501,
-                        max: 2000,
-                        color: "FF9A00",
-                        description: "Poor"
-                    },
-                    {
-                        min: 2001,
-                        max: 2500,
-                        color: "FF0000",
-                        description: "Very Poor"
-                    },
-                    {
-                        min: 2501,
-                        color: "800000",
-                        description: "Severe"
-                    }
-                ]
-            },
-
-            {
-                paramName: "noise",
-                displayName: "Noise",
-                displayNameHtml: "Noise",
-                unit: 'dBA',
-                unitDisplayHtml: 'dBA',
-                isDisplayEnabled: true,
-                needsLiveData: false,
-                isPrimary: false,
-                displayImage: "humidity.png",
-                valuePrecision: 2,
-                isFilterable: true,
-                maxRanges: {
-                    min: 1,
-                    max: 135
-                },
-                limits: [
-                    {
-                        max: 40,
-                        color: "00B050",
-                        description: "Faint"
-                    },
-                    {
-                        min: 41,
-                        max: 80,
-                        color: "92D050",
-                        description: "Moderate"
-                    },
-                    {
-                        min: 81,
-                        max: 110,
-                        color: "FFFF00",
-                        description: "Loud"
-                    },
-                    {
-                        min: 111,
-                        max: 140,
-                        color: "FF9A00",
-                        description: "Pain"
-                    },
-                    {
-                        min: 140,
-                        color: "ff0000",
-                        description: "Intolerable"
-                    }
-                ]
-            },
-
-            {
-                paramName: "rain",
-                displayName: "Rain",
-                displayNameHtml: "Rain",
-                unit: 'mm',
-                unitDisplayHtml: 'mm',
-                isDisplayEnabled: true,
-                needsLiveData: false,
-                isPrimary: false,
-                displayImage: "raingrey.png",
-                valuePrecision: 2,
-                isFilterable: true,
-                maxRanges: {
-                    min: 0,
-                    max: 999.8
-                },
-                limits: [
-                    {
-                        max: 2.5,
-                        color: "92D050",
-                        description: "Light Rain"
-                    },
-                    {
-                        min: 2.5,
-                        max: 9.99,
-                        color: "FFFF00",
-                        description: "Moderate Rain"
-                    },
-                    {
-                        min: 10,
-                        max: 50,
-                        color: "FF9A00",
-                        description: "Heavy Rain"
-                    },
-                    {
-                        min: 50,
-                        color: "ff0000",
-                        description: "Violent"
-                    }
-                ]
-            },
-
-            {
                 paramName: "receivedTime",
                 displayName: "receivedTime",
                 displayNameHtml: "receivedTime",
-               // unit : "hms",
-               unit: '',
-              unitDisplayHtml: '',
-
+                unit: '',
+                unitDisplayHtml: '',
                 displayImage: "param.png",
                 needsLiveData: false,
                 isDisplayEnabled: true,
@@ -729,22 +465,6 @@ function ESBHA001Spec() {
                 maxRanges:null,
                 isFilterable: false
             },
-
-            {
-                paramName: "time",
-                displayName: "Time",
-                displayNameHtml: "Time",
-                unit: '',
-                unitDisplayHtml: '',
-                displayImage: "param.png",
-                needsLiveData: false,
-                isDisplayEnabled: false,
-                isPrimary: false,
-                valuePrecision: 0,
-                maxRanges: null,
-                isFilterable: false
-            },
-
             {
                 paramName: "rawAQI",
                 displayName: "Raw AQI",
@@ -865,16 +585,16 @@ function ESBHA001Spec() {
     this.paramDefinitions = this.getParamDefinitions();
 }
 
-ESBHA001Spec.prototype = new DeviceSpecModule.DeviceSpec();
-ESBHA001Spec.prototype.constructor = ESBHA001Spec;
-ESBHA001Spec.prototype.parent = DeviceSpecModule.DeviceSpec.prototype;
+AHUOTDR001Spec.prototype = new DeviceSpecModule.DeviceSpec();
+AHUOTDR001Spec.prototype.constructor = AHUOTDR001Spec;
+AHUOTDR001Spec.prototype.parent = DeviceSpecModule.DeviceSpec.prototype;
 
 
 // export the class
 module.exports =
-    {
-        ESBHA001Spec
-    };
+{
+    AHUOTDR001Spec
+};
 
 
 

@@ -1,26 +1,12 @@
-var DeviceModule = require('./Device.js');
 var AfmSensorDeviceModule = require('./AfmSensorDevice.js');
 
-var UnitConverterModule = require('../Utils/UnitConverter.js');
-var unitConverter = new UnitConverterModule.UnitConverter();
+var AHUOTDR001SpecModule = require('../DeviceSpec/AHUOTDR001Spec.js')
 
-var StatisticsManagerModule = require('../Calc/StatisticsManager.js');
-var statManager = new StatisticsManagerModule.StatisticsManager();
-
-var WMAFilteringModule = require('../Utils/WMAFiltering.js');
-var filteringWMA = new WMAFilteringModule.WMAFiltering();
-
-var SensorLiveDataHandlerModule = require('../Device/SensorLiveDataHandler.js')
-var sensorLiveDataHandler = new SensorLiveDataHandlerModule.SensorLiveDataHandler();
-
-var GenUtilsModule = require('../Utils/GenUtils.js');
-var genUtils = new GenUtilsModule.GenUtils();
-
-
-function ESAWSNSTI() {
+function AHUOTDR001() {
     this.getDefaultParamDefinitions = function () {
 
-        var temp = this.parent.getDefaultParamDefinitions.call(this);
+        var specModule = new  AHUOTDR001SpecModule.AHUOTDR001Spec();
+        var temp = specModule.getParamDefinitions();
         var newParamList = [
 
 
@@ -64,13 +50,13 @@ function ESAWSNSTI() {
     }
 }
 
-ESAWSNSTI.prototype = new AfmSensorDeviceModule.AfmSensorDevice();
-ESAWSNSTI.prototype.constructor = ESAWSNSTI;
-ESAWSNSTI.prototype.parent = AfmSensorDeviceModule.AfmSensorDevice.prototype;
+AHUOTDR001.prototype = new AfmSensorDeviceModule.AfmSensorDevice();
+AHUOTDR001.prototype.constructor = AHUOTDR001;
+AHUOTDR001.prototype.parent = AfmSensorDeviceModule.AfmSensorDevice.prototype;
 
 
 // export the class
 module.exports =
-    {
-        ESAWSNSTI
-    };
+{
+    AHUOTDR001
+};
