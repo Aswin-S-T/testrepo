@@ -16,14 +16,14 @@
             "PROJECT_TYPE": "AQMS",
             "FRONT_END_APP_ADDR": "http://localhost:3000",
             "DEFAULT_DEVICE_TYPE": "ESBHA001",
-            "DB_Name": "ESBHADB",
+            "DB_Name": "AHUDB",
             "DB_IP": "localhost:27017"
         }
     }, {
         "name": "Envitus-AlarmService",
         "script": "AlarmService.js",
         "env": {
-            "DB_Name": "ESBHADB",
+            "DB_Name": "AHUDB",
             "DB_IP": "localhost:27017"
         }
     }]

@@ -5,11 +5,11 @@ module.exports = shipit => {
         default: {
             branch: process.env.GIT_BRANCH || 'master',
             workspace: '/tmp/github-monitor',
-            deployTo: '/home/ec2-user/alcodex_deploy/AQMS/React',
+            deployTo: '/root/AHU',
             repositoryUrl: 'https://' + process.env.GIT_USERNAME + ':' + process.env.GIT_TOKEN + '@github.com/abdulalcodex/envitusplatformbackend.git',
             ignores: ['.git', 'node_modules'],
             keepReleases: 3,
-            key: '/home/nikhilbs/work/alcodex/keys/t2MicroTrial.pem',
+            key: '~/.ssh/nikhil-alcdx2',
             shallowClone: true,
             frontendAppPath: process.env.FRONTEND_APP_PATH || '$HOME/work/alcodex/envitusplatformfrontend',
             backendAppPath: process.env.PWD,
@@ -30,24 +30,24 @@ module.exports = shipit => {
         },
         dev_deploy: {
             repositoryUrl: '',
-            deployTo: process.env.DEPLOY_PATH ||'/home/ec2-user/alcodex_deploy/AQMS/React',
-            servers: process.env.DEPLOY_SERVER || 'ec2-user@ec2-52-66-53-207.ap-south-1.compute.amazonaws.com',
+            deployTo: process.env.DEPLOY_PATH ||'/root/AHU',
+            servers: process.env.DEPLOY_SERVER || 'root@159.89.163.128',
             forntendBuildCmd: process.env.FRONTENT_APP_BUILD_CMD || 'build:staging',
             buildCmd: process.env.BUILD_CMD || 'build:staging',
             pm2AppNames: process.env.PM2_APP_NAME || 'Envitus-dev Envitus-AlarmService',
             dockerBuildCmd: process.env.DOCKER_BUILD_CMD || 'build:staging_docker'
         },
         staging: {
-            servers: 'ec2-user@ec2-52-66-53-207.ap-south-1.compute.amazonaws.com',
-            deployTo: '/home/ec2-user/alcodex_deploy/AQMS/React',
+            servers: 'root@159.89.163.128',
+            deployTo: '/root/AHU',
             buildCmd: 'build:staging',
             forntendBuildCmd: 'build:staging',
             dockerBuildCmd: 'build:staging_docker',
             pm2AppNames: 'Envitus-staging Envitus-AlarmService'
         },
         staging_PBMS: {
-            servers: 'ec2-user@ec2-52-66-53-207.ap-south-1.compute.amazonaws.com',
-            deployTo: '/home/ec2-user/alcodex_deploy/PBMS',
+            servers: 'root@159.89.163.128',
+            deployTo: '/root/PBMS',
             buildCmd: 'build:staging_PBMS',
             forntendBuildCmd: 'build:PBMS_staging',
             dockerBuildCmd: 'build:staging_docker_PBMS',
@@ -102,6 +102,9 @@ module.exports = shipit => {
     shipit.blTask('remoteUpTask', async () => {
         await shipit.remote([
             'cd ' + shipit.config.deployTo + '/current',
+            'echo $PATH',
+            'export NVM_DIR=$HOME/.nvm',
+            'source $NVM_DIR/nvm.sh',
             'nvm use 8',
             'npm i',
             'pm2 stop ' + shipit.config.pm2AppNames + ' || true',

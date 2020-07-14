@@ -19,6 +19,7 @@ function AHUINDR001Spec() {
                 isPrimary: false, // for display purpose in heatmap
                 needsLiveData: false, // for display purpose in heatmap (as graph in selection pane)
                 valuePrecision: 1,
+                isCsvParam: true,
                 isFilterable: true,
                 maxRanges: {
                     min: -10,
@@ -72,6 +73,7 @@ function AHUINDR001Spec() {
                 isPrimary: false,
                 displayImage: "humidity.png",
                 valuePrecision: 2,
+                isCsvParam: true,
                 isFilterable: true,
                 maxRanges: {
                     min: 0,
@@ -107,6 +109,7 @@ function AHUINDR001Spec() {
                 isPrimary: false,
                 displayImage: "param.png",
                 valuePrecision: 2,
+                isCsvParam: true,
                 isFilterable: true,
                 maxRanges: {
                     min: 0,
@@ -161,6 +164,7 @@ function AHUINDR001Spec() {
                 isPrimary: false,
                 displayImage: "param.png",
                 valuePrecision: 2,
+                isCsvParam: true,
                 isFilterable: true,
                 maxRanges: {
                     min: 0,
@@ -215,6 +219,7 @@ function AHUINDR001Spec() {
                 isDisplayEnabled: true,
                 isPrimary: false,
                 valuePrecision: 0,
+                isCsvParam: true,
                 isFilterable: true,
                 maxRanges: {
                     min: 0,
@@ -250,6 +255,7 @@ function AHUINDR001Spec() {
                 needsLiveData: true,
                 isDisplayEnabled: true,
                 isPrimary: false,
+                isCsvParam: true,
                 isFilterable: true,
                 valuePrecision: 3,
                 maxRanges: {
@@ -300,6 +306,7 @@ function AHUINDR001Spec() {
                 isPrimary: false,
                 valuePrecision: 0,
                 maxRanges:null,
+                isCsvParam: false,
                 isFilterable: false
             },
             {
@@ -314,6 +321,7 @@ function AHUINDR001Spec() {
                 isPrimary: false,
                 valuePrecision: 0,
                 isDerivedParam: true,
+                isCsvParam: true,
                 isFilterable: false,
                 maxRanges: {
                     min: 0,
@@ -369,6 +377,7 @@ function AHUINDR001Spec() {
                 isPrimary: true,
                 valuePrecision: 0,
                 isDerivedParam: true,
+                isCsvParam: true,
                 isFilterable: false,
 
                 maxRanges: {

@@ -1,11 +1,11 @@
 var AfmSensorDeviceModule = require('./AfmSensorDevice.js');
 
-var AHUOTDR001SpecModule = require('../DeviceSpec/AHUOTDR001Spec.js');
+var AHUINDR001SpecModule = require('../DeviceSpec/AHUINDR001Spec.js');
 
 function AHUINDR001() {
     this.getDefaultParamDefinitions = function () {
 
-        var specModule = new  AHUOTDR001SpecModule.AHUOTDR001Spec();
+        var specModule = new  AHUINDR001SpecModule.AHUINDR001Spec();
         var temp = specModule.getParamDefinitions();
         var newParamList = [
 

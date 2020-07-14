@@ -471,7 +471,7 @@ function SensorApi(express) {
                     var timeEnd = req.query.timeEnd;
                     var listDevIds = req.query.deviceIds.split(',');
                     var paramList = null;//req.query.params.split(',');
-                    if (req.query.params != null)
+                    if (req.query.params != null && req.query.params != 'null')
                         paramList = req.query.params.split(',');
 
                     var listResult = [];
@@ -546,7 +546,7 @@ function SensorApi(express) {
                         timeEnd = req.query.timeEnd;
                     var listDevIds = req.query.deviceIds.split(',');
                     var paramList = null;//req.query.params.split(',');
-                    if (req.query.params != null)
+                    if (req.query.params != null && req.query.params != 'null')
                         paramList = req.query.params.split(',');
 
                     var listResult = [];
@@ -620,7 +620,7 @@ function SensorApi(express) {
                     var timeEnd = req.query.timeEnd;
                     var listDevIds = req.query.deviceIds.split(',');
                     var paramList = null;
-                    if (req.query.params != null)
+                    if (req.query.params != null && req.query.params != 'null')
                         paramList = req.query.params.split(',');
                     var listResult = [];
                     var lastDevId = listDevIds[listDevIds.length - 1];
@@ -690,7 +690,7 @@ function SensorApi(express) {
                     var timeEnd = req.query.timeEnd;
                     var listDevIds = req.query.deviceIds.split(',');
                     var paramList = null;
-                    if (req.query.params != null)
+                    if (req.query.params != null && req.query.params != 'null')
                         paramList = req.query.params.split(',');
                     var listResult = [];
                     var lastDevId = listDevIds[listDevIds.length - 1];
