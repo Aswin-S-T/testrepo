@@ -198,6 +198,38 @@ function DeviceApi(express)
 		});
 
   });
+
+  express.get('/device', function (req, res) {
+	var hubResponse = new responseModule.HubResponse();
+	var response = null;
+	requestValidation.isValidUser(req.query.userId, req.query.authPassword, function(result) {
+		if(result == 'failed'){
+			response = hubResponse.getErrorResponse(-1, "Invalid request from client");
+			res.end(response);
+		} else{
+			var numberOfRecords = 10;
+			var offset = 0;
+			var query = {}
+			if (req.query.limit != null)
+				numberOfRecords = parseInt(req.query.limit);
+			if (req.query.offset != null)
+				offset = parseInt(req.query.offset);
+			if (req.query.subType != null)
+				query.subType = req.query.subType;
+				deviceManager.getAlldevices(query, numberOfRecords, offset, function (result) {
+				var hubResponse = new responseModule.HubResponse();
+				var response = null;
+				if(result != null) {
+					hubResponse.data = result;
+					response = hubResponse.getOkResponse();
+				} else {
+					response = hubResponse.getErrorResponse(-1, "Not found");
+				}
+				res.end(response);
+			});
+		}
+	});
+  })
   
 
   express.post('/device', function (req, res)

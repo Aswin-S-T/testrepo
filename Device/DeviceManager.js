@@ -128,7 +128,22 @@ function DeviceManager()
 
     };
 
+    this.getAlldevices = function (query, limit, offset, callBack) {
+		var excludeFields = { '_id': false };
+		dbInstance.GetAllDocumentByCriteria('devices', excludeFields, query, limit, offset, function (err, result) {
 
+			if (err) {
+				callBack(null);
+
+			}
+			else {
+				callBack(result);
+
+			}
+
+		});
+
+	};
    
 
     this.getDeviceFromId = function (id, callBack)

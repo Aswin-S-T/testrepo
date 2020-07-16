@@ -235,6 +235,23 @@ function AlarmManager()
 
     };
 
+    this.getAllAlarmrules = function (query, limit, offset, callBack) {
+		var excludeFields = { '_id': false };
+		dbInstance.GetAllDocumentByCriteria('alarm_rules', excludeFields, query, limit, offset, function (err, result) {
+
+			if (err) {
+				callBack(null);
+
+			}
+			else {
+				callBack(result);
+
+			}
+
+		});
+
+	};
+
 
     this.getAlarmRuleCount= function (type, callBack) {
 
