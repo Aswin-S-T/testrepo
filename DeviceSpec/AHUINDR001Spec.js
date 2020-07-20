@@ -129,7 +129,7 @@ function AHUINDR001Spec() {
                     },
                     {
                         min: 101,
-                        max: 150,
+                        max: 250,
                         color: "FFFF00",
                         description: "Moderate"
                     },
