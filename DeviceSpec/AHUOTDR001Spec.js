@@ -32,25 +32,25 @@ function AHUOTDR001Spec() {
                         description: "Cold"
                     },
                     {
-                        min: 11,
+                        min: 10,
                         max: 15,
                         color: "92D050",
                         description: "Cool"
                     },
                     {
-                        min: 16,
+                        min: 15,
                         max: 25,
                         color: "FFFF00",
                         description: "Warm"
                     },
                     {
-                        min: 26,
+                        min: 25,
                         max: 37,
                         color: "FF9A00",
                         description: "Hot"
                     },
                     {
-                        min: 38,
+                        min: 37,
                         max: 40,
                         color: "FF0000",
                         description: "Very Hot"
@@ -159,25 +159,25 @@ function AHUOTDR001Spec() {
                         description: "Good"
                     },
                     {
-                        min: 51,
+                        min: 50,
                         max: 100,
                         color: "92D050",
                         description: "Satisfactory"
                     },
                     {
-                        min: 101,
+                        min: 100,
                         max: 250,
                         color: "FFFF00",
                         description: "Moderate"
                     },
                     {
-                        min: 251,
+                        min: 250,
                         max: 350,
                         color: "FF9A00",
                         description: "Poor"
                     },
                     {
-                        min: 351,
+                        min: 350,
                         max: 430,
                         color: "FF0000",
                         description: "Very Poor"
@@ -215,25 +215,25 @@ function AHUOTDR001Spec() {
                         description: "Good"
                     },
                     {
-                        min: 31,
+                        min: 30,
                         max: 60,
                         color: "92D050",
                         description: "Satisfactory"
                     },
                     {
-                        min: 61,
+                        min: 60,
                         max: 90,
                         color: "FFFF00",
                         description: "Moderate"
                     },
                     {
-                        min: 91,
+                        min: 90,
                         max: 120,
                         color: "FF9A00",
                         description: "Poor"
                     },
                     {
-                        min: 121,
+                        min: 120,
                         max: 250,
                         color: "FF0000",
                         description: "Very Poor"
@@ -273,7 +273,7 @@ function AHUOTDR001Spec() {
                         description: "Good"
                     },
                     {
-                        min: 501,
+                        min: 500,
                         max: 1000,
                         color: "92D050",
                         description: "Satisfactory"
@@ -285,19 +285,19 @@ function AHUOTDR001Spec() {
                         description: "Moderate"
                     },
                     {
-                        min: 1501,
+                        min: 1500,
                         max: 2000,
                         color: "FF9A00",
                         description: "Poor"
                     },
                     {
-                        min: 2001,
+                        min: 2000,
                         max: 2500,
                         color: "FF0000",
                         description: "Very Poor"
                     },
                     {
-                        min: 2501,
+                        min: 2500,
                         color: "800000",
                         description: "Severe"
                     }
@@ -327,7 +327,7 @@ function AHUOTDR001Spec() {
                         description: "Good"
                     },
                     {
-                        min: 501,
+                        min: 500,
                         max: 1000,
                         color: "92D050",
                         description: "Satisfactory"
@@ -339,19 +339,19 @@ function AHUOTDR001Spec() {
                         description: "Moderate"
                     },
                     {
-                        min: 1501,
+                        min: 1500,
                         max: 2000,
                         color: "FF9A00",
                         description: "Poor"
                     },
                     {
-                        min: 2001,
+                        min: 2000,
                         max: 2500,
                         color: "FF0000",
                         description: "Very Poor"
                     },
                     {
-                        min: 2501,
+                        min: 2500,
                         color: "800000",
                         description: "Severe"
                     }
@@ -381,7 +381,7 @@ function AHUOTDR001Spec() {
                         description: "Good"
                     },
                     {
-                        min: 501,
+                        min: 500,
                         max: 1000,
                         color: "92D050",
                         description: "Satisfactory"
@@ -393,19 +393,19 @@ function AHUOTDR001Spec() {
                         description: "Moderate"
                     },
                     {
-                        min: 1501,
+                        min: 1500,
                         max: 2000,
                         color: "FF9A00",
                         description: "Poor"
                     },
                     {
-                        min: 2001,
+                        min: 2000,
                         max: 2500,
                         color: "FF0000",
                         description: "Very Poor"
                     },
                     {
-                        min: 2501,
+                        min: 2500,
                         color: "800000",
                         description: "Severe"
                     }
@@ -435,19 +435,19 @@ function AHUOTDR001Spec() {
                         description: "Good"
                     },
                     {
-                        min: 351,
+                        min: 350,
                         max: 1000,
                         color: "92D050",
                         description: "Satisfactory"
                     },
                     {
-                        min: 1001,
+                        min: 1000,
                         max: 2000,
                         color: "FFFF00",
                         description: "Moderate"
                     },
                     {
-                        min: 2001,
+                        min: 2000,
                         max: 5000,
                         color: "FF9A00",
                         description: "Poor"
@@ -500,31 +500,31 @@ function AHUOTDR001Spec() {
                         description: "Good"
                     },
                     {
-                        min: 51.0,
-                        max: 100.99,
+                        min: 50,
+                        max: 100,
                         color: "92D050",
                         description: "Satisfactory"
                     },
                     {
-                        min: 101.00,
-                        max: 200.99,
+                        min: 100,
+                        max: 200,
                         color: "FFFF00",
                         description: "Moderate"
                     },
                     {
-                        min: 201.00,
-                        max: 301.99,
+                        min: 200,
+                        max: 300,
                         color: "FF9A00",
                         description: "Poor"
                     },
                     {
-                        min: 301.00,
-                        max: 400.99,
+                        min: 300,
+                        max: 400,
                         color: "FF0000",
                         description: "Very Poor"
                     },
                     {
-                        min: 401.00,
+                        min: 400,
                         //   max:500,
                         color: "800000",
                         description: "Severe"
@@ -557,31 +557,31 @@ function AHUOTDR001Spec() {
                         description: "Good"
                     },
                     {
-                        min: 51.0,
-                        max: 100.99,
+                        min: 50,
+                        max: 100,
                         color: "92D050",
                         description: "Satisfactory"
                     },
                     {
-                        min: 101.00,
-                        max: 200.99,
+                        min: 100,
+                        max: 200,
                         color: "FFFF00",
                         description: "Moderate"
                     },
                     {
-                        min: 201.00,
-                        max: 301.99,
+                        min: 200,
+                        max: 300,
                         color: "FF9A00",
                         description: "Poor"
                     },
                     {
-                        min: 301.00,
-                        max: 400.99,
+                        min: 300,
+                        max: 400,
                         color: "FF0000",
                         description: "Very Poor"
                     },
                     {
-                        min: 401.00,
+                        min: 400,
                         //   max:500,
                         color: "800000",
                         description: "Severe"
