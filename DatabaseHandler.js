@@ -56,7 +56,6 @@ function DatabaseHandler()
                 //HURRAY!! We are connected. :)
 
                 db.dropDatabase();
-                db.close();
                 return true;
             }
         });
@@ -70,7 +69,6 @@ function DatabaseHandler()
 			else{
 				var collection=db.collection(collectionName)
 				collection.find({},{'id':0,"epoch":1}).limit(1).sort(sortOptions).toArray(function(err,result){
-					db.close()
 					if(err){
 						callback(1,null)
 					}
@@ -99,7 +97,6 @@ function DatabaseHandler()
 			{
                 var collection = db.collection(collectionName);
 				collection.update(query, {$inc: incValue,$set: setData}, {upsert: true});
-				db.close();
 
             }
         });
@@ -116,7 +113,6 @@ function DatabaseHandler()
 			{
                 var collection = db.collection(collectionName);
 				collection.update(query,{$addToSet: listData},{ upsert: true});
-				db.close();
 
             }
         });
@@ -133,7 +129,6 @@ function DatabaseHandler()
 			{
                 var collection = db.collection(collectionName);
 				collection.update(query,{$pull: listData},{ upsert: false});
-				db.close();
 
             }
         });
@@ -151,7 +146,6 @@ function DatabaseHandler()
 	            // not sure where the dom value comes from ?
 	            collection.distinct(field, function (err, result)
 	            {
-	                db.close();
 	                if (err) {
 
 	                    callback(null);
@@ -182,7 +176,6 @@ function DatabaseHandler()
 				try{
 					collection.insert(JsonData, function (errData, result) {
 
-						db.close();
 						if (callBack == null)
 							return;
 							
@@ -232,7 +225,6 @@ function DatabaseHandler()
 				
 				collection.insert(JsonData, function (err, result)
 				{
-				    db.close();
                     if (err) {
 
 						callback(null, null);
@@ -266,7 +258,6 @@ function DatabaseHandler()
                 var collection = db.collection(collectionName);
 				
                 collection.remove(query,{justOne : true} );
-                db.close();
             }
         });
 	};
@@ -314,7 +305,6 @@ function DatabaseHandler()
 
                     }
 
-					db.close();
 
 					callback(null, result);
                 });
@@ -333,7 +323,6 @@ function DatabaseHandler()
 	            var collection = db.collection(collectionName);
 	            collection.update(query, { $set: JsonData }, function (err, result)
 	            {
-	                db.close();
 	                if (err)
 	                {
 	                    callBack(1);
@@ -360,7 +349,6 @@ function DatabaseHandler()
 	            var collection = db.collection(collectionName);
 	            collection.update(query, { $set: JsonData }, { upsert: true }, function (err, result)
 	            {
-	                db.close();
 	                if (err)
 	                {
 	                    callBack(1);
@@ -385,7 +373,6 @@ function DatabaseHandler()
 	            var collection = db.collection(collectionName);
 	            collection.findOneAndUpdate(query, { $set: JsonData }, { sort: sortOption }, function (err, result)
 	            {
-	                db.close();
 	                if (err)
 	                {
 	                    callBack(1, null);
@@ -412,7 +399,6 @@ function DatabaseHandler()
 			
 				collection.update(query,{ $set:field}, function (err, result)
 				{
-				    db.close();
                     if (err)
 					{
 
@@ -442,7 +428,6 @@ function DatabaseHandler()
             // not sure where the dom value comes from ?
             collection.count(query, function (err, count) 
 			{
-                db.close();
 				if (err)
 				{
 
@@ -465,7 +450,6 @@ function DatabaseHandler()
 
 	            collection.find(query, excludeFields, { sort: { _id: -1 }, limit: limit, skip: offset }).toArray(function (err, result)
 	            {
-	                db.close();
 	                if (err)
 	                {
 
@@ -497,7 +481,6 @@ function DatabaseHandler()
 				
                 collection.find(query ,{ sort: { _id : -1 }}).toArray(function (err, result)
                 {
-                    db.close();
 					if (err) {
 
                     } else if (result.length && result[index]!= null)
@@ -527,7 +510,6 @@ function DatabaseHandler()
             // not sure where the dom value comes from ?
             collection.count({}, function (err, count)
             {
-                db.close();
 				if (err)
 				{
 
@@ -558,7 +540,6 @@ function DatabaseHandler()
                     options.sort = { _id: -1 };
 
                 collection.find(query, excludFields).limit(limitRecords).skip(skipRecords).sort(sortOptions).toArray(function (err, result) {
-                    db.close();
 
                     if (err) {
                         callback(1, null);
@@ -592,7 +573,6 @@ function DatabaseHandler()
         //        var collection = db.collection(collectionName);
         //        collection.find(query, fields, { sort: { _id: -1 } }).toArray(function (err, result)
         //        {
-        //            db.close();
         //            if (err)
         //            {
         //                callback(1,null);
@@ -624,7 +604,6 @@ function DatabaseHandler()
                 var collection = db.collection(collectionName);
                 collection.find(query, fields,{ sort: { _id : -1 }}).toArray(function (err, result)
                 {
-                    db.close();
 					if (err) {
 
                     } else if (result.length )
@@ -657,7 +636,6 @@ function DatabaseHandler()
                 var collection = db.collection(collectionName);
                 collection.find().toArray(function (err, result)
                 {
-                    db.close();
 					if (err) {
 
                     } else if (result.length && result[index]!= null)
@@ -691,7 +669,6 @@ function DatabaseHandler()
                 var collection = db.collection(collectionName);
                 collection.find().toArray(function (err, result)
                 {
-                    db.close();
 					if (err) {
 
                     } else if (result.length && result!= null)
@@ -725,7 +702,6 @@ function DatabaseHandler()
 		        var collection = db.collection(collectionName);
 				collection.find(query,{fields: [fields] }).toArray(function (err, result)
 				{
-				    db.close();
 					if (err) 
 					{
 
@@ -760,7 +736,6 @@ function DatabaseHandler()
 			
                 collection.findOne(query, function (err, item)
                 {
-                    db.close();
                     if (err)
 					{
 
@@ -790,7 +765,6 @@ function DatabaseHandler()
                 var collection = db.collection(collectionName);
 				collection.createIndex(indexesClass, { unique: true },function (err,nameIndex)
 				{
-				    db.close();
                     if (err) {
 						callback(1,null);
                     } 
@@ -822,7 +796,6 @@ function DatabaseHandler()
                     }
                 ]).toArray(function (err, result)
                 {
-                    db.close();
 					if (err) {
 
                     } else if (result.length && result!= null)
@@ -855,7 +828,6 @@ function DatabaseHandler()
                 var collection = db.collection(collectionName);
 				collection.findOne(query, function (err, item)
 				{
-				    db.close();
                     if (err) {
 
 						callback(null, "database error");

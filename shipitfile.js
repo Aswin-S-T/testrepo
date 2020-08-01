@@ -28,6 +28,12 @@ module.exports = shipit => {
             forntendBuildCmd: 'build:PBMS',
             pm2AppNames: 'Envitus-PBMS-dev'
         },
+        dev_Jhansi: {
+            servers: 'user@localhost',
+            buildCmd: 'start:dev_Jhansi',
+            forntendBuildCmd: 'build:Jhasni',
+            pm2AppNames: 'Envitus-Jhansi-dev Envitus-Jhansi-AlarmService'
+        },
         dev_deploy: {
             repositoryUrl: '',
             deployTo: process.env.DEPLOY_PATH ||'/root/AHU',
@@ -52,6 +58,14 @@ module.exports = shipit => {
             forntendBuildCmd: 'build:PBMS_staging',
             dockerBuildCmd: 'build:staging_docker_PBMS',
             pm2AppNames: 'Envitus-PBMS-staging'
+        },
+        staging_Jhansi: {
+            servers: 'root@159.89.163.128',
+            deployTo: '/root/Jhansi',
+            buildCmd: 'build:staging_Jhansi',
+            forntendBuildCmd: 'build:Jhansi_staging',
+            dockerBuildCmd: 'build:staging_docker_Jhansi',
+            pm2AppNames: 'Envitus-Jhansi-staging Envitus-Jhansi-AlarmService'
         }
     });
 
