@@ -1,6 +1,6 @@
 {
     "apps": [{
-        "name": "Envitus-staging",
+        "name": "Envitus-Jhansi-staging",
         "script": "Main.js",
         "cwd": ".",
         "log_date_format": "YYYY-MM-DD HH:mm Z",

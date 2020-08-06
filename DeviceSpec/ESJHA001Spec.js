@@ -469,6 +469,7 @@ function ESJHA001Spec() {
                 isDisplayEnabled: true,
                 isPrimary: false,
                 valuePrecision: 3,
+                isCsvParam: true,
                 maxRanges: {
                     min: 0,
                     max: 20
@@ -521,6 +522,7 @@ function ESJHA001Spec() {
                 isPrimary: false,
                 displayImage: "megaphonegrey.png",
                 valuePrecision: 2,
+                isCsvParam: true,
                 maxRanges: {
                     min: 0,
                     max: 140
@@ -568,6 +570,7 @@ function ESJHA001Spec() {
                 displayImage: "raingrey.png",
                 valuePrecision: 2,
                 needCumil: true,
+                isCsvParam: true,
                 maxRanges: {
                     min: 0,
                     max: 999.8
@@ -608,6 +611,7 @@ function ESJHA001Spec() {
                 isDisplayEnabled: true,
                 isPrimary: false,
                 valuePrecision: 2,
+                isCsvParam: true,
                 maxRanges: {
                     min: 200,
                     max: 370
@@ -642,6 +646,7 @@ function ESJHA001Spec() {
                 isDisplayEnabled: true,
                 isPrimary: false,
                 valuePrecision: 2,
+                isCsvParam: true,
                 maxRanges: {
                     min: 0,
                     max: 35000
