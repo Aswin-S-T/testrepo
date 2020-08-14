@@ -570,6 +570,7 @@ function ESJHA001Spec() {
                 displayImage: "raingrey.png",
                 valuePrecision: 2,
                 needCumil: true,
+                needSpecific: true,
                 isCsvParam: true,
                 maxRanges: {
                     min: 0,
