@@ -31,7 +31,7 @@ module.exports = shipit => {
         dev_Jhansi: {
             servers: 'user@localhost',
             buildCmd: 'start:dev_Jhansi',
-            forntendBuildCmd: 'build:Jhasni',
+            forntendBuildCmd: 'build:Jhansi',
             pm2AppNames: 'Envitus-Jhansi-dev Envitus-Jhansi-AlarmService'
         },
         dev_deploy: {

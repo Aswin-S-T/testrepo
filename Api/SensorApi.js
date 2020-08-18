@@ -101,8 +101,13 @@ function SensorApi(express) {
 
                 if (req.query != null && req.query.deviceIds != null) {
 
-                    var timeStart = req.query.timeStart;
-                    var timeEnd = req.query.timeEnd;
+                    var timeStart = null;
+                    var timeEnd = null;
+                   
+                    if (req.query.timeStart != 'null')
+                        timeStart = req.query.timeStart;
+                    if (req.query.timeEnd != 'null')
+                        timeEnd = req.query.timeEnd;
                     var listDevIds = req.query.deviceIds.split(',');
                     var listResult = [];
                     var lastDevId = listDevIds[listDevIds.length - 1];
@@ -616,8 +621,13 @@ function SensorApi(express) {
                     req.query.params = null;
                 if (req.query != null && req.query.deviceIds != null && req.query.timeFrame != null) {
                     var options = req.query.timeFrame.split(',');
-                    var timeStart = req.query.timeStart;
-                    var timeEnd = req.query.timeEnd;
+                    var timeStart = null;
+                    var timeEnd = null;
+                   
+                    if (req.query.timeStart != 'null')
+                        timeStart = req.query.timeStart;
+                    if (req.query.timeEnd != 'null')
+                        timeEnd = req.query.timeEnd;
                     var listDevIds = req.query.deviceIds.split(',');
                     var paramList = null;
                     if (req.query.params != null && req.query.params != 'null')

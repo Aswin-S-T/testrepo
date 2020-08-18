@@ -70,6 +70,54 @@ function ThirdPartyUserManager() {
 		});
 
 	};
+
+	this.getAllThirdPartyUsers = function (query, limit, offset, callBack) {
+		var excludeFields = { '_id': false };
+		dbInstance.GetAllDocumentByCriteria('ThirdPartyUsers', excludeFields, query, limit, offset, function (err, result) {
+
+			if (err) {
+				callBack(null);
+
+			}
+			else {
+				callBack(result);
+
+			}
+
+		});
+
+	};
+
+	this.updateThirdPartyUser = function (ThirdPartyUserDetails,callBack) {
+		var ThirdPartyUser = null;
+		ThirdPartyUser = ThirdPartyUserFactory.createThirdPartyUserInstance(ThirdPartyUserDetails);
+		ThirdPartyUser.parse(ThirdPartyUserDetails);
+
+	    var query = {};
+	    query['name'] = ThirdPartyUserDetails.updateThirdPartyUserId;
+	    var myInstance = this;
+
+	    dbInstance.GetDocumentByName('ThirdPartyUsers', query, function (err, oldUser)
+	    {
+
+	        if (err)
+	        {
+	            callBack(1, "No user found");
+	        }
+	        else
+	        {
+	            dbInstance.updateDocument('ThirdPartyUsers', query, ThirdPartyUser,function(err1){
+	                if (err1) {
+	                    callBack(1, "Error occured while updating key");
+	                }
+	                else
+	                {
+	                    callBack(null, "Key update");
+	                }
+	            });
+	        }
+	    });
+	}
 	
 	this.removeThirdPartyUser = function(uName,callBack)
 	{

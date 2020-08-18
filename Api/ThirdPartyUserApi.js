@@ -99,6 +99,69 @@ function ThirdPartyUserApi(express) {
 		});
 	});
 
+	express.get('/thirdpartyuser', function (req, res) {
+		
+		var hubResponse = new responseModule.HubResponse();
+		var response = null;
+		requestValidation.isValidUser(req.query.userId, req.query.authPassword, function(result) {
+			if(result == 'failed'){
+				response = hubResponse.getErrorResponse(-1, "Invalid request from client");
+				res.end(response);
+			} else{
+				var numberOfRecords = 10;
+				var offset = 0;
+				var query = {}
+				if (req.query.limit != null)
+					numberOfRecords = parseInt(req.query.limit);
+				if (req.query.offset != null)
+					offset = parseInt(req.query.offset);
+				if (req.query.type != null)
+					query.role = req.query.type;
+				ThirdPartyUserManager.getAllThirdPartyUsers(query, numberOfRecords, offset, function (result) {
+					var hubResponse = new responseModule.HubResponse();
+					var response = null;
+					if(result != null) {
+						hubResponse.data = result;
+						response = hubResponse.getOkResponse();
+					} else {
+						response = hubResponse.getErrorResponse(-1, "Not found");
+					}
+					res.end(response);
+				});
+			}
+		});
+	});
+
+	express.put('/thirdpartyuser', function (req, res) {
+		var hubResponse = new responseModule.HubResponse();
+		var response = null;
+		requestValidation.isValidUser(req.query.userId, req.query.authPassword, function (result) {
+			if (result == null) {
+				response = hubResponse.getErrorResponse(-1, "Invalid request from client");
+				res.end(response);
+
+			}
+			else {
+				{
+					ThirdPartyUserManager.updateThirdPartyUser(req.body, function (err, msg) {
+
+						if (!err) {
+							res.end(hubResponse.getOkResponse());
+
+						}
+						else {
+
+							response = hubResponse.getErrorResponse(-1, msg);
+							res.end(response);
+
+						}
+
+					});
+				}
+			}
+		});
+	});
+
 	express.delete('/thirdpartyuser', function (req, res) {
 
 		var slpResponse = new responseModule.HubResponse();
