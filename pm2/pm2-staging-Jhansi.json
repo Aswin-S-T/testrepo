@@ -17,7 +17,8 @@
             "FRONT_END_APP_ADDR": "http://localhost:3000",
             "DEFAULT_DEVICE_TYPE": "ESJHA001",
             "DB_Name": "ESJHADB",
-            "DB_IP": "localhost:27017"
+            "DB_IP": "localhost:27017",
+            "SINGLET_POST": "false"
         }
     }, {
         "name": "Envitus-Jhansi-AlarmService",

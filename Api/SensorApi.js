@@ -335,7 +335,8 @@ function SensorApi(express) {
         var hubResponse = new responseModule.HubResponse();
 
         if (req.body != null) {
-            var dataOfRequest = (process.env.PROJECT_TYPE === "AQMS") ? getAqmsConversion(req.body.data) : 
+            var dataOfRequest = ((process.env.PROJECT_TYPE === "AQMS") && (process.env.SINGLET_POST === "false")) ? getHashedConversion(req.body.data) :
+                (process.env.PROJECT_TYPE === "AQMS") ? getAqmsConversion(req.body.data) : 
                 (process.env.PROJECT_TYPE === "PBMS")? getPBMSConversion(req.body.data) : req.body.data;
             sensorManager.pushSensorData(req.body.deviceId, dataOfRequest, function (err) {
 
@@ -394,6 +395,41 @@ function SensorApi(express) {
         return [data];
     }
 
+    var getHashedConversion = function (data) {
+        const firstParam = data[Object.keys(data)[0]].toString().split("#");
+        let returnData = Array(firstParam.length).fill({});
+        for (var key of Object.keys(data)) {
+            if(key !== 'time' && key !== 'samplingInterval') {
+                let paramVals = data[key].toString().split("#");
+                paramVals.forEach((val, count) => {
+                    val = doParamConversion(key, parseInt(val));
+                    returnData[count] = {...returnData[count], ...{[key]: parseInt(val)}}
+                });
+            } else if(key === 'time'){
+                const latestDate = new Date(data.time).valueOf();
+                for (let index = 0; index < firstParam.length; index++) {
+                    const datasetTime = latestDate - ((firstParam.length - (index + 1)) * data.samplingInterval * 60 * 1000);
+                    returnData[index] = {...returnData[index], ...{receivedTime: datasetTime}}
+                }
+            } 
+        }
+        return returnData;
+    }
+
+    var doParamConversion = function (param, value) {
+        if (param === 'NO2' && value != null) {
+            value = (value * 0.0409 * 46.01) * 1000;
+        } else if (param === 'SO2' && value != null) {
+            value = (value * 0.0409 * 64.06) * 1000;
+        } else if (param === 'O3' && value != null) {
+            value = (value * 0.0409 * 48) * 1000;
+        } else if (param === 'CO' && value != null) {
+            value = (value * 0.0409 * 28.01);
+        } else if (param === 'NH3' && value != null) {
+            value = (value * 0.0409 * 17.031)*1000;
+        }
+        return value;
+    }
 
     var convertFromOldToNewFormat = function (oldJsonData) {
         var result = null;
@@ -696,8 +732,13 @@ function SensorApi(express) {
                     req.query.params = null;
                 if (req.query != null && req.query.deviceIds != null && req.query.timeFrame != null) {
                     var options = req.query.timeFrame.split(',');
-                    var timeStart = req.query.timeStart;
-                    var timeEnd = req.query.timeEnd;
+                    var timeStart = null;
+                    var timeEnd = null;
+                   
+                    if (req.query.timeStart != 'null')
+                        timeStart = req.query.timeStart;
+                    if (req.query.timeEnd != 'null')
+                        timeEnd = req.query.timeEnd;
                     var listDevIds = req.query.deviceIds.split(',');
                     var paramList = null;
                     if (req.query.params != null && req.query.params != 'null')

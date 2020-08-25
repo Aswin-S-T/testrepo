@@ -24,11 +24,25 @@ function ESJHA001() {
                 filteringMethod: null,
                 filteringMethodDef: null,
                 paramName: "er_init_sensor",
+                paramType: 'error',
             },
             {
                 filteringMethod: null,
                 filteringMethodDef: null,
                 paramName: "er_read_sensor",
+                paramType: 'error',
+            },
+            {
+                filteringMethod: null,
+                filteringMethodDef: null,
+                paramName: "er_data_range",
+                paramType: 'error',
+            },
+            {
+                filteringMethod: null,
+                filteringMethodDef: null,
+                paramName: "er_system",
+                paramType: 'error',
             },
             {
                 filteringMethod: null,

@@ -637,7 +637,7 @@ function ESJHA001Spec() {
                 ]
             },
             {
-                paramName: "light",
+                paramName: "lux",
                 displayName: "Light",
                 displayNameHtml: "Light",
                 unit: "lux",
