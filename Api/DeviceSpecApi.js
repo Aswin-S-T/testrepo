@@ -13,6 +13,7 @@ var AHUOTDR001SpecModule = require('../DeviceSpec/AHUOTDR001Spec.js');
 var AHUINDR001SpecModule = require('../DeviceSpec/AHUINDR001Spec.js');
 var SPB001SpecModule = require('../DeviceSpec/SPB001Spec.js');
 var ESJHA001SpecModule = require('../DeviceSpec/ESJHA001Spec.js');
+var CHNLNT001SpecModule = require('../DeviceSpec/CHNLNT001Spec.js');
 
 
 function DeviceSpecApi(express)
@@ -72,6 +73,13 @@ function DeviceSpecApi(express)
 
 				else if (deviceType == "ESJHA001") {
 			        var devSpec = new ESJHA001SpecModule.ESJHA001Spec();
+			        hubResponse.data = devSpec;
+			        response = hubResponse.getOkResponse();
+			        res.end(response);
+				}
+
+				else if (deviceType == "CHNLNT001") {
+			        var devSpec = new CHNLNT001SpecModule.CHNLNT001Spec();
 			        hubResponse.data = devSpec;
 			        response = hubResponse.getOkResponse();
 			        res.end(response);

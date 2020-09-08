@@ -95,7 +95,18 @@ function AfmSensorDevice() {
         var myInstance = this;
         var filterFunc = function () {
 
-
+            if (paramDefs[i] && paramDefs[i].paramName && (paramDefs[i].paramName === "AQI" || paramDefs[i].paramName === "prominentPollutant")) {
+                i++;
+                if (i < paramDefs.length) {
+                    filterFunc();
+                }
+                else {
+                    // insert AQI derived param.
+                    filterResult.rawAQI = Number((myInstance.findAQIFromLiveData(filterResult)).toFixed(2));
+                    callBack(null, filterResult);
+                }
+                return true;
+            }
 
             filterResult[paramDefs[i].paramName] = currentData[paramDefs[i].paramName];
 
@@ -136,7 +147,6 @@ function AfmSensorDevice() {
                     }
 
                     i++;
-                    (paramDefs[i] && paramDefs[i].paramName === "AQI") ? i++ : '';
                     if (i < paramDefs.length) {
                         filterFunc();
                     }
@@ -149,7 +159,6 @@ function AfmSensorDevice() {
             }
             else {
                 i++;
-                (paramDefs[i] && paramDefs[i].paramName === "AQI") ? i++ : '';
                 if (i < paramDefs.length) {
                     filterFunc();
                 }

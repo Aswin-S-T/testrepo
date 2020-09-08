@@ -21,6 +21,7 @@ function AHUOTDR001Spec() {
                 valuePrecision: 1,
                 isCsvParam: true,
                 isFilterable: true,
+                signageDisplayLive: true,
                 maxRanges: {
                     min: -10,
                     max: 60
@@ -75,6 +76,7 @@ function AHUOTDR001Spec() {
                 valuePrecision: 2,
                 isCsvParam: true,
                 isFilterable: true,
+                signageDisplayLive: true,
                 maxRanges: {
                     min: 540,
                     max: 1100
@@ -111,6 +113,7 @@ function AHUOTDR001Spec() {
                 valuePrecision: 2,
                 isCsvParam: true,
                 isFilterable: true,
+                signageDisplayLive: true,
                 maxRanges: {
                     min: 0,
                     max: 90
@@ -148,6 +151,7 @@ function AHUOTDR001Spec() {
                 valuePrecision: 2,
                 isCsvParam: true,
                 isFilterable: true,
+                signageDisplayStat: true,
                 maxRanges: {
                     min: 0,
                     max: 450
@@ -204,6 +208,7 @@ function AHUOTDR001Spec() {
                 valuePrecision: 2,
                 isCsvParam: true,
                 isFilterable: true,
+                signageDisplayStat: true,
                 maxRanges: {
                     min: 0,
                     max: 230
@@ -261,6 +266,7 @@ function AHUOTDR001Spec() {
                 valuePrecision: 3,
                 isCsvParam: true,
                 isFilterable: true,
+                signageDisplayStat: true,
                 maxRanges: {
                     min: 0,
                     max: 5000
@@ -316,6 +322,7 @@ function AHUOTDR001Spec() {
                 valuePrecision: 3,
                 isCsvParam: true,
                 isFilterable: true,
+                signageDisplayStat: true,
                 maxRanges: {
                     min: 0,
                     max: 2000
@@ -370,6 +377,7 @@ function AHUOTDR001Spec() {
                 valuePrecision: 3,
                 isCsvParam: true,
                 isFilterable: true,
+                signageDisplayStat: true,
                 maxRanges: {
                     min: 0,
                     max: 3000
@@ -424,6 +432,7 @@ function AHUOTDR001Spec() {
                 isCsvParam: true,
                 isFilterable: true,
                 valuePrecision: 3,
+                signageDisplayStat: true,
                 maxRanges: {
                     min: 0,
                     max: 5000
@@ -473,7 +482,9 @@ function AHUOTDR001Spec() {
                 valuePrecision: 0,
                 maxRanges:null,
                 isCsvParam: false,
-                isFilterable: false
+                isFilterable: false,
+                signageDisplayLive: true,
+                valueType: "date"
             },
             {
                 paramName: "rawAQI",
@@ -545,7 +556,7 @@ function AHUOTDR001Spec() {
                 isDerivedParam: true,
                 isCsvParam: true,
                 isFilterable: false,
-
+                signageDisplayAqiParam: true,
                 maxRanges: {
                     min: 0,
                     max: 500
@@ -587,6 +598,24 @@ function AHUOTDR001Spec() {
                         description: "Severe"
                     }
                 ]
+            },
+            {
+                paramName: "prominentPollutant",
+                displayName: "Prominent Pollutant",
+                displayNameHtml: "Prominent Pollutant",
+                unit: '',
+                unitDisplayHtml: '',
+                displayImage: "param.png",
+                needsLiveData: false,
+                isDisplayEnabled: true,
+                isPrimary: false,
+                valuePrecision: 0,
+                maxRanges:null,
+                isCsvParam: true,
+                isFilterable: false,
+                signageDisplayAqiParam: true,
+                isDerived: true,
+                valueType: "string"
             }
 
         ];

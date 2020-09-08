@@ -1,8 +1,8 @@
 var DeviceSpecModule = require('./DeviceSpec.js');
 
-function ESJHA001Spec() {
+function CHNLNT001Spec() {
 
-    this.id = "ESJHA001";
+    this.id = "CHNLNT001";
 
 
     this.getParamDefinitions = function () {
@@ -137,6 +137,7 @@ function ESJHA001Spec() {
                     }
                 ]
             },
+
             {
                 paramName: "PM10",
                 displayName: "PM10",
@@ -193,6 +194,7 @@ function ESJHA001Spec() {
                     }
                 ]
             },
+
             {
                 paramName: "PM2p5",
                 displayName: "PM2.5",
@@ -246,56 +248,6 @@ function ESJHA001Spec() {
 
                         color: "800000",
                         description: "Severe"
-                    }
-                ]
-            },
-            {
-                paramName: "CO2",
-                displayName: "CO2",
-                displayNameHtml: "CO<sub>2</sub>",
-                unit: 'PPM',
-                unitDisplayHtml: 'PPM',
-                displayImage: "param.png",
-                needsLiveData: true,
-                isDisplayEnabled: true,
-                isPrimary: false,
-                isCsvParam: true,
-                isFilterable: true,
-                valuePrecision: 3,
-                signageDisplayStat: true,
-                maxRanges: {
-                    min: 0,
-                    max: 5000
-                },
-                limits: [
-                    {
-                        max: 350,
-                        color: "00B050",
-                        description: "Good"
-                    },
-                    {
-                        min: 350,
-                        max: 1000,
-                        color: "92D050",
-                        description: "Satisfactory"
-                    },
-                    {
-                        min: 1000,
-                        max: 2000,
-                        color: "FFFF00",
-                        description: "Moderate"
-                    },
-                    {
-                        min: 2000,
-                        max: 5000,
-                        color: "FF9A00",
-                        description: "Poor"
-                    },
-                    {
-
-                        max: 5000,
-                        color: "FF0000",
-                        description: "Very Poor"
                     }
                 ]
             },
@@ -468,264 +420,92 @@ function ESJHA001Spec() {
                 ]
             },
             {
-                paramName: "O3",
-                displayName: "O3",
-                displayNameHtml: "O<sub>3</sub>",
+                paramName: "CO2",
+                displayName: "CO2",
+                displayNameHtml: "CO<sub>2</sub>",
                 unit: 'PPM',
                 unitDisplayHtml: 'PPM',
-                needsLiveData: true,
                 displayImage: "param.png",
+                needsLiveData: true,
                 isDisplayEnabled: true,
                 isPrimary: false,
-                valuePrecision: 3,
                 isCsvParam: true,
+                isFilterable: true,
+                valuePrecision: 3,
                 signageDisplayStat: true,
                 maxRanges: {
                     min: 0,
-                    max: 20
+                    max: 5000
                 },
                 limits: [
                     {
-                        max: 0.0237,
+                        max: 350,
                         color: "00B050",
                         description: "Good"
                     },
                     {
-                        min: 0.0237,
-                        max: 0.0473,
+                        min: 350,
+                        max: 1000,
                         color: "92D050",
                         description: "Satisfactory"
                     },
-                      {
-                          min: 0.0473,
-                          max: 0.0795,
-                          color: "FFFF00",
-                          description: "Moderate"
-                      },
-                      {
-                          min: 0.0795,
-                          max: 0.0984,
-                          color: "FF9A00",
-                          description: "Poor"
-                      },
-                      {
-                          min: 0.0984,
-                          max: 0.354,
-                          color: "FF0000",
-                          description: "Very Poor"
-                      },
-                     {
-                         min: 0.354,
-                         color : "800000",
-                         description: "Severe"
-                     }
-               ]
-            },
-            {
-                paramName: "noise",
-                displayName: "Noise",
-                displayNameHtml: "Noise",
-                unit: 'dBA',
-                unitDisplayHtml: 'dBA',
-                isDisplayEnabled: true,
-                needsLiveData: false,
-                isPrimary: false,
-                displayImage: "megaphonegrey.png",
-                valuePrecision: 2,
-                isCsvParam: true,
-                signageDisplayLive: true,
-                maxRanges: {
-                    min: 0,
-                    max: 140
-                },
-                limits: [
                     {
-                        max: 40,
-                        color: "00B050",
-                        description: "Faint"
-                    },
-                    {
-                        min: 40,
-                        max: 80,
-                        color: "92D050",
+                        min: 1000,
+                        max: 2000,
+                        color: "FFFF00",
                         description: "Moderate"
                     },
                     {
-                        min: 80,
-                        max: 110,
-                        color: "FFFF00",
-                        description: "Loud"
-                    },
-                    {
-                        min: 110,
-                        max: 140,
-                        color: "FF9A00",
-                        description: "Pain"
-                    },
-                     {
-                         min: 140,
-                         color: "ff0000",
-                         description: "Intolerable"
-                     }
-                ]
-            },
-            {
-                paramName: "rain",
-                displayName: "Rain",
-                displayNameHtml: "Rain",
-                unit: 'mm',
-                unitDisplayHtml: 'mm',
-                isDisplayEnabled: true,
-                needsLiveData: false,
-                isPrimary: false,
-                displayImage: "raingrey.png",
-                valuePrecision: 2,
-                needCumil: true,
-                needSpecific: true,
-                isCsvParam: true,
-                signageDisplayStat: true,
-                maxRanges: {
-                    min: 0,
-                    max: 999.8
-                },
-                limits: [
-                    {
-                        max: 2.5,
-                        color: "92D050",
-                        description: "Light Rain"
-                    },
-                    {
-                        min: 2.5,
-                        max: 10,
-                        color: "FFFF00",
-                        description: "Moderate Rain"
-                    },
-                    {
-                        min: 10,
-                        max: 50,
-                        color: "FF9A00",
-                        description: "Heavy Rain"
-                    },
-                     {
-                         min: 50,
-                         color: "ff0000",
-                         description: "Violent"
-                     }
-                ]
-            },
-            {
-                paramName: "UV",
-                displayName: "UV",
-                displayNameHtml: "UV",
-                unit: "nm",
-                unitDisplayHtml: "nm",
-                displayImage: "param.png",
-                needsLiveData: false,
-                isDisplayEnabled: true,
-                isPrimary: false,
-                valuePrecision: 2,
-                isCsvParam: true,
-                signageDisplayStat: true,
-                maxRanges: {
-                    min: 200,
-                    max: 370
-                },
-                limits: [
-                    {
-                        max: 280,
-                        color: "F68E3D",
-                        description: "Dangerous"
-                    },
-                    {
-                        min: 280,
-                        max: 315,
-                        color: "F0503D",
-                        description: "Burning"
-                    },
-                    {
-                        min: 315,
-                        color: "b51807",
-                        description: "Tanning"
-                    }
-                ]
-            },
-            {
-                paramName: "lux",
-                displayName: "Light",
-                displayNameHtml: "Light",
-                unit: "lux",
-                unitDisplayHtml: "lux",
-                displayImage: "param.png",
-                needsLiveData: false,
-                isDisplayEnabled: true,
-                isPrimary: false,
-                valuePrecision: 2,
-                isCsvParam: true,
-                signageDisplayStat: true,
-                maxRanges: {
-                    min: 0,
-                    max: 35000
-                },
-                limits: [
-                    {
-                        max: 1,
-                        color: "00ff85",
-                        description: "Equivalent to Twilight"
-                    },
-                    {
-                        min: 1,
-                        max: 2,
-                        color: "00ff2b",
-                        description: "Equivalent to risk lighting"
-                    },
-                    {
-                        min: 2,
-                        max: 5,
-                        color: "b0ff00",
-                        description: "Equivalent to side road lighting"
-                    },
-                    {
-                        min: 5,
-                        max: 10,
-                        color: "ccff00",
-                        description: "Equivalent to Sunset"
-                    },
-                    {
-                        min: 10,
-                        max: 15,
-                        color: "f0ff00",
-                        description: "Equivalent to main road lighting"
-                    },
-                    {
-                        min: 15,
-                        max: 50,
-                        color: "fff400",
-                        description: "Equivalent to passageway lighting"
-                    },
-                    {
-                        min: 50,
-                        max: 300,
-                        color: "ffce00",
-                        description: "Equivalent to easy reading lighting"
-                    },
-                    {
-                        min: 300,
-                        max: 500,
-                        color: "ffa700",
-                        description: "Equivalent to office lighting"
-                    },
-                    {
-                        min: 500,
+                        min: 2000,
                         max: 5000,
-                        color: "ff6700",
-                        description: "Equivalent to overcast sky"
+                        color: "FF9A00",
+                        description: "Poor"
                     },
                     {
-                        min: 5000,
-                        color: "ff1a00",
-                        description: "Equivalent to summer"
+
+                        max: 5000,
+                        color: "FF0000",
+                        description: "Very Poor"
                     }
                 ]
+            },
+            {
+                paramName: "O3",
+                displayName: "O3",
+                displayNameHtml: "O<sub>3</sub>",
+                unit: "PPM",
+                unitDisplayHtml: "PPM",
+                needsLiveData: true,
+                isDisplayEnabled: true,
+                displayImage: "param.png",
+                isPrimary: false,
+                valuePrecision: 3,
+                isCsvParam: true,
+                isFilterable: true,
+                signageDisplayStat: true,
+                maxRanges: {
+                    min: 0,
+                    max: 2000
+                },
+                limits: [
+                     {
+                         max: 0.1,
+                         color: "ffff00",
+                         description: "Low"
+                     },
+                     {
+                         min: 0.1,
+                         max: 1.0,
+                         color: "00ff00",
+                         description: "Moderate"
+                     },
+                      {
+                          min: 1.0,
+                          color: "ff0000",
+                          description: "High"
+                      }
+                ]
+
             },
             {
                 paramName: "receivedTime",
@@ -884,15 +664,15 @@ function ESJHA001Spec() {
     this.paramDefinitions = this.getParamDefinitions();
 }
 
-ESJHA001Spec.prototype = new DeviceSpecModule.DeviceSpec();
-ESJHA001Spec.prototype.constructor = ESJHA001Spec;
-ESJHA001Spec.prototype.parent = DeviceSpecModule.DeviceSpec.prototype;
+CHNLNT001Spec.prototype = new DeviceSpecModule.DeviceSpec();
+CHNLNT001Spec.prototype.constructor = CHNLNT001Spec;
+CHNLNT001Spec.prototype.parent = DeviceSpecModule.DeviceSpec.prototype;
 
 
 // export the class
 module.exports =
 {
-    ESJHA001Spec
+    CHNLNT001Spec
 };
 
 

@@ -419,6 +419,54 @@ function SensorManager()
         });
     }
 
+    this.getDasboardDisplayData = function (sensorId, callBackData) {
+        var myInstance = this;
+        var collectionName = sensorId + "_L";
+        deviceManager.getDeviceFromId(sensorId, function (device)
+        {
+            if (device != null)
+            {
+                var statParams = [];
+                var aqiParams = [];
+                var specificDevice = devFactory.createDeviceInstanceFromSubType(device.subType);
+                specificDevice.parse(device);
+                var paramDef = specificDevice.getDefaultParamDefinitions();
+                paramDef.forEach(param => {
+                    (param.signageDisplayStat) ? statParams.push(param.paramName) : '';
+                    (param.signageDisplayAqiParam) ? aqiParams.push(param.paramName) : '';
+                });
+                sensorLiveDataHandler.getLiveDataHelper(collectionName, collectionName, 1, 0, null, null, function(liveDataErr, deviceId, liveData) {
+                    myInstance.getSensorStats(sensorId, statParams, null, null, true, false, false, false, statParams.length * 2, 0, function(statDataErr, statData){
+                        myInstance.getSensorStats(sensorId, aqiParams, null, null, true, false, false, false, statParams.length * 2, 0, function(aqiDataErr, aqiData){
+                            if (liveDataErr || statDataErr || aqiDataErr) {
+                                callBackData(1, sensorId, null);
+                            } else {
+                                var data = paramDef.reduce((data, param) => {
+                                    if (param.signageDisplayLive) {
+                                        data[param.paramName] = (param.paramName != 'receivedTime') ? Number(liveData[0].data[param.paramName]).toFixed(2) : liveData[0].data[param.paramName];
+                                    } else if(param.signageDisplayStat || param.signageDisplayAqiParam) {
+                                        let typeData = (param.signageDisplayStat) ?  statData.hourlyStat :  aqiData.hourlyStat;
+                                        let paramStatData = typeData.find(function(item){
+                                            if (item.paramName === param.paramName) {
+                                                return true;
+                                            }
+                                        });
+                                        data[param.paramName] = (paramStatData) ? (param.valueType === 'string') ? paramStatData.statParams.latestValue :
+                                            (paramStatData.statParams.sum/ paramStatData.statParams.count).toFixed(2) : null;
+                                    }
+                                    return data;
+                                }, {});
+                                callBackData(null, sensorId, [{ logicalDeviceId: deviceId, data: data}]);
+                            }
+                        });
+                    });
+                });
+            } else {
+                callBackData(1, sensorId, null);
+            }
+        });
+    }
+
     this.getStatCollectionPrefixFromDeviceLogicalId = function (logicalId) {
     
         return logicalId + "_stat";

@@ -857,6 +857,53 @@ function SensorApi(express) {
 		});
     });
 
+    express.get('/device/sensor/dashboardData', function (req, res) {
+        // device id will not be logical for this API
+        express.use(apiLimiter);
+        var hubResponse = new responseModule.HubResponse();
+        thirdpartyrequestValidation.isValidThirdPartyuser(req.query.apikey, 1, function (result) {
+            if (result == "limit") {
+                var response = null;
+                response = hubResponse.getErrorResponse(-1, "Limit Exceeded");
+                res.end(response);
+            } else {
+                if (req.query != null && req.query.deviceIds != null) {
+
+                    var listDevIds = req.query.deviceIds.split(',');
+
+                    var listResult = [];
+                    var i = 0;
+
+                    var funcName = 'getDasboardDisplayData';
+
+                    var fetchSensor = function (err, sensorId, value) {
+                        if (err == null) {
+                            if (value[0] != null || value[0] != undefined) {
+                                var resultPerDevice = { deviceId: listDevIds[i], dataList: value };
+                                listResult.push(resultPerDevice);
+                            }
+                        }
+                        i++;
+                        if (i >= listDevIds.length) {
+                            hubResponse.data = { liveDataPerDeviceId: listResult };
+                            response = hubResponse.getOkResponse();
+                            res.end(response);
+                        }
+                        else {
+                            sensorManager[funcName](listDevIds[i], fetchSensor);
+                        }
+                    };
+
+                    sensorManager[funcName](listDevIds[i], fetchSensor);
+
+                }
+                else {
+                    res.end(hubResponse.getErrorResponse(-1, "Invalid request"));
+                }
+            }
+        });
+    });
+
 }
 
 // export the class

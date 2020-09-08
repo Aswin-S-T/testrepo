@@ -28,10 +28,10 @@ async function intilaizeAqiCalculation() {
 					{
                         var utcToHour = new Date();
                         let aqiParamValues = await getAQIParam(device, utcToHour);
-                        let aqiValue = findAQI(aqiParamValues);
+                        let aqiDetails = findAQI(aqiParamValues);
                         utcToHour.setHours(utcToHour.getHours() - 1);
-                        if(aqiValue >= 0) {
-                            sensorManager.updateStatistics(utcToHour, device.logicalDeviceId + '_stat', {AQI: aqiValue}, device, function (err, res){
+                        if(aqiDetails.AQI >= 0) {
+                            sensorManager.updateStatistics(utcToHour, device.logicalDeviceId + '_stat', aqiDetails, device, function (err, res){
                                 if (err) {
                                     reject();
                                 }
@@ -92,17 +92,18 @@ function findAQI(aqiParamValues) {
 
     var resAqi = -1;
     var count = 0;
-    var aqiValue = -9999999999;
+    var aqiDetails = {AQI: -9999999999, prominentPollutant: ''};
 
     _.forOwn(aqiParamValues, function(value, key) {
         var subIndexValue = unitConverter.convertUgM3ToAqi(key, value);
-        if(subIndexValue) {
-            aqiValue = Math.max(aqiValue, subIndexValue);
-            (key === "PM2p5" || key == "PM10") ? count++ : '';   
+        if(subIndexValue && aqiDetails.AQI < subIndexValue) {
+            aqiDetails.AQI = subIndexValue;
+            aqiDetails.prominentPollutant = key;
         }
+        (key === "PM2p5" || key == "PM10") ? count++ : '';   
     });
 
-    return (count >= 1) ? aqiValue : resAqi;
+    return (count >= 1) ? aqiDetails : resAqi;
 }
 
 module.exports =

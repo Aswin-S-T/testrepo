@@ -66,6 +66,13 @@ module.exports = shipit => {
             forntendBuildCmd: 'build:Jhansi_staging',
             dockerBuildCmd: 'build:staging_docker_Jhansi',
             pm2AppNames: 'Envitus-Jhansi-staging Envitus-Jhansi-AlarmService'
+        },
+        staging_chennailnt: {
+            servers: 'root@159.89.163.128',
+            deployTo: '/root/chennailnt',
+            buildCmd: 'build:staging_chennailnt',
+            forntendBuildCmd: 'build:chennailnt',
+            pm2AppNames: 'Envitus-chennailnt-dev Envitus-chennailnt-AlarmService'
         }
     });
 
@@ -74,8 +81,9 @@ module.exports = shipit => {
             'cd ' + shipit.config.frontendAppPath,
             '. ~/.nvm/nvm.sh',
             'nvm use 12',
+            'rm -rf build',
             'npm run ' + shipit.config.forntendBuildCmd,
-            'cp -r build/  ' + shipit.config.backendAppPath + '/public/',
+            'mv -r build/  ' + shipit.config.backendAppPath + '/public/',
             'cd '+ shipit.config.backendAppPath ,
             'nvm use 8',
             'pm2 stop ' + shipit.config.pm2AppNames + ' || true',
@@ -91,6 +99,7 @@ module.exports = shipit => {
             'cd ' + shipit.config.frontendAppPath,
             '. ~/.nvm/nvm.sh',
             'nvm use 12',
+            'rm -rf build',
             'npm run ' + shipit.config.forntendBuildCmd,
             'cp -r build/  ' + shipit.workspace + '/public/',
         ].join('&&'));
