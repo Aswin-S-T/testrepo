@@ -9,9 +9,9 @@ function TravelApi(express){
     express.get('/travel/direction', function(req, res){
         var hubResponse = new responseModule.HubResponse();
         var response = null;
-        requestValidation.isValidUser(req.query.userId, req.query.authPassword, function(result){
+        requestValidation.isValidUser(req, res, function(result){
             if(result == null){
-                response = hubResponse.getErrorResponse(-1,"Invalid request");
+                response = hubResponse.getErrorResponse(-10,"Invalid request");
                 res.end(response);
             } else {
                 response = hubResponse.getOkResponse();

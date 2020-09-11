@@ -15,10 +15,10 @@ function AlarmApi(express)
 
         var hubResponse = new responseModule.HubResponse();
         var response = null;
-        requestValidation.isValidUser(req.query.userId, req.query.authPassword, function (result) {
+        requestValidation.isValidUser(req, res, function (result) {
 
             if (result == null) {
-                response = hubResponse.getErrorResponse(-1, "Invalid request from client");
+                response = hubResponse.getErrorResponse(-10, "Invalid request from client");
                 res.end(response);
 
             } else {
@@ -41,10 +41,10 @@ function AlarmApi(express)
     express.post('/alarm/rules/device', function (req, res) {
 
         var hubResponse = new responseModule.HubResponse();
-        requestValidation.isValidUser(req.query.userId, req.query.authPassword, function (result) {
+        requestValidation.isValidUser(req, res, function (result) {
             if (result == null) {
                 var response = null;
-                response = hubResponse.getErrorResponse(-1, "Invalid request from client");
+                response = hubResponse.getErrorResponse(-10, "Invalid request from client");
                 res.end(response);
 
             }
@@ -79,9 +79,9 @@ function AlarmApi(express)
 
         var slpResponse = new responseModule.HubResponse();
         var response = null;
-        requestValidation.isValidUser(req.query.userId, req.query.authPassword, function (result) {
+        requestValidation.isValidUser(req, res, function (result) {
             if (result == null) {
-                response = slpResponse.getErrorResponse(-1, "Invalid request from client");
+                response = slpResponse.getErrorResponse(-10, "Invalid request from client");
                 res.end(response);
 
             }
@@ -113,10 +113,10 @@ function AlarmApi(express)
 
         var hubResponse = new responseModule.HubResponse();
         var response = null;
-        requestValidation.isValidUser(req.query.userId, req.query.authPassword, function (result) {
+        requestValidation.isValidUser(req, res, function (result) {
 
             if (result == null) {
-                response = hubResponse.getErrorResponse(-1, "Invalid request from client");
+                response = hubResponse.getErrorResponse(-10, "Invalid request from client");
                 res.end(response);
 
             } else {
@@ -141,10 +141,10 @@ function AlarmApi(express)
 
         var hubResponse = new responseModule.HubResponse();
         var response = null;
-        requestValidation.isValidUser(req.query.userId, req.query.authPassword, function (result) {
+        requestValidation.isValidUser(req, res, function (result) {
 
             if (result == null) {
-                response = hubResponse.getErrorResponse(-1, "Invalid request from client");
+                response = hubResponse.getErrorResponse(-10, "Invalid request from client");
                 res.end(response);
 
             } else {
@@ -201,10 +201,10 @@ function AlarmApi(express)
 
         var hubResponse = new responseModule.HubResponse();
         var response = null;
-        requestValidation.isValidUser(req.query.userId, req.query.authPassword, function (result) {
+        requestValidation.isValidUser(req, res, function (result) {
 
             if (result == null) {
-                response = hubResponse.getErrorResponse(-1, "Invalid request from client");
+                response = hubResponse.getErrorResponse(-10, "Invalid request from client");
                 res.end(response);
 
             } else {
@@ -230,10 +230,10 @@ function AlarmApi(express)
 
         var hubResponse = new responseModule.HubResponse();
         var response = null;
-        requestValidation.isValidUser(req.query.userId, req.query.authPassword, function (result) {
+        requestValidation.isValidUser(req, res, function (result) {
 
             if (result == null) {
-                response = hubResponse.getErrorResponse(-1, "Invalid request from client");
+                response = hubResponse.getErrorResponse(-10, "Invalid request from client");
                 res.end(response);
 
             } else {
@@ -260,9 +260,9 @@ function AlarmApi(express)
     express.get('/alarm/rules/device/:index/', function (req, res) {
 
         var hubResponse = new responseModule.HubResponse();
-        requestValidation.isValidUser(req.query.userId, req.query.authPassword, function (result) {
+        requestValidation.isValidUser(req, res, function (result) {
             if (result == 'failed') {
-                res.end(hubResponse.getErrorResponse(-1, "Invalid request from client"));
+                res.end(hubResponse.getErrorResponse(-10, "Invalid request from client"));
 
             } else {
                 alarmManager.getAlarmRuleAt(req.query.type, req.params.index, function (result) {
@@ -286,9 +286,9 @@ function AlarmApi(express)
 		
 		var hubResponse = new responseModule.HubResponse();
 		var response = null;
-		requestValidation.isValidUser(req.query.userId, req.query.authPassword, function(result) {
+		requestValidation.isValidUser(req, res, function(result) {
 			if(result == 'failed'){
-				response = hubResponse.getErrorResponse(-1, "Invalid request from client");
+				response = hubResponse.getErrorResponse(-10, "Invalid request from client");
 				res.end(response);
 			} else{
 				var numberOfRecords = 10;
@@ -357,7 +357,7 @@ function AlarmApi(express)
 
         var hubResponse = new responseModule.HubResponse();
         var response = null;
-        requestValidation.isValidUser(req.query.userId, req.query.authPassword, function (result) {
+        requestValidation.isValidUser(req, res, function (result) {
 
             if (result == null) {
                 response = hubResponse.getErrorResponse(-1, "Invalid request from client");
@@ -383,7 +383,7 @@ function AlarmApi(express)
     express.post('/alarm/rules/device', function (req, res) {
 
         var hubResponse = new responseModule.HubResponse();
-        requestValidation.isValidUser(req.query.userId, req.query.authPassword, function (result) {
+        requestValidation.isValidUser(req, res, function (result) {
             if (result == null) {
                 var response = null;
                 response = hubResponse.getErrorResponse(-1, "Invalid request from client");
@@ -421,7 +421,7 @@ function AlarmApi(express)
 
         var slpResponse = new responseModule.HubResponse();
         var response = null;
-        requestValidation.isValidUser(req.query.userId, req.query.authPassword, function (result) {
+        requestValidation.isValidUser(req, res, function (result) {
             if (result == null) {
                 response = slpResponse.getErrorResponse(-1, "Invalid request from client");
                 res.end(response);
@@ -455,7 +455,7 @@ function AlarmApi(express)
 
         var hubResponse = new responseModule.HubResponse();
         var response = null;
-        requestValidation.isValidUser(req.query.userId, req.query.authPassword, function (result) {
+        requestValidation.isValidUser(req, res, function (result) {
 
             if (result == null) {
                 response = hubResponse.getErrorResponse(-1, "Invalid request from client");
@@ -483,7 +483,7 @@ function AlarmApi(express)
 
         var hubResponse = new responseModule.HubResponse();
         var response = null;
-        requestValidation.isValidUser(req.query.userId, req.query.authPassword, function (result) {
+        requestValidation.isValidUser(req, res, function (result) {
 
             if (result == null) {
                 response = hubResponse.getErrorResponse(-1, "Invalid request from client");
@@ -518,7 +518,7 @@ function AlarmApi(express)
 
         var hubResponse = new responseModule.HubResponse();
         var response = null;
-        requestValidation.isValidUser(req.query.userId, req.query.authPassword, function (result) {
+        requestValidation.isValidUser(req, res, function (result) {
 
             if (result == null) {
                 response = hubResponse.getErrorResponse(-1, "Invalid request from client");
@@ -553,7 +553,7 @@ function AlarmApi(express)
 
         var hubResponse = new responseModule.HubResponse();
         var response = null;
-        requestValidation.isValidUser(req.query.userId, req.query.authPassword, function (result) {
+        requestValidation.isValidUser(req, res, function (result) {
 
             if (result == null) {
                 response = hubResponse.getErrorResponse(-1, "Invalid request from client");
@@ -583,7 +583,7 @@ function AlarmApi(express)
 
         var hubResponse = new responseModule.HubResponse();
         var response = null;
-        requestValidation.isValidUser(req.query.userId, req.query.authPassword, function (result) {
+        requestValidation.isValidUser(req, res, function (result) {
 
             if (result == null) {
                 response = hubResponse.getErrorResponse(-1, "Invalid request from client");
@@ -612,7 +612,7 @@ function AlarmApi(express)
 
         var hubResponse = new responseModule.HubResponse();
         var response = null;
-        requestValidation.isValidUser(req.query.userId, req.query.authPassword, function (result) {
+        requestValidation.isValidUser(req, res, function (result) {
 
             if (result == null) {
                 response = hubResponse.getErrorResponse(-1, "Invalid request from client");
@@ -642,7 +642,7 @@ function AlarmApi(express)
     express.get('/alarm/rules/device/:index/', function (req, res) {
 
         var hubResponse = new responseModule.HubResponse();
-        requestValidation.isValidUser(req.query.userId, req.query.authPassword, function (result) {
+        requestValidation.isValidUser(req, res, function (result) {
             if (result == 'failed') {
                 res.end(hubResponse.getErrorResponse(-1, "Invalid request from client"));
 

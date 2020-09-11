@@ -89,11 +89,11 @@ function SensorApi(express) {
     var getLiveDataCount = function (req, res, isLogicalDeviceId) {
 
         var hubResponse = new responseModule.HubResponse();
-        requestValidation.isValidUser(req.query.userId, req.query.authPassword, function (result) {
+        requestValidation.isValidUser(req, res, function (result) {
             if (result == null) {
 
                 var response = null;
-                response = hubResponse.getErrorResponse(-1, "Invalid request from client");
+                response = hubResponse.getErrorResponse(-10, "Invalid request from client");
                 res.end(response);
 
             }
@@ -236,10 +236,10 @@ function SensorApi(express) {
 
         var hubResponse = new responseModule.HubResponse();
 
-        requestValidation.isValidUser(req.query.userId, req.query.authPassword, function (result) {
+        requestValidation.isValidUser(req, res, function (result) {
             if (result == null) {
                 var response = null;
-                response = hubResponse.getErrorResponse(-1, "Invalid request from client");
+                response = hubResponse.getErrorResponse(-10, "Invalid request from client");
                 res.end(response);
             }
             else {
@@ -569,10 +569,10 @@ function SensorApi(express) {
 
         var hubResponse = new responseModule.HubResponse();
 
-        requestValidation.isValidUser(req.query.userId, req.query.authPassword, function (result) {
+        requestValidation.isValidUser(req, res, function (result) {
             if (result == null) {
                 var response = null;
-                response = hubResponse.getErrorResponse(-1, "Invalid request from client");
+                response = hubResponse.getErrorResponse(-10, "Invalid request from client");
                 res.end(response);
             }
             else {
@@ -720,10 +720,10 @@ function SensorApi(express) {
 
         var hubResponse = new responseModule.HubResponse();
 
-        requestValidation.isValidUser(req.query.userId, req.query.authPassword, function (result) {
+        requestValidation.isValidUser(req, res, function (result) {
             if (result == null) {
                 var response = null;
-                response = hubResponse.getErrorResponse(-1, "Invalid request from client");
+                response = hubResponse.getErrorResponse(-10, "Invalid request from client");
                 res.end(response);
             }
             else {
@@ -792,12 +792,12 @@ function SensorApi(express) {
 	{
 		var hubResponse = new responseModule.HubResponse();
 		var response = null;
-		requestValidation.isValidUser(req.query.userId,req.query.authPassword,function(result)
+		requestValidation.isValidUser(req, res,function(result)
 		{
 			
 			if(result == null)
 			{
-				response  = hubResponse.getErrorResponse(-1,"Invalid request from client");
+				response  = hubResponse.getErrorResponse(-10,"Invalid request from client");
 				res.end(response);
 				
 			}else
@@ -830,11 +830,11 @@ function SensorApi(express) {
 	{
 		var hubResponse = new responseModule.HubResponse();
 		var response = null;
-		requestValidation.isValidUser(req.query.userId,req.query.authPassword,function(result)
+		requestValidation.isValidUser(req, res,function(result)
 		{
 			if(result == null)
 			{
-				response  = hubResponse.getErrorResponse(-1,"Invalid request from client");
+				response  = hubResponse.getErrorResponse(-10,"Invalid request from client");
 				res.end(response);	
 			} else {
                 response = hubResponse.getOkResponse();

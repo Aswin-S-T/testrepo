@@ -17,7 +17,8 @@
             "FRONT_END_APP_ADDR": "http://localhost:3000",
             "DEFAULT_DEVICE_TYPE": "CHNLNT001",
             "DB_Name": "CHNLNTDB",
-            "DB_IP": "localhost:27017"
+            "DB_IP": "localhost:27017",
+            "JWT_SECRET": "oDKeuP8DN0hBF7s7KyQ3K7NDJOCjvQcgDnt3ZQLAMonT13W3Hd4CdRF5t2ODyzlsiAjWixCUvj355DSjZqWCJnqeXQUw2Lvqpitn"
         }
     }, {
         "name": "Envitus-chennailnt-AlarmService",

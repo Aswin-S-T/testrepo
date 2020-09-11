@@ -14,9 +14,9 @@ function ThirdPartyUserApi(express) {
 
 		var hubResponse = new responseModule.HubResponse();
 		var response = null;
-		requestValidation.isValidUser(req.query.userId, req.query.authPassword, function (result) {
+		requestValidation.isValidUser(req, res, function (result) {
 			if (result == null) {
-				response = hubResponse.getErrorResponse(-1, "Invalid request from client");
+				response = hubResponse.getErrorResponse(-10, "Invalid request from client");
 				res.end(response);
 
 			} else {
@@ -48,9 +48,9 @@ function ThirdPartyUserApi(express) {
 
 		var hubResponse = new responseModule.HubResponse();
 		var response = null;
-		requestValidation.isValidUser(req.query.userId, req.query.authPassword, function (result) {
+		requestValidation.isValidUser(req, res, function (result) {
 			if (result == null) {
-				response = hubResponse.getErrorResponse(-1, "Invalid request from client");
+				response = hubResponse.getErrorResponse(-10, "Invalid request from client");
 				res.end(response);
 			} else {
 				response = hubResponse.getOkResponse();
@@ -78,9 +78,9 @@ function ThirdPartyUserApi(express) {
 	express.get('/thirdpartyuser/:index/', function (req, res) {
 		var hubResponse = new responseModule.HubResponse();
 		var response = null;
-		requestValidation.isValidUser(req.query.userId, req.query.authPassword, function(result) {
+		requestValidation.isValidUser(req, res, function(result) {
 			if(result == 'failed'){
-				response = hubResponse.getErrorResponse(-1, "Invalid request from client");
+				response = hubResponse.getErrorResponse(-10, "Invalid request from client");
 				res.end(response);
 			} else{
 				ThirdPartyUserManager.getThirdPartyUserAt(req.query, req.params.index, function (result) {
@@ -103,9 +103,9 @@ function ThirdPartyUserApi(express) {
 		
 		var hubResponse = new responseModule.HubResponse();
 		var response = null;
-		requestValidation.isValidUser(req.query.userId, req.query.authPassword, function(result) {
+		requestValidation.isValidUser(req, res, function(result) {
 			if(result == 'failed'){
-				response = hubResponse.getErrorResponse(-1, "Invalid request from client");
+				response = hubResponse.getErrorResponse(-10, "Invalid request from client");
 				res.end(response);
 			} else{
 				var numberOfRecords = 10;
@@ -135,9 +135,9 @@ function ThirdPartyUserApi(express) {
 	express.put('/thirdpartyuser', function (req, res) {
 		var hubResponse = new responseModule.HubResponse();
 		var response = null;
-		requestValidation.isValidUser(req.query.userId, req.query.authPassword, function (result) {
+		requestValidation.isValidUser(req, res, function (result) {
 			if (result == null) {
-				response = hubResponse.getErrorResponse(-1, "Invalid request from client");
+				response = hubResponse.getErrorResponse(-10, "Invalid request from client");
 				res.end(response);
 
 			}
@@ -166,9 +166,9 @@ function ThirdPartyUserApi(express) {
 
 		var slpResponse = new responseModule.HubResponse();
 		var response = null
-		requestValidation.isValidUser(req.query.userId, req.query.authPassword, function (result) {
+		requestValidation.isValidUser(req, res, function (result) {
 			if (result == null) {
-				response = slpResponse.getErrorResponse(-1, "Invalid request from client");
+				response = slpResponse.getErrorResponse(-10, "Invalid request from client");
 				res.end(response);
 
 			}

@@ -32,7 +32,7 @@ function InitExpress(expObj){
     if (process.env.NODE_ENV === "development" ) {
         expObj.use(function(req, res, next){ 
             res.header("Access-Control-Allow-Origin", process.env.FRONT_END_APP_ADDR);
-            res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
+            res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept, Authorization");
             res.header("Access-Control-Allow-Methods",  "GET,HEAD,POST,PUT,DELETE");
             next();
         });

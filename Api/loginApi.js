@@ -16,7 +16,7 @@ function LoginApi(express) {
         //loggedname=req.query.userName
         //loggedname={'userName':loggedname}
 
-        requestValidation.isValidUser(req.query.userName, req.query.password, function (result) {
+        requestValidation.checkUser(req.query.userName, req.query.password, function (result) {
             
 
             if (result == null) {

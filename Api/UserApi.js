@@ -15,9 +15,9 @@ function UserApi(express) {
 		var hubResponse = new responseModule.HubResponse();
 		var response = null;
 		
-		requestValidation.isValidUser(req.query.userId, req.query.authPassword, function (result) {
+		requestValidation.isValidUser(req, res, function (result) {
 			if (result == null) {
-				response = hubResponse.getErrorResponse(-1, "Invalid request from client");
+				response = hubResponse.getErrorResponse(-10, "Invalid request from client");
 				res.end(response);
 
 			} else {
@@ -49,9 +49,9 @@ function UserApi(express) {
 
 		var hubResponse = new responseModule.HubResponse();
 		var response = null;
-		requestValidation.isValidUser(req.query.userId, req.query.authPassword, function (result) {
+		requestValidation.isValidUser(req, res, function (result) {
 			if (result == null) {
-				response = hubResponse.getErrorResponse(-1, "Invalid request from client");
+				response = hubResponse.getErrorResponse(-10, "Invalid request from client");
 				res.end(response);
 			} else {
 				response = hubResponse.getOkResponse();
@@ -80,9 +80,9 @@ function UserApi(express) {
 		
 		var hubResponse = new responseModule.HubResponse();
 		var response = null;
-		requestValidation.isValidUser(req.query.userId, req.query.authPassword, function(result) {
-			if(result == 'failed'){
-				response = hubResponse.getErrorResponse(-1, "Invalid request from client");
+		requestValidation.isValidUser(req, res, function(result) {
+			if(result == null){
+				response = hubResponse.getErrorResponse(-10, "Invalid request from client");
 				res.end(response);
 			} else{
 				userManager.getUserAt(req.query, req.params.index, function (result) {
@@ -104,9 +104,9 @@ function UserApi(express) {
 		
 		var hubResponse = new responseModule.HubResponse();
 		var response = null;
-		requestValidation.isValidUser(req.query.userId, req.query.authPassword, function(result) {
+		requestValidation.isValidUser(req, res, function(result) {
 			if(result == 'failed'){
-				response = hubResponse.getErrorResponse(-1, "Invalid request from client");
+				response = hubResponse.getErrorResponse(-10, "Invalid request from client");
 				res.end(response);
 			} else{
 				var numberOfRecords = 10;
@@ -137,9 +137,9 @@ function UserApi(express) {
 
 		var hubResponse = new responseModule.HubResponse();
 		var response = null;
-		requestValidation.isValidUser(req.query.userId, req.query.authPassword, function (result) {
+		requestValidation.isValidUser(req, res, function (result) {
 			if (result == null) {
-				response = hubResponse.getErrorResponse(-1, "Invalid request from client");
+				response = hubResponse.getErrorResponse(-10, "Invalid request from client");
 				res.end(response);
 
 			}
@@ -171,9 +171,9 @@ function UserApi(express) {
 
 		var slpResponse = new responseModule.HubResponse();
 		var response = null;
-		requestValidation.isValidUser(req.query.userId, req.query.authPassword, function (result) {
+		requestValidation.isValidUser(req, res, function (result) {
 			if (result == null) {
-				response = slpResponse.getErrorResponse(-1, "Invalid request from client");
+				response = slpResponse.getErrorResponse(-10, "Invalid request from client");
 				res.end(response);
 
 			}

@@ -18,7 +18,8 @@
             "DEFAULT_DEVICE_TYPE": "ESBHA001",
             "DB_Name": "AHUDB",
             "DB_IP": "localhost:27017",
-            "SINGLET_POST": "true"
+            "SINGLET_POST": "true",
+            "JWT_SECRET": "oDKeuP8DN0hBF7s7KyQ3K7NDJOCjvQcgDnt3ZQLAMonT13W3Hd4CdRF5t2ODyzlsiAjWixCUvj355DSjZqWCJnqeXQUw2Lvqpitn"
         }
     }, {
         "name": "Envitus-AlarmService",

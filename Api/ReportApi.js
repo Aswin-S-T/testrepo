@@ -20,10 +20,10 @@ function ReportApi(express)
 
     var dailyReportXmlGenerator = function (req, res,type) {
         var hubResponse = new responseModule.HubResponse();
-        requestValidation.isValidUser(req.query.userId, req.query.authPassword, function (result) {
+        requestValidation.isValidUser(req, res, function (result) {
             if (result == null) {
                 var response = null;
-                response = hubResponse.getErrorResponse(-1, "Invalid request from client");
+                response = hubResponse.getErrorResponse(-10, "Invalid request from client");
                 res.end(response);
 
             }
@@ -107,7 +107,7 @@ function ReportApi(express)
 
         dailyReportXmlGenerator(req, res, "");
         //var hubResponse = new responseModule.HubResponse();
-        //requestValidation.isValidUser(req.query.userId, req.query.authPassword, function (result) {
+        //requestValidation.isValidUser(req, res, function (result) {
         //    if (result == null) {
         //        var response = null;
         //        response = hubResponse.getErrorResponse(-1, "Invalid request from client");
