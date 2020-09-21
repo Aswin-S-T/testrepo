@@ -137,11 +137,13 @@ function DeviceApi(express)
 				
 			}else
 			{
-			    response = hubResponse.getOkResponse();
-			    var filterFamily = null;
-			    if (req.query.substring != null)
-			        filterFamily = req.query.substring;
-				deviceManager.getDeviceCount(filterFamily , function (err, count)
+				response = hubResponse.getOkResponse();
+				var query = {};
+				query.activated = req.query.activated;
+				query.deviceId = (req.query.deviceId === 'null') ? '' : req.query.deviceId;
+				query.city = (req.query.city === 'null') ? '' : req.query.city;
+				query.zone = (req.query.zone === 'null') ? '' : req.query.zone;	
+				deviceManager.getDeviceCount(query , function (err, count)
 				{
 				    if (err!=null)
 				    {
@@ -216,6 +218,10 @@ function DeviceApi(express)
 				offset = parseInt(req.query.offset);
 			if (req.query.subType != null)
 				query.subType = req.query.subType;
+			query.activated = req.query.activated;
+			query.deviceId = (req.query.deviceId === 'null') ? '' : req.query.deviceId;
+			query.city = (req.query.city === 'null') ? '' : req.query.city;
+			query.zone = (req.query.zone === 'null') ? '' : req.query.zone;
 				deviceManager.getAlldevices(query, numberOfRecords, offset, function (result) {
 				var hubResponse = new responseModule.HubResponse();
 				var response = null;

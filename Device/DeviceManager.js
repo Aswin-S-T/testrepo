@@ -63,22 +63,30 @@ function DeviceManager()
 
 
 
-    this.getDeviceCount = function (substringFamily, callBack)
+    this.getDeviceCount = function (query, callBack)
     {
 
         
         var deviceQuery;
-        if (substringFamily == null)
-            substringFamily = "";
-        if (substringFamily != null)
+        if (query == null)
+            query = "";
+        if (query != null)
         {
            
-            var regExp = new RegExp(".*" + substringFamily + ".*");
+            var regExpDev = new RegExp(".*" + query.deviceId + ".*");
+			var regExpZon = new RegExp(".*" + query.zone + ".*");
+			var regExpCity = new RegExp(".*" + query.city + ".*");
+			var activated = (query.activated === 'true') ? 
+				{activated: true} : ((query.activated === 'false')) ?
+				{activated: false} : {};
             deviceQuery  =
 			{
-			    $or: [
-						{ devFamily: { "$regex": regExp, "$options": "-i" } }
-			    ]
+			    $and: [
+						activated,
+						{ deviceId: { "$regex": regExpDev, "$options": "-i" } },
+						{ "location.zone": { "$regex": regExpZon, "$options": "-i" } },
+						{ "location.city": { "$regex": regExpCity, "$options": "-i" } }
+				]
 			}
             
         }
@@ -130,7 +138,22 @@ function DeviceManager()
 
     this.getAlldevices = function (query, limit, offset, callBack) {
 		var excludeFields = { '_id': false };
-		dbInstance.GetAllDocumentByCriteria('devices', excludeFields, query, limit, offset, function (err, result) {
+		var regExpDev = new RegExp(".*" + query.deviceId + ".*");
+		var regExpZon = new RegExp(".*" + query.zone + ".*");
+		var regExpCity = new RegExp(".*" + query.city + ".*");
+		var activated = (query.activated === 'true') ? 
+			{activated: true} : ((query.activated === 'false')) ?
+			{activated: false} : {};
+		deviceQuery  =
+			{
+				$and: [
+						activated,
+						{ deviceId: { "$regex": regExpDev, "$options": "-i" } },
+						{ "location.zone": { "$regex": regExpZon, "$options": "-i" } },
+						{ "location.city": { "$regex": regExpCity, "$options": "-i" } }
+				]
+			}
+		dbInstance.GetAllDocumentByCriteria('devices', excludeFields, deviceQuery, limit, offset, function (err, result) {
 
 			if (err) {
 				callBack(null);

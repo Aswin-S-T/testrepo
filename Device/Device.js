@@ -15,6 +15,9 @@ function Device() {
     this.deployment = null;
     this.location = null;
     this.timeZone = null;
+    this.activated = null;
+    this.creationLog = null;
+    this.deactLog = null;
 
     this.toJson = function () {
         return JSON.stringify(this);
@@ -49,6 +52,9 @@ Device.prototype.parse = function (deviceDetails) {
     this.deployment = deviceDetails.deployment;
     this.location = deviceDetails.location;
     this.description = deviceDetails.description;
+    this.activated = deviceDetails.activated;
+    this.creationLog = deviceDetails.creationLog;
+    this.deactLog = deviceDetails.deactLog;
 
 }
 
