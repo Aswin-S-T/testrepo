@@ -55,11 +55,11 @@ function UserApi(express) {
 				res.end(response);
 			} else {
 				response = hubResponse.getOkResponse();
-				var userSub = null;
-				if (req.query.substring != null) {
-					userSub = req.query.substring;
-				}
-				userManager.getUserCount(userSub, function (err, count) {
+				var query = {};
+				query.activated = req.query.activated;
+				query.name = (req.query.name === 'null') ? '' : req.query.name;
+				query.role = (req.query.role === 'null') ? '' : req.query.role;
+				userManager.getUserCount(query, function (err, count) {
 					if (err != null) {
 						response = hubResponse.getErrorResponse(-1, "Invalid request from client");
 						res.end(response);
@@ -116,8 +116,9 @@ function UserApi(express) {
 					numberOfRecords = parseInt(req.query.limit);
 				if (req.query.offset != null)
 					offset = parseInt(req.query.offset);
-				if (req.query.type != null)
-					query.role = req.query.type;
+				query.activated = req.query.activated;
+				query.name = (req.query.name === 'null') ? '' : req.query.name;
+				query.role = (req.query.role === 'null') ? '' : req.query.role;
 				userManager.getAllUsers(query, numberOfRecords, offset, function (result) {
 					var hubResponse = new responseModule.HubResponse();
 					var response = null;

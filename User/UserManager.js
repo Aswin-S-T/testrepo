@@ -31,10 +31,26 @@ function UserManager() {
 
 	this.getUserCount = function (query, callback) {
 		var userQuery;
-
-		if (query != null) {
-			userQuery = {};
-		}
+        if (query == null)
+            query = "";
+        if (query != null)
+        {
+           
+            var regExpNam = new RegExp(".*" + query.name + ".*");
+			var regExpRol = new RegExp(".*" + query.role + ".*");
+			var activated = (query.activated === 'true') ? 
+				{activated: true} : ((query.activated === 'false')) ?
+				{activated: false} : {};
+			userQuery  =
+			{
+			    $and: [
+						activated,
+						{ name: { "$regex": regExpNam, "$options": "-i" } },
+						{ role: { "$regex": regExpRol, "$options": "-i" } }
+				]
+			}
+            
+        }
 		dbInstance.getDocumentCountByCriteria('users', userQuery, function (err, count) {
 			if (err) {
 				callback(1, 0);
@@ -73,8 +89,22 @@ function UserManager() {
 	};
 
 	this.getAllUsers = function (query, limit, offset, callBack) {
+		var userQuery;
 		var excludeFields = { '_id': false };
-		dbInstance.GetAllDocumentByCriteria('users', excludeFields, query, limit, offset, function (err, result) {
+		var regExpNam = new RegExp(".*" + query.name + ".*");
+		var regExpRol = new RegExp(".*" + query.role + ".*");
+		var activated = (query.activated === 'true') ? 
+			{activated: true} : ((query.activated === 'false')) ?
+			{activated: false} : {};
+		userQuery  =
+			{
+				$and: [
+						activated,
+						{ name: { "$regex": regExpNam, "$options": "-i" } },
+						{ role: { "$regex": regExpRol, "$options": "-i" } },
+				]
+			}
+		dbInstance.GetAllDocumentByCriteria('users', excludeFields, userQuery, limit, offset, function (err, result) {
 
 			if (err) {
 				callBack(null);
@@ -95,7 +125,7 @@ function UserManager() {
 		user.parse(userDetails);
 
 	    var query = {};
-	    query['userName'] = userDetails.updateUserId;
+	    query['userName'] = userDetails.userName;
 	    var myInstance = this;
 
 	    dbInstance.GetDocumentByName('users', query, function (err, oldUser)
