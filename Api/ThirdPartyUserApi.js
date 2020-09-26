@@ -54,11 +54,10 @@ function ThirdPartyUserApi(express) {
 				res.end(response);
 			} else {
 				response = hubResponse.getOkResponse();
-				var ThirdPartyUserSub = null;
-				if (req.query.substring != null) {
-					ThirdPartyUserSub = req.query.substring;
-				}
-				ThirdPartyUserManager.getThirdPartyUserCount(ThirdPartyUserSub, function (err, count) {
+				var query = {};
+				query.activated = req.query.activated;
+				query.name = (req.query.name === 'null') ? '' : req.query.name;
+				ThirdPartyUserManager.getThirdPartyUserCount(query, function (err, count) {
 					if (err != null) {
 						response = hubResponse.getErrorResponse(-1, "Invalid request from client");
 						res.end(response);
@@ -115,8 +114,8 @@ function ThirdPartyUserApi(express) {
 					numberOfRecords = parseInt(req.query.limit);
 				if (req.query.offset != null)
 					offset = parseInt(req.query.offset);
-				if (req.query.type != null)
-					query.role = req.query.type;
+				query.activated = req.query.activated;
+				query.name = (req.query.name === 'null') ? '' : req.query.name;
 				ThirdPartyUserManager.getAllThirdPartyUsers(query, numberOfRecords, offset, function (result) {
 					var hubResponse = new responseModule.HubResponse();
 					var response = null;

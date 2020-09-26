@@ -34,9 +34,24 @@ function ThirdPartyUserManager() {
 
 	this.getThirdPartyUserCount = function (query, callBack) {
 		var ThirdPartyUserQuery;
-		if (query != null) {
-			ThirdPartyUserQuery = {};
-		}
+		if (query == null)
+            query = "";
+        if (query != null)
+        {
+           
+            var regExpNam = new RegExp(".*" + query.name + ".*");
+			var activated = (query.activated === 'true') ? 
+				{activated: true} : ((query.activated === 'false')) ?
+				{activated: false} : {};
+			ThirdPartyUserQuery  =
+			{
+			    $and: [
+						activated,
+						{ name: { "$regex": regExpNam, "$options": "-i" } }
+				]
+			}
+            
+        }
 		dbInstance.getDocumentCountByCriteria('ThirdPartyUsers', ThirdPartyUserQuery, function (err, count) {
 			if (err) {
 				callBack(1, 0);
@@ -72,8 +87,19 @@ function ThirdPartyUserManager() {
 	};
 
 	this.getAllThirdPartyUsers = function (query, limit, offset, callBack) {
+		var ThirdPartyUserQuery;
 		var excludeFields = { '_id': false };
-		dbInstance.GetAllDocumentByCriteria('ThirdPartyUsers', excludeFields, query, limit, offset, function (err, result) {
+		var regExpNam = new RegExp(".*" + query.name + ".*");
+		var activated = (query.activated === 'true') ? 
+			{activated: true} : ((query.activated === 'false')) ?
+			{activated: false} : {};
+		ThirdPartyUserQuery  = {
+			$and: [
+					activated,
+					{ name: { "$regex": regExpNam, "$options": "-i" } }
+			]
+		}
+		dbInstance.GetAllDocumentByCriteria('ThirdPartyUsers', excludeFields, ThirdPartyUserQuery, limit, offset, function (err, result) {
 
 			if (err) {
 				callBack(null);
@@ -94,7 +120,7 @@ function ThirdPartyUserManager() {
 		ThirdPartyUser.parse(ThirdPartyUserDetails);
 
 	    var query = {};
-	    query['name'] = ThirdPartyUserDetails.updateThirdPartyUserId;
+	    query['name'] = ThirdPartyUserDetails.name;
 	    var myInstance = this;
 
 	    dbInstance.GetDocumentByName('ThirdPartyUsers', query, function (err, oldUser)
