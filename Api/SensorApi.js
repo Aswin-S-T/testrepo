@@ -408,7 +408,7 @@ function SensorApi(express) {
             } else if(key === 'time'){
                 const latestDate = new Date(data.time).valueOf();
                 for (let index = 0; index < firstParam.length; index++) {
-                    const datasetTime = latestDate - ((firstParam.length - (index + 1)) * data.samplingInterval * 60 * 1000);
+                    const datasetTime = latestDate - ((firstParam.length - (index + 1)) * data.samplingInterval * 1000);
                     returnData[index] = {...returnData[index], ...{receivedTime: datasetTime}}
                 }
             } 
