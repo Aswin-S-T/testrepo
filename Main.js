@@ -1,72 +1,42 @@
-var path = require('path');
-var express = new require('express');
-var fs = require('fs');
-var https = require('https');
-var cron = require('node-cron');
-var AqiCalculation = require('./Device/AqiCalculation.js');
-var SensorManagerModule = require('./Device/SensorManager.js');
-var sensorManager = new SensorManagerModule.SensorManager();
+const path = require('path');
+const express = require('express');
+const cors = require('cors');
+const fs = require('fs');
+const https = require('https');
+const cron = require('node-cron');
+const AqiCalculation = require('./Device/AqiCalculation.js');
+const SensorManagerModule = require('./Device/SensorManager.js');
+const sensorManager = new SensorManagerModule.SensorManager();
+const bodyParser = require('body-parser')
 
-const cert = fs.readFileSync('./cert/cert.pem');
-const key = fs.readFileSync('./cert/key.pem');
+const app = express();
+app.use(cors());
+app.use(bodyParser.json({ limit: '50mb', extended: true }))
+app.use(bodyParser.urlencoded({ extended: false }))
 
-const helmet = new require('helmet')
-
-function InitExpress(expObj) {
-
-    var bodyParser = require('body-parser')
-    // express.use(bodyParser.json())
-    expObj.use(bodyParser.json({ limit: '50mb' }))
-
-    console.log(process.env.NODE_ENV);
-    console.log(process.env.FRONT_END_APP_ADDR);
-    if (process.env.NODE_ENV === "development") {
-        expObj.use(function (req, res, next) {
-            res.header("Access-Control-Allow-Origin", '*');
-            res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept, Authorization");
-            res.header("Access-Control-Allow-Methods", "GET,HEAD,POST,PUT,DELETE");
-            next();
-        });
-    }
-
-    // routing registration.
-    expObj.use('/app/', express.static(path.join(__dirname, 'public')));
-    expObj.use(express.static(path.join(__dirname, 'public/build')));
-
-    //expObj.use( apiLimiter);
-    var deviceSpecApi = new require('./Api/DeviceSpecApi').DeviceSpecApi(expObj);
-    var sensorApi = new require('./Api/SensorApi').SensorApi(expObj);
-    var deviceApi = new require('./Api/DeviceApi').DeviceApi(expObj);
-    var reportApi = new require('./Api/ReportApi').ReportApi(expObj);
-    var alarmApi = new require('./Api/AlarmApi').AlarmApi(expObj);
-    var userApi = new require('./Api/UserApi').UserApi(expObj);
-    var thirdPartyUserApi = new require('./Api/ThirdPartyUserApi').ThirdPartyUserApi(expObj);
-    var loginApi = new require('./Api/loginApi').LoginApi(expObj);
-    var travelApi = new require('./Api/TravelApi').TravelApi(expObj);
-
-    app.get('*', function (req, res) {
-        res.sendFile(path.join(__dirname, 'public/build', 'index.html'));
-    });
-
-    expObj.get('/shutdown', function (req, res) {
-
-        process.exit()
-
-    });
-
-
-}
-
-cron.schedule('30 * * * *', () => {
-    console.log('AQI Calculated at: ', new Date().toUTCString())
-    AqiCalculation.intilaizeAqiCalculation();
+// routing registration.
+app.use('/app/', express.static(path.join(__dirname, 'public')));
+app.use(express.static(path.join(__dirname, 'public/build')));
+app.get('*', function (req, res) {
+    res.sendFile(path.join(__dirname, 'public/build', 'index.html'));
 });
-sensorManager.processIncomingData();
 
-var app = new require('express')();
-InitExpress(app);
+var deviceSpecApi = new require('./Api/DeviceSpecApi').DeviceSpecApi(app);
+var sensorApi = new require('./Api/SensorApi').SensorApi(app);
+var deviceApi = new require('./Api/DeviceApi').DeviceApi(app);
+var reportApi = new require('./Api/ReportApi').ReportApi(app);
+var alarmApi = new require('./Api/AlarmApi').AlarmApi(app);
+var userApi = new require('./Api/UserApi').UserApi(app);
+var thirdPartyUserApi = new require('./Api/ThirdPartyUserApi').ThirdPartyUserApi(app);
+var loginApi = new require('./Api/loginApi').LoginApi(app);
+var travelApi = new require('./Api/TravelApi').TravelApi(app);
+
+
+// listen server
 const port = Number(process.env.PORT || 3000);
 if (process.env.HTTPS == 'true') {
+    const cert = fs.readFileSync('./cert/cert.pem');
+    const key = fs.readFileSync('./cert/key.pem');
     https.createServer({
         key: key,
         cert: cert
@@ -79,3 +49,10 @@ if (process.env.HTTPS == 'true') {
         console.log("Clean Air India server listening at port:" + port)
     });
 }
+
+
+cron.schedule('30 * * * *', () => {
+    console.log('AQI Calculated at: ', new Date().toUTCString())
+    AqiCalculation.intilaizeAqiCalculation();
+});
+sensorManager.processIncomingData();
