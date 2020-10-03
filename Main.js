@@ -58,6 +58,7 @@ function InitExpress(expObj) {
 }
 
 cron.schedule('30 * * * *', () => {
+    console.log('AQI Calculated at: ', new Date().toUTCString())
     AqiCalculation.intilaizeAqiCalculation();
 });
 sensorManager.processIncomingData();

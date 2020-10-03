@@ -67,15 +67,15 @@ function DeviceManager()
     {
 
         
-        var deviceQuery;
-        if (query == null)
-            query = "";
-        if (query != null)
-        {
+		var deviceQuery;
+		if (query === null) {
+			deviceQuery = {};
+		} else if (query != null) {
            
             var regExpDev = new RegExp(".*" + query.deviceId + ".*");
 			var regExpZon = new RegExp(".*" + query.zone + ".*");
 			var regExpCity = new RegExp(".*" + query.city + ".*");
+			var regExpStype = new RegExp(".*" + query.subType + ".*");
 			var activated = (query.activated === 'true') ? 
 				{activated: true} : ((query.activated === 'false')) ?
 				{activated: false} : {};
@@ -85,7 +85,8 @@ function DeviceManager()
 						activated,
 						{ deviceId: { "$regex": regExpDev, "$options": "-i" } },
 						{ "location.zone": { "$regex": regExpZon, "$options": "-i" } },
-						{ "location.city": { "$regex": regExpCity, "$options": "-i" } }
+						{ "location.city": { "$regex": regExpCity, "$options": "-i" } },
+						{ subType: { "$regex": regExpStype, "$options": "-i" } }
 				]
 			}
             
@@ -141,6 +142,7 @@ function DeviceManager()
 		var regExpDev = new RegExp(".*" + query.deviceId + ".*");
 		var regExpZon = new RegExp(".*" + query.zone + ".*");
 		var regExpCity = new RegExp(".*" + query.city + ".*");
+		var regExpStype = new RegExp(".*" + query.subType + ".*");
 		var activated = (query.activated === 'true') ? 
 			{activated: true} : ((query.activated === 'false')) ?
 			{activated: false} : {};
@@ -150,7 +152,8 @@ function DeviceManager()
 						activated,
 						{ deviceId: { "$regex": regExpDev, "$options": "-i" } },
 						{ "location.zone": { "$regex": regExpZon, "$options": "-i" } },
-						{ "location.city": { "$regex": regExpCity, "$options": "-i" } }
+						{ "location.city": { "$regex": regExpCity, "$options": "-i" } },
+						{ subType: { "$regex": regExpStype, "$options": "-i" } }
 				]
 			}
 		dbInstance.GetAllDocumentByCriteria('devices', excludeFields, deviceQuery, limit, offset, function (err, result) {
