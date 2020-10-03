@@ -7,7 +7,17 @@ const cron = require('node-cron');
 const AqiCalculation = require('./Device/AqiCalculation.js');
 const SensorManagerModule = require('./Device/SensorManager.js');
 const sensorManager = new SensorManagerModule.SensorManager();
-const bodyParser = require('body-parser')
+const bodyParser = require('body-parser');
+const connection = require("./src/database/connection");
+
+// Establish the DB Connection
+connection.createConn()
+	.then((success) => {
+		console.log("DB Connection Established", success);
+	})
+	.catch((error) => {
+		console.log("Error Connection DB", error);
+    });
 
 const app = express();
 app.use(cors());
@@ -17,6 +27,12 @@ app.use(bodyParser.urlencoded({ extended: false }))
 // routing registration.
 app.use('/app/', express.static(path.join(__dirname, 'public')));
 app.use(express.static(path.join(__dirname, 'public/build')));
+
+const routes = require('./src/routes');
+Object.keys(routes).forEach(routeName => {
+    app.use(`/v1.0/${routeName}`, routes[routeName])
+})
+
 app.get('*', function (req, res) {
     res.sendFile(path.join(__dirname, 'public/build', 'index.html'));
 });
