@@ -33,10 +33,6 @@ Object.keys(routes).forEach(routeName => {
     app.use(`/v1.0/${routeName}`, routes[routeName])
 })
 
-app.get('*', function (req, res) {
-    res.sendFile(path.join(__dirname, 'public/build', 'index.html'));
-});
-
 var deviceSpecApi = new require('./Api/DeviceSpecApi').DeviceSpecApi(app);
 var sensorApi = new require('./Api/SensorApi').SensorApi(app);
 var deviceApi = new require('./Api/DeviceApi').DeviceApi(app);
@@ -47,6 +43,9 @@ var thirdPartyUserApi = new require('./Api/ThirdPartyUserApi').ThirdPartyUserApi
 var loginApi = new require('./Api/loginApi').LoginApi(app);
 var travelApi = new require('./Api/TravelApi').TravelApi(app);
 
+app.get('*', function (req, res) {
+    res.sendFile(path.join(__dirname, 'public/build', 'index.html'));
+});
 
 // listen server
 const port = Number(process.env.PORT || 3000);
