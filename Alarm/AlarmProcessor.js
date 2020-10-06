@@ -381,7 +381,7 @@ function AlarmProcessor() {
 
                         if (lastRunEpochForDevice == null) {
                             // no record present for this rule, so take last 5 min sample from current time
-                            var t0 = new Date().valueOf() - (myInst.noAlarmTimePeriod * 60 *100)//* 1000);
+                            var t0 = new Date().valueOf() - (myInst.noAlarmTimePeriod * 60 * 1000)//* 1000);
                             lastRunEpochForDevice = t0;//myInst.startTime;
                         }
                         var limitTemp = 1;
