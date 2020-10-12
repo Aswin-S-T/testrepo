@@ -3,7 +3,7 @@ var DatabaseHandlerModule = require('./DatabaseHandler.js');
 var dbInstance = new  DatabaseHandlerModule.DatabaseHandler();
 
 var jwtService = require('./jwtService.js');
-
+const bcrypt = require('bcrypt');
 
 function RequestValidation()
 {
@@ -34,17 +34,20 @@ function RequestValidation()
     {
 		var query = {};
 		query['userName'] = ssoId;
-		query['password'] = password;
-		dbInstance.IsDocumentExist('users',query, async function(err, result)
+		dbInstance.GetDocumentByName('users', query, function(err, result)
 		{
-			if(result == 'success')
-			{
-				const token = await jwtService.getJwt({
-					user_id: ssoId
+			if(result) {
+				bcrypt.compare(password, result.password, async function(err, res) {
+					if(res === true) {
+						const token = await jwtService.getJwt({
+							user_id: ssoId
+						});
+						callBack({"token": token});
+					} else {
+						callBack(null);
+					}
 				});
-				callBack({"token": token});
-			}else
-			{
+			} else {
 				callBack(null);
 			}
 		});

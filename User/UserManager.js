@@ -7,13 +7,12 @@ var dbInstance = new DatabaseHandlerModule.DatabaseHandler()
 
 function UserManager() {
 
-	this.saveUser = function (userDetails, callBack) {
+	this.saveUser = async function (userDetails, callBack) {
 
 		var user = null;
 		user = userFactory.createUserInstance(userDetails);
 
-		user.parse(userDetails);
-
+		await user.parse(userDetails);
 
 		var query = {};
 		query['userName'] = userDetails.userName;
@@ -119,10 +118,10 @@ function UserManager() {
 
 	};
 
-	this.updateUser = function (userDetails,callBack) {
+	this.updateUser = async function (userDetails,callBack) {
 		var user = null;
 		user = userFactory.createUserInstance(userDetails);
-		user.parse(userDetails);
+		await user.parse(userDetails);
 
 	    var query = {};
 	    query['userName'] = userDetails.userName;

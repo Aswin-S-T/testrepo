@@ -1,3 +1,6 @@
+const bcrypt = require('bcrypt');
+const saltRounds = 10;
+
 function User() {
 
     this.name = null;
@@ -22,14 +25,23 @@ User.prototype.toJson = function () {
     return JSON.stringify(this);
 }
 
-User.prototype.parse = function (userDetails) {
+User.prototype.parse = async function (userDetails) {
+    var password = await new Promise(resolve => {
+        bcrypt.hash(userDetails.password, saltRounds, (err, hash) => {
+            if(err) {
+                resolve(userDetails.password)
+            } else {
+                resolve(hash)
+            }
+        });
+    });
    
     this.name = userDetails.name;
     this.email = userDetails.email;
     this.contact = userDetails.contact;
     this.role = userDetails.role;
     this.userName = userDetails.userName;
-    this.password = userDetails.password;
+    this.password = password;
     this.activated = userDetails.activated;
     this.creationLog = userDetails.creationLog;
     this.deactLog = userDetails.deactLog;

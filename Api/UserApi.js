@@ -45,6 +45,23 @@ function UserApi(express) {
 
 	});
 
+
+	express.post('/user/register', function (req, res) {
+		if (req.body != null && req.body.role === 'Operator' && req.body.devices.length === 0) {
+			userManager.saveUser(req.body, function (result) {
+				var hubResponse = new responseModule.HubResponse();
+				if (result == 'success') {
+					res.end(hubResponse.getOkResponse());
+				}
+				else {
+					res.end(hubResponse.getErrorResponse(-1, "A project with same id already exist"));
+				}
+			});
+		} else {
+			res.end(hubResponse.getErrorResponse(-1, "Invalid request"));
+		}
+	});
+
 	express.get('/user/count', function (req, res) {
 
 		var hubResponse = new responseModule.HubResponse();
