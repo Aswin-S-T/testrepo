@@ -6,9 +6,10 @@ var MongoClient = mongodb.MongoClient;
 
 var databaseIp = process.env.DB_IP;
 var databaseName = process.env.DB_Name;
+var url = process.env.DB_URL;
 // Connection URL. This is where your mongodb server is running.
 //var url = 'mongodb://localhost:27017/IOT;
-var url = 'mongodb://' + databaseIp + '/' + databaseName;
+//var url = 'mongodb://' + databaseIp + '/' + databaseName;
 
 var  dbInst = null;
 function DatabaseHandler() 

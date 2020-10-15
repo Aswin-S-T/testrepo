@@ -25,6 +25,16 @@ app.use(bodyParser.json({ limit: '50mb', extended: true }))
 app.use(bodyParser.urlencoded({ extended: false }))
 
 // routing registration.
+var deviceSpecApi = new require('./Api/DeviceSpecApi').DeviceSpecApi(app);
+var sensorApi = new require('./Api/SensorApi').SensorApi(app);
+var deviceApi = new require('./Api/DeviceApi').DeviceApi(app);
+var reportApi = new require('./Api/ReportApi').ReportApi(app);
+var alarmApi = new require('./Api/AlarmApi').AlarmApi(app);
+var userApi = new require('./Api/UserApi').UserApi(app);
+var thirdPartyUserApi = new require('./Api/ThirdPartyUserApi').ThirdPartyUserApi(app);
+var loginApi = new require('./Api/loginApi').LoginApi(app);
+var travelApi = new require('./Api/TravelApi').TravelApi(app);
+
 app.use('/app/', express.static(path.join(__dirname, 'public')));
 app.use(express.static(path.join(__dirname, 'public/build')));
 
@@ -36,17 +46,6 @@ Object.keys(routes).forEach(routeName => {
 app.get('*', function (req, res) {
     res.sendFile(path.join(__dirname, 'public/build', 'index.html'));
 });
-
-var deviceSpecApi = new require('./Api/DeviceSpecApi').DeviceSpecApi(app);
-var sensorApi = new require('./Api/SensorApi').SensorApi(app);
-var deviceApi = new require('./Api/DeviceApi').DeviceApi(app);
-var reportApi = new require('./Api/ReportApi').ReportApi(app);
-var alarmApi = new require('./Api/AlarmApi').AlarmApi(app);
-var userApi = new require('./Api/UserApi').UserApi(app);
-var thirdPartyUserApi = new require('./Api/ThirdPartyUserApi').ThirdPartyUserApi(app);
-var loginApi = new require('./Api/loginApi').LoginApi(app);
-var travelApi = new require('./Api/TravelApi').TravelApi(app);
-
 
 // listen server
 const port = Number(process.env.PORT || 3000);
