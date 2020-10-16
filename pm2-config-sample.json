@@ -1,0 +1,41 @@
+{
+    "apps": [
+        {
+            "name": "Envitus-Jhansi-dev",
+            "script": "Main.js",
+            "cwd": ".",
+            "log_date_format": "YYYY-MM-DD HH:mm Z",
+            "autorestart": true,
+            "max_restarts": 10,
+            "min_uptime": "90s",
+            "exec_mode": "fork",
+            "instances": 1,
+            "watch": true,
+            "env": {
+                "PORT": 7002,
+                "NODE_ENV": "development",
+                "PROJECT_TYPE": "AQMS",
+                "FRONT_END_APP_ADDR": "http://127.0.0.1:3000/",
+                "DEFAULT_DEVICE_TYPE": "ESJHA001",
+                "DB_Name": "ESJHADB",
+                "DB_IP": "localhost:27017",
+                "DB_URL": "",
+                "SINGLET_POST": "false",
+                "HTTPS": "false",
+                "JWT_SECRET": "",
+                "SUBDOMAIN":"",
+                "OIDC_CLIENT_ID":"",
+                "OIDC_CLIENT_SECRET":"",
+                "OIDC_REDIRECT_URI":""
+            }
+        },
+        {
+            "name": "Envitus-Jhansi-AlarmService",
+            "script": "AlarmService.js",
+            "env": {
+                "DB_Name": "",
+                "DB_IP": ""
+            }
+        }
+    ]
+}
