@@ -33,7 +33,7 @@ if (process.env.NODE_ENV === "development") {
 app.use(express.static(path.join(__dirname, 'public')));
 app.use('/v1.0/', BaseRouter);
 
-app.get('/health', (req: Request, res: Response) => {
+app.get('/v1.0/health', (req: Request, res: Response) => {
     res.json({
         code: 200,
         status: "success",
@@ -50,12 +50,17 @@ app.get('*', function (req, res) {
     res.sendFile(path.join(__dirname, 'public', 'index.html'));
 });
 
-const server = https.createServer({
-    key: key,
-    cert: cert
-}, app).listen(port, () => {
-    Logger.info('Express server started on port: ' + port);
-});
-
+if (process.env.HTTPS == 'true') {
+    const server = https.createServer({
+        key: key,
+        cert: cert
+    }, app).listen(port, () => {
+        Logger.info('Express https server started on port: ' + port);
+    });
+} else {
+    app.listen(port, () => {
+        Logger.info('Express http server started on port: ' + port);
+    });
+}
 // Export express instance
 export default app;
