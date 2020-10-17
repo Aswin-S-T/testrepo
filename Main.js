@@ -34,15 +34,7 @@ passport.use(new OneLoginStrategy({
     passReqToCallback: true
 },
     function (req, issuer, userId, profile, accessToken, refreshToken, params, cb) {
-
-        console.log('issuer:', issuer);
-        console.log('userId:', userId);
-        console.log('accessToken:', accessToken);
-        console.log('refreshToken:', refreshToken);
-        console.log('params:', params);
-
         req.session.accessToken = accessToken;
-
         return cb(null, profile);
     }));
 
@@ -80,17 +72,6 @@ app.use(session({
 // Initialize Passport
 app.use(passport.initialize());
 app.use(passport.session());
-
-// Middleware for checking if a user has been authenticated
-// via Passport and OneLogin OpenId Connect
-function checkAuthentication(req, res, next) {
-    if (req.isAuthenticated()) {
-        next();
-    } else {
-        res.redirect("/");
-    }
-}
-
 
 // routing registration.
 app.use('/app/', express.static(path.join(__dirname, 'public')));
@@ -154,8 +135,6 @@ app.get('/logout', function (req, res) {
         }
     }, function (err, respose, body) {
         req.logout();
-        console.log("logout",req.session)
-        console.log('Session Revoked at OneLogin');
         res.json({
             success: true,
             message: 'Successfully Singout'
