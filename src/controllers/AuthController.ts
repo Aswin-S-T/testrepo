@@ -1,9 +1,25 @@
 import { Request, Response } from 'express';
 
-export const login = ()=>{
+/**
+ * Authenticate -  User
+ *
+ * @method register
+ * 
+ * @param req
+ * @param res
+ */
+export const login = (req: Request, res: Response) => {
 
 }
 
-export const register = ()=>{
-    
+/**
+ * Register -  User
+ *
+ * @method register
+ * 
+ * @param req
+ * @param res
+ */
+export const register = (req: Request, res: Response) => {
+
 }
