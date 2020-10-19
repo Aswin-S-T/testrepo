@@ -8,7 +8,6 @@ const AqiCalculation = require('./Device/AqiCalculation.js');
 const SensorManagerModule = require('./Device/SensorManager.js');
 const sensorManager = new SensorManagerModule.SensorManager();
 const bodyParser = require('body-parser');
-const connection = require("./src/database/connection");
 const session = require('express-session');
 const request = require('request');
 const cookieParser = require('cookie-parser');
@@ -46,15 +45,6 @@ passport.deserializeUser(function (obj, done) {
     done(null, obj);
 });
 
-// Establish the DB Connection
-connection.createConn()
-    .then((success) => {
-        console.log("DB Connection Established", success);
-    })
-    .catch((error) => {
-        console.log("Error Connection DB", error);
-    });
-
 const app = express();
 app.use(cors());
 app.use(bodyParser.json({ limit: '50mb', extended: true }))
@@ -76,11 +66,6 @@ app.use(passport.session());
 // routing registration.
 app.use('/app/', express.static(path.join(__dirname, 'public')));
 app.use(express.static(path.join(__dirname, 'public/build')));
-
-const routes = require('./src/routes');
-Object.keys(routes).forEach(routeName => {
-    app.use(`/v1.0/${routeName}`, routes[routeName])
-})
 
 var deviceSpecApi = new require('./Api/DeviceSpecApi').DeviceSpecApi(app);
 var sensorApi = new require('./Api/SensorApi').SensorApi(app);
