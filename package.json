@@ -1,5 +1,5 @@
 {
-  "name": "Envitus",
+  "name": "envitus",
   "version": "1.0.0",
   "main": "AlarmService.js",
   "dependencies": {
