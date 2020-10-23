@@ -14,17 +14,21 @@ export type UserDocument = mongoose.Document & {
     password: string;
     name: string;
     role: string;
-    isDeleted: number;
-    isActive: boolean;
+    isDeleted: boolean;
+    activated: boolean;
 };
 
 let UserSchema = new Schema({
     name: { type: String, required: true },
-    email: { type: String, required: true, unique: true, index: true },
+    email: { type: String, required: true, index: true },
     password: { type: String, required: true },
-    isDeleted: { type: Number, default: 0 },
-    isActive: { type: Boolean, default: false },
-    role: { type: String, enum: ['admin', 'staff', 'root'], default: 'staff' }
+    isDeleted: { type: Boolean, default: false },
+    activated: { type: Boolean, default: true },
+    role: { type: String, enum: ['Administrator', 'Supervisor', 'Operator', 'Super Admin'], default: 'Operator' },
+    userName: { type: String, required: true },
+    createdBy: { type: mongoose.Types.ObjectId },
+    organization: { type: Array, default: [] },
+    logs: { type: Array, default: [] }
 }, { timestamps: true });
 
 UserSchema.methods.toJSON = function () {

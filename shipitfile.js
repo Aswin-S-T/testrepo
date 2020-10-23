@@ -81,10 +81,12 @@ module.exports = shipit => {
             'cd ' + shipit.config.frontendAppPath,
             '. ~/.nvm/nvm.sh',
             'nvm use 12',
+            'npm install',
             'npm run ' + shipit.config.forntendBuildCmd,
             'cp -r build/  ' + shipit.config.backendAppPath + '/public/',
             'cd '+ shipit.config.backendAppPath ,
             'nvm use 8',
+            'npm install',
             'pm2 stop ' + shipit.config.pm2AppNames + ' || true',
             'pm2 delete ' + shipit.config.pm2AppNames + ' || true',
             'npm run ' + shipit.config.buildCmd
