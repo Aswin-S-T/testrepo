@@ -116,7 +116,7 @@ export const getApiKeyDetails = (req: Request, res: Response) => {
  * @param
  */
 export const deleteApiKey = (req: Request, res: Response) => {
-    ApiKey.findByIdAndUpdate(req.params.id, { isDeleted: 1 }, { new: true }, function (err: any, api: any) {
+    ApiKey.findByIdAndUpdate(req.params.id, { isDeleted: true }, { new: true }, function (err: any, api: any) {
         if (err) { }
         return res.status(StatusCodes.OK).json({
             success: true,
