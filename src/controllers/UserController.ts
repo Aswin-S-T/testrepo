@@ -49,6 +49,27 @@ export const editUser = async (req: Request, res: Response) => {
  * @param   res
  */
 export const updateUserDetails = async (req: Request, res: Response) => {
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+        return res.status(StatusCodes.UNPROCESSABLE_ENTITY).json({ success: false, "errors": errors.array({ onlyFirstError: true }) });
+    }
+    const { name } = req.body;
+    const update: any = {
+        name: name
+    }
+    User.findByIdAndUpdate(req.body.user_id, update, { new: true }, function (err: any, data: any) {
+        if (err) {
+            return res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({
+                success: false,
+                message: "Something went wrong! Please try later",
+            });
+        }
+        return res.status(StatusCodes.OK).json({
+            success: true,
+            message: "Successfully updated",
+            user_details: data
+        });
+    })
 }
 
 /**
