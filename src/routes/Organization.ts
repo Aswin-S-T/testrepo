@@ -9,9 +9,9 @@ import {
 
 const router = Router();
 
-router.post('/', addOrganization);
+router.post('/', auth('Super Admin'), addOrganization);
 router.get('/', listOrganization);
 router.get('/:id', getOrganizationDetails);
-router.put('/:id', updateOrganization);
-router.delete('/:id', deleteOrganization);
+router.put('/:id', auth('Super Admin'), updateOrganization);
+router.delete('/:id', auth('Super Admin'), deleteOrganization);
 export default router;
