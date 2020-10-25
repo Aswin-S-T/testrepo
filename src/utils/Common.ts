@@ -1,5 +1,3 @@
-import path from 'path';
-
 /**
  *  Pagination
  *  @method getPagination
@@ -8,11 +6,11 @@ import path from 'path';
 export const getPagination = (total: number, skip: number, limit: number) => {
     return new Promise((resolve, reject) => {
         resolve({
-            total_items: total,
+            totalItems: total,
             skip: skip,
             limit: limit,
-            total_pages: Math.ceil(total / limit),
-            current_page: total === 0 ? 0 : Math.ceil(skip / limit) + 1,
+            totalPages: Math.ceil(total / limit),
+            currentPage: total === 0 ? 0 : Math.ceil(skip / limit) + 1,
         });
     });
 }

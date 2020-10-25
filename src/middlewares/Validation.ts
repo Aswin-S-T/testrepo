@@ -19,5 +19,9 @@ export const validate = {
         check('current_password').exists(),
         check('confirm_password').exists(),
         check('password').exists()
-    ]
+    ],
+    apikeyAdd: [
+        check('name', "Name doesn't exists").exists(),
+        check('limit', "Limit doesn't exists").exists(),
+    ],
 }
