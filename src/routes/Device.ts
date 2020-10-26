@@ -3,7 +3,7 @@ import { validate } from '../middlewares/Validation';
 import { auth } from '../middlewares/Auth';
 import {
     listDevice, addDevice, updateDevice,
-    deleteDevice, getDeviceDetails
+    deleteDevice, getDeviceDetails, getDeviceErrors
 
 } from '@controllers';
 
@@ -15,4 +15,5 @@ router.get('/statistics');
 router.get('/:id', getDeviceDetails);
 router.put('/:id', updateDevice);
 router.delete('/:id', deleteDevice);
+router.get('/errors/:id', getDeviceErrors);
 export default router;
