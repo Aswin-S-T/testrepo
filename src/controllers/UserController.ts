@@ -60,7 +60,26 @@ export const usersList = (req: Request, res: Response) => {
  * @param   req
  * @param   res
  */
-export const addUser = (req: Request, res: Response) => {
+export const addUser = async (req: Request, res: Response) => {
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+        return res.status(StatusCodes.UNPROCESSABLE_ENTITY).json({ success: false, "errors": errors.array({ onlyFirstError: true }) });
+    }
+    const { name, password, role, username, email } = req.body;
+    const user = new User({
+        name: name,
+        role: role,
+        userName: username,
+        password: await passwordHash(password),
+        email: email
+    })
+    user.save(function (err: any, data: any) {
+        return res.status(StatusCodes.OK).json({
+            success: true,
+            message: "User account successfully created",
+            user_details: data
+        });
+    })
 }
 
 /**
@@ -80,7 +99,7 @@ export const editUser = async (req: Request, res: Response) => {
     const update: any = {
         name: name
     }
-    if(password != undefined){
+    if (password != undefined) {
         update.password = await passwordHash(password)
     }
     role ? update.role = role : ''
