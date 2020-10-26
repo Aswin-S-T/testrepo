@@ -3,6 +3,7 @@ import { StatusCodes } from "http-status-codes";
 import { User } from "../models/Users";
 import bcrypt from 'bcryptjs';
 import { validationResult } from 'express-validator';
+import { getPagination } from '@utils';
 
 /**
  * List -  User
@@ -13,7 +14,41 @@ import { validationResult } from 'express-validator';
  * @param   res
  */
 
-export const userstList = (req: Request, res: Response) => {
+export const usersList = (req: Request, res: Response) => {
+    const { skip, limit, role, status } = req.query;
+    const pageSkip: any = skip || 0;
+    const pageLimit: any = limit || 10;
+    const match: any = { isDeleted: false };
+    role != undefined ? match.role = role : '';
+    status == 'active' ? match.activated = true : status == 'inactive' ? match.activated = false : '';
+
+    User.aggregate([
+        { $match: match },
+        { '$sort': { 'createdAt': -1 } },
+        {
+            '$facet': {
+                metadata: [{ $count: "total" }],
+                data: [{ $skip: parseInt(pageSkip) }, { $limit: parseInt(pageLimit) }]
+            }
+        }
+    ], async function (err: any, data: any) {
+        const response: any = {
+            pagination: await getPagination(0, parseInt(pageSkip), parseInt(pageLimit)),
+            list: []
+        }
+        if (data[0]) {
+            if (data[0].metadata[0]) {
+                response.pagination = await getPagination(data[0].metadata[0].total, parseInt(pageSkip), parseInt(pageLimit))
+            }
+            response.list = data[0].data
+        }
+        return res.status(StatusCodes.OK).json({
+            ssuccess: true,
+            message: "Successfully retrived data",
+            users_list: response.list,
+            pagination: response.pagination
+        });
+    })
 }
 
 
