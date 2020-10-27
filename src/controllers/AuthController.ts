@@ -66,6 +66,7 @@ export const login = (req: Request, res: Response) => {
  * @param res
  */
 export const register = (req: Request, res: Response) => {
+    
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
         return res.status(StatusCodes.UNPROCESSABLE_ENTITY).json({ "status": 'UNPROCESSABLE_ENTITY', "errors": errors.array({ onlyFirstError: true }) });
@@ -95,7 +96,8 @@ export const register = (req: Request, res: Response) => {
             });
         }
         user.save(function (err: any, userInfo: any) {
-            if (err) { return }
+            if (err) { 
+                return err}
             return res.status(StatusCodes.CREATED).json({
                 success: true,
                 message: "User document created",
