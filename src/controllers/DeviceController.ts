@@ -57,9 +57,8 @@ export const deleteDevice = (req: Request, res: Response) => {
  */
 export const getDeviceStatistics = (req: Request, res: Response) => {
     var now = new Date();
-    now.setMinutes(now.getMinutes() - 20); // timestamp
-    now = new Date(now);
-
+    now.setMinutes(now.getMinutes() - 10); // timestamp
+    const timeStamp = new Date(now).getTime();
     const pipeline: any = [
         { $match: { isDeleted: false } },
         {
@@ -78,7 +77,7 @@ export const getDeviceStatistics = (req: Request, res: Response) => {
                 },
                 devices_online: {
                     "$sum": {
-                        "$cond": [{ "$gte": ["$lastDataReceiveTime", now] }, 1, 0]
+                        "$cond": [{ "$gte": ["$lastDataReceiveTime", timeStamp] }, 1, 0]
                     }
                 }
             }
