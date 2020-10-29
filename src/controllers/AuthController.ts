@@ -22,7 +22,7 @@ export const login = (req: Request, res: Response) => {
         return res.status(StatusCodes.UNPROCESSABLE_ENTITY).json({ success: false, "errors": errors.array({ onlyFirstError: true }) });
     }
     const { username, password } = req.body;
-    User.findOne({ email: username, activated: true }, (err, user) => {
+    User.findOne({ $or: [{ email: username }, { userName: username }], activated: true }, (err, user) => {
         if (err) {
             return res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({
                 success: false,
