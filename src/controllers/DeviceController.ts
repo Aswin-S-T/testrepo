@@ -106,11 +106,18 @@ export const updateDevice = (req: Request, res: Response) => {
 
 
 /**
- * Update device
+ * Get device details by id
  *
  * @param
  */
 export const getDeviceDetails = (req: Request, res: Response) => {
+    Devices.findById(req.params.id, function (err: any, data: any) {
+        return res.status(StatusCodes.OK).json({
+            success: true,
+            message: "Data successfully retrieved",
+            device_details: data
+        });
+    })
 }
 
 
