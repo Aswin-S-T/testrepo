@@ -76,14 +76,16 @@ export const listOrganization = (req: Request, res: Response) => {
  *
  * @param
  */
-export const updateOrganization = (req: Request, res: Response) => {
+export const updateOrganization = async (req: Request, res: Response) => {
     const { name, description, is_default } = req.body;
     let updateData: any = {};
     name ? updateData.name = name : '';
     description ? updateData.description = description : '';
-    if (is_default || !is_default) {
+    if (is_default != undefined && (is_default || !is_default)) {
         updateData.isDefault = is_default
-        Organization.updateMany({ isDeleted: false, isDefault: true }, { isDefault: false }, function (err: any, data: any) { })
+        if (is_default) {
+            await Organization.updateMany({ isDeleted: false, isDefault: true }, { isDefault: false }, function (err: any, data: any) { })
+        }
     }
 
     Organization.findByIdAndUpdate(req.params.id, updateData, { new: true }, function (err: any, org: any) {

@@ -8,7 +8,7 @@ export const dummyDataSeed = () => {
         const data: any = {}
         seedData.params.forEach(param => {
             if (param == 'receivedTime') {
-                data[param] = new Date().getTime()
+                data['time'] = new Date()
             } else {
                 data[param] = Math.floor(Math.random() * 100);
             }
