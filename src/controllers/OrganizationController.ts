@@ -3,6 +3,9 @@ import { Request, Response } from 'express';
 import { validationResult } from 'express-validator';
 import { StatusCodes } from 'http-status-codes';
 import { Types } from 'mongoose';
+import mongoose from 'src/database/db';
+import { Devices } from 'src/models/Devices';
+import { User } from 'src/models/Users';
 import { Organization } from '../models/Organization';
 
 /**
@@ -77,7 +80,7 @@ export const listOrganization = (req: Request, res: Response) => {
  * @param
  */
 export const updateOrganization = async (req: Request, res: Response) => {
-    const { name, description, is_default } = req.body;
+    const { name, description, is_default, users, devices } = req.body;
     let updateData: any = {};
     name ? updateData.name = name : '';
     description ? updateData.description = description : '';
@@ -86,6 +89,19 @@ export const updateOrganization = async (req: Request, res: Response) => {
         if (is_default) {
             await Organization.updateMany({ isDeleted: false, isDefault: true }, { isDefault: false }, function (err: any, data: any) { })
         }
+    }
+    if (devices) {
+        await Devices.updateMany({ organizationId: mongoose.Types.ObjectId(req.params.id) }, { organizationId: null }, function (err: any, data: any) { })
+        devices.forEach(async (id: any) => {
+            await Devices.findByIdAndUpdate(id, {organizationId: mongoose.Types.ObjectId(req.params.id)}, function (err: any, data: any) { })
+        });
+    }
+
+    if (users) {
+        await User.updateMany({ organization: { $in: [mongoose.Types.ObjectId(req.params.id)] } }, {$pull : {organization : mongoose.Types.ObjectId(req.params.id)}}, function (err: any, data: any) { })
+        users.forEach(async (id: any) => {
+            await User.findByIdAndUpdate(id, {$addToSet : {organization : mongoose.Types.ObjectId(req.params.id)}}, function (err: any, data: any) { })
+        });
     }
 
     Organization.findByIdAndUpdate(req.params.id, updateData, { new: true }, function (err: any, org: any) {
@@ -105,11 +121,39 @@ export const updateOrganization = async (req: Request, res: Response) => {
  * @param
  */
 export const getOrganizationDetails = (req: Request, res: Response) => {
-    Organization.findById(req.params.id, function (err: any, org: any) {
+    const pipeline: any = [
+        {
+            $match: { _id: mongoose.Types.ObjectId(req.params.id) }
+        },
+        {
+            $lookup: {
+                "from": "users",
+                "let": { "orgId": "$_id" },
+                "pipeline": [
+                    { $match: { $expr: { $in: ["$$orgId", "$organization"] } } },
+                    { $project: { _id: 1, name: 1 } }
+                ],
+                as: "users"
+            }
+        },
+        {
+            $lookup: {
+                "from": "devices",
+                "let": { "orgId": "$_id" },
+                "pipeline": [
+                    { $match: { $expr: { $eq: ["$$orgId", "$organizationId"] } } },
+                    { $project: { _id: 1, deviceId: 1 } }
+                ],
+                as: "devices"
+            }
+        }
+    ]
+    Organization.aggregate(pipeline, function (err: any, org: any) {
+        console.log(err)
         return res.status(StatusCodes.OK).json({
             success: true,
             message: "Organization details",
-            org_details: org
+            org_details: org[0]
         });
     })
 }

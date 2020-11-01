@@ -190,3 +190,22 @@ export const getDeviceStatistics = (req: Request, res: Response) => {
         });
     })
 }
+
+
+/**
+* Fetch active device ids
+*
+* @method  getDeviceIds
+* 
+* @param   req
+* @param   res
+*/
+export const getDeviceIds = (req: Request, res: Response) => {
+    Devices.find({ activated: true, isDeleted: false }, { _id: 1, deviceId: 1 }, function (err: any, ids: any) {
+        return res.status(StatusCodes.OK).json({
+            success: true,
+            message: "Data successfully retrieved",
+            device_ids: ids
+        });
+    })
+}
