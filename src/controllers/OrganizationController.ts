@@ -8,29 +8,60 @@ import { Devices } from 'src/models/Devices';
 import { User } from 'src/models/Users';
 import { Organization } from '../models/Organization';
 
+const updateOrg = (type: string, filter: object, update: object) => {
+    return new Promise((resolve, reject) => {
+        switch (type) {
+            case 'many':
+                Organization.updateMany(filter, update, function (err: any, data: any) {
+                    resolve(data)
+                })
+                break;
+            default:
+                break;
+        }
+    });
+}
+
 /**
  * Add new device
  *
  * @param
  */
-export const addOrganization = (req: Request, res: Response) => {
+export const addOrganization = async (req: Request, res: Response) => {
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
         return res.status(StatusCodes.UNPROCESSABLE_ENTITY).json({ success: false, "errors": errors.array({ onlyFirstError: true }) });
     }
-    const { name, description } = req.body;
-    const organization = new Organization({
+    const { name, description, is_default, devices, users } = req.body;
+    const orgDetails: any = {
         name: name,
         description: description,
         createdBy: Types.ObjectId(req.body.user_id)
-    })
-    organization.save(function (err: any, org: any) {
+    }
+
+    if (is_default != undefined && is_default) {
+        orgDetails.isDefault = true;
+        await updateOrg('many', { isDeleted: false, isDefault: true }, { isDefault: false });
+    }
+    const organization = new Organization(orgDetails)
+    organization.save(async function (err: any, org: any) {
         if (err) { return }
-        return res.status(StatusCodes.CREATED).json({
-            success: true,
-            message: "Document created successflly",
-            org_details: org
-        });
+        if (org) {
+            if (devices) {
+                const deviceIds = devices.map((x: string | number | undefined) => mongoose.Types.ObjectId(x));
+                await Devices.updateMany({ _id: { $in: deviceIds } }, { organizationId: mongoose.Types.ObjectId(org._id) }, function (err: any, data: any) { })
+            }
+            if (users) {
+                const userIds = users.map((x: string | number | undefined) => mongoose.Types.ObjectId(x));
+                await User.updateMany({ _id: { $in: userIds } }, { $addToSet: { organization: mongoose.Types.ObjectId(org._id) } }, function (err: any, data: any) { })
+            }
+            return res.status(StatusCodes.CREATED).json({
+                success: true,
+                message: "Document created successflly",
+                org_details: org
+            });
+        }
+
     })
 }
 
@@ -93,14 +124,14 @@ export const updateOrganization = async (req: Request, res: Response) => {
     if (devices) {
         await Devices.updateMany({ organizationId: mongoose.Types.ObjectId(req.params.id) }, { organizationId: null }, function (err: any, data: any) { })
         devices.forEach(async (id: any) => {
-            await Devices.findByIdAndUpdate(id, {organizationId: mongoose.Types.ObjectId(req.params.id)}, function (err: any, data: any) { })
+            await Devices.findByIdAndUpdate(id, { organizationId: mongoose.Types.ObjectId(req.params.id) }, function (err: any, data: any) { })
         });
     }
 
     if (users) {
-        await User.updateMany({ organization: { $in: [mongoose.Types.ObjectId(req.params.id)] } }, {$pull : {organization : mongoose.Types.ObjectId(req.params.id)}}, function (err: any, data: any) { })
+        await User.updateMany({ organization: { $in: [mongoose.Types.ObjectId(req.params.id)] } }, { $pull: { organization: mongoose.Types.ObjectId(req.params.id) } }, function (err: any, data: any) { })
         users.forEach(async (id: any) => {
-            await User.findByIdAndUpdate(id, {$addToSet : {organization : mongoose.Types.ObjectId(req.params.id)}}, function (err: any, data: any) { })
+            await User.findByIdAndUpdate(id, { $addToSet: { organization: mongoose.Types.ObjectId(req.params.id) } }, function (err: any, data: any) { })
         });
     }
 
@@ -165,11 +196,13 @@ export const getOrganizationDetails = (req: Request, res: Response) => {
  * @param
  */
 export const deleteOrganization = (req: Request, res: Response) => {
-    Organization.findByIdAndUpdate(req.params.id, { isDeleted: true }, { new: true }, function (err: any, org: any) {
+    Organization.findByIdAndUpdate(req.params.id, { isDeleted: true }, { new: true }, async function (err: any, org: any) {
         if (err) { }
+        await Devices.updateMany({ organizationId: mongoose.Types.ObjectId(req.params.id) }, { organizationId: null }, function (err: any, data: any) { })
+        await User.updateMany({ organization: { $in: [mongoose.Types.ObjectId(req.params.id)] } }, { $pull: { organization: mongoose.Types.ObjectId(req.params.id) } }, function (err: any, data: any) { })
         return res.status(StatusCodes.OK).json({
             success: true,
-            message: "Successfully deleted organization"
+            message: "Successfully deleted the organization"
         });
     })
 }
