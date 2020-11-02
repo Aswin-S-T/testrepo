@@ -2,6 +2,7 @@ import { getPagination } from '@utils';
 import { Request, Response } from 'express';
 import { validationResult } from 'express-validator';
 import { StatusCodes } from 'http-status-codes';
+import mongoose from 'src/database/db';
 import { Devices } from "../models/Devices";
 
 /**
@@ -201,7 +202,28 @@ export const getDeviceStatistics = (req: Request, res: Response) => {
 * @param   res
 */
 export const getDeviceIds = (req: Request, res: Response) => {
-    Devices.find({ activated: true, isDeleted: false }, { _id: 1, deviceId: 1 }, function (err: any, ids: any) {
+    let filter: any = { activated: true, isDeleted: false };
+    const query: any = { ...req.query };
+    if (query.type) {
+        switch (query.type) {
+            case 'organization':
+                filter['$or'] = []
+                const pushItem: any = {
+                    organizationId: {}
+                }
+                pushItem['organizationId']['$' + query.operation] = mongoose.Types.ObjectId(query.value)
+                filter['$or'].push(pushItem)
+                filter['$or'].push({ 'organizationId': { '$eq': null } })
+                break;
+            case 'organization-add':
+                filter['organizationId'] = { '$eq': null };
+                break;
+            default:
+                break;
+        }
+    }
+    Devices.find(filter, { _id: 1, deviceId: 1 }, function (err: any, ids: any) {
+        console.log(err)
         return res.status(StatusCodes.OK).json({
             success: true,
             message: "Data successfully retrieved",
