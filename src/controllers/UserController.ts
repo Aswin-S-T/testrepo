@@ -282,3 +282,21 @@ export const getUserDetailsById = (req: Request, res: Response) => {
         }
     })
 }
+
+/**
+* Fetch active user ids
+*
+* @method  getUserIds
+* 
+* @param   req
+* @param   res
+*/
+export const getUserIds = (req: Request, res: Response) => {
+    User.find({ activated: true, isDeleted: false }, { _id: 1, name: 1 }, function (err: any, ids: any) {
+        return res.status(StatusCodes.OK).json({
+            success: true,
+            message: "Data successfully retrieved",
+            user_ids: ids
+        });
+    })
+}

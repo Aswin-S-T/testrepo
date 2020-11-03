@@ -5,3 +5,8 @@ export * from './DeviceController';
 export * from './OrganizationController';
 export * from './DeviceErrorController';
 export * from './DataController';
+export * from './LiveDataController';
+export * from './RawDataController';
+export * from './StatisticsDataController';
+export * from './AlertController';
+export * from './DashboardController';

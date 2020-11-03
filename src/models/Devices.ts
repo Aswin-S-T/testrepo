@@ -41,10 +41,11 @@ let DeviceSchema = new Schema({
     },
     timeZone: { type: String, required: true },
     description: { type: String, default: '' },
-    isDeleted: { type: Number, default: 0 },
+    isDeleted: { type: Boolean, default: false },
     activated: { type: Boolean, default: true },
     lastDataReceiveTime: { type: Date },
-    data: { type: Object, default: {} }
+    data: { type: Object, default: {} },
+    organizationId: { type: mongoose.Types.ObjectId, required: true }
 }, { timestamps: true });
 
 DeviceSchema.methods.toJSON = function () {

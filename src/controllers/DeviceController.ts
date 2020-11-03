@@ -2,6 +2,7 @@ import { getPagination } from '@utils';
 import { Request, Response } from 'express';
 import { validationResult } from 'express-validator';
 import { StatusCodes } from 'http-status-codes';
+import mongoose from 'src/database/db';
 import { Devices } from "../models/Devices";
 
 /**
@@ -44,7 +45,7 @@ export const listDevice = (req: Request, res: Response) => {
             now.setMinutes(now.getMinutes() - 10); // timestamp
             match['$and'].push({ isDeleted: false })
             match['$and'].push({ activated: true })
-            match['$and'].push({ lastDataReceiveTime: { $gte: new Date(now).getTime() } })
+            match['$and'].push({ lastDataReceiveTime: { $gte: new Date(now) } })
             break;
         default:
             match['$and'].push({ isDeleted: false })
@@ -137,7 +138,7 @@ export const deleteDevice = (req: Request, res: Response) => {
 export const getDeviceStatistics = (req: Request, res: Response) => {
     var now = new Date();
     now.setMinutes(now.getMinutes() - 10); // timestamp
-    const timeStamp = new Date(now).getTime();
+    const dateTime = new Date(now);
     const pipeline: any = [
         { $match: { isDeleted: false } },
         {
@@ -156,7 +157,7 @@ export const getDeviceStatistics = (req: Request, res: Response) => {
                 },
                 devices_online: {
                     "$sum": {
-                        "$cond": [{ $and: [{ "$gte": ["$lastDataReceiveTime", timeStamp] }, { "$eq": ["$activated", true] }] }, 1, 0]
+                        "$cond": [{ $and: [{ "$gte": ["$lastDataReceiveTime", dateTime] }, { "$eq": ["$activated", true] }] }, 1, 0]
                     }
                 }
             }
@@ -189,4 +190,57 @@ export const getDeviceStatistics = (req: Request, res: Response) => {
             device_statistics: statistics
         });
     })
+}
+
+
+/**
+* Fetch active device ids
+*
+* @method  getDeviceIds
+* 
+* @param   req
+* @param   res
+*/
+export const getDeviceIds = (req: Request, res: Response) => {
+    let filter: any = { activated: true, isDeleted: false };
+    const query: any = { ...req.query };
+    if (query.type) {
+        switch (query.type) {
+            case 'organization':
+                filter['$or'] = []
+                const pushItem: any = {
+                    organizationId: {}
+                }
+                pushItem['organizationId']['$' + query.operation] = mongoose.Types.ObjectId(query.value)
+                filter['$or'].push(pushItem)
+                filter['$or'].push({ 'organizationId': { '$eq': null } })
+                break;
+            case 'organization-add':
+                filter['organizationId'] = { '$eq': null };
+                break;
+            default:
+                break;
+        }
+    }
+    Devices.find(filter, { _id: 1, deviceId: 1 }, function (err: any, ids: any) {
+        console.log(err)
+        return res.status(StatusCodes.OK).json({
+            success: true,
+            message: "Data successfully retrieved",
+            device_ids: ids
+        });
+    })
+}
+
+// Fetch Device details
+export const deviceDetails = (query: object) => {
+    return new Promise((resolve, reject) => {
+        Devices.findOne(query)
+            .then((device) => {
+                resolve(device);
+            })
+            .catch(() => {
+                reject(null);
+            });
+    });
 }
