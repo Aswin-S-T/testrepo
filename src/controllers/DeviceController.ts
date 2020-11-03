@@ -231,3 +231,16 @@ export const getDeviceIds = (req: Request, res: Response) => {
         });
     })
 }
+
+// Fetch Device details
+export const deviceDetails = (query: object) => {
+    return new Promise((resolve, reject) => {
+        Devices.findOne(query)
+            .then((device) => {
+                resolve(device);
+            })
+            .catch(() => {
+                reject(null);
+            });
+    });
+}

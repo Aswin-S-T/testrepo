@@ -44,3 +44,12 @@ export const getDeviceErrors = (req: Request, res: Response) => {
         });
     })
 }
+
+/**
+ * Check device errors
+ * @method handleDeviceErrors
+ * @param
+ */
+export const handleDeviceErrors = (deviceDetails: any, sensorData: any) => {
+
+}
