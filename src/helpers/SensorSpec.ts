@@ -1,6 +1,7 @@
 export const SensorSpecExclude = [
     'router1', 'router2', 'error_code', 'router3', 'router4', 'gateway', 'timestamp', 'receivedTime', 'uptime', 'AQI', 'prominentPollutant'
 ]
+
 export const SensorSpec = [
     {
         paramName: "temperature",
@@ -870,4 +871,76 @@ export const SensorSpec = [
         valueType: "string"
     }
 
+]
+
+export const Errors = ["er_init_sensor", "er_read_sensor", "er_data_range", "er_system"]
+
+export const typeOneErr = [
+    "CHIPCAP2 Temperature, Humidity",
+    "BMP180 Pressure",
+    "CM1106 CO2",
+    "Alphasense NO2",
+    "Alphasense S02",
+    "Alphasense CO",
+    "Alphasense O3",
+    "TSL2561 Light",
+    "VEML6070 UV",
+    "PMS5003 PM10, PM2.5",
+    "INMP401 Noise",
+    "RG11 Rain",
+    "Reserved",
+    "Reserved",
+    "Reserved",
+    "Reserved",
+    "Reserved",
+    "Reserved",
+    "Reserved",
+    "Reserved",
+    "Reserved",
+    "Reserved",
+    "Reserved",
+    "Reserved",
+    "Reserved",
+    "Reserved",
+    "Reserved",
+    "Reserved",
+    "Reserved",
+    "Reserved",
+    "Reserved",
+    "Reserved"
+]
+
+export const systemErr = [
+    "Interface - I2C Init Error",
+    "Interface - UART0 Init Error",
+    "Interface - UART1 Init Error",
+    "Interface - USB Init Error",
+    "Interface - GPIO Init Error",
+    "Interface - Reserved",
+    "Interface - Reserved",
+    "Interface - Reserved",
+    "Network - GSM Init Error",
+    "Network - GSM Conn. Error",
+    "Network - GSM Data Send Fail",
+    "Network - Ethernet Conn. Error",
+    "Network - Ethernet Data Send Fail",
+    "Network - Wi-Fi Conn. Error",
+    "Network - Wi-Fi Data Send Fail",
+    "Network - Reserved",
+    "Other - High CPU Usage",
+    "Other - High Memory Usage",
+    "Other - Device Config Error",
+    "Other - OTA Config Error",
+    "Other - OTA Update Error",
+    "Other - Datalogging Error",
+    "Other - Event Logging Error",
+    "Other - SD Card Error",
+    "Other - Reserved",
+    "Other - Reserved",
+    "Other - Reserved",
+    "Other - Reserved",
+    "Other - Reserved",
+    "Other - Reserved",
+    "Other - Reserved",
+    "Other - Reserved"
 ]
