@@ -9,6 +9,7 @@ import { SensorRawData } from '../models/SensorRawData';
 import mongoose from 'src/database/db';
 import { SensorSpec, SensorSpecExclude } from '@helpers';
 import { handleDeviceErrors, generateAlerts } from '@controllers';
+import { Devices } from '../models/Devices';
 
 //  Sensor data calibration process
 const processCalibration = (val: any, paramDefinitions: any) => {
@@ -168,7 +169,7 @@ const parseInComingData = async (deviceDeatails: any, sensorData: any) => {
             receivedAt: new Date(sensorData.time)
         })
         sensorDataModel.save(function (err: any, result: any) {
-
+            Devices.findByIdAndUpdate(deviceDeatails._id, { lastDataReceiveTime: new Date(sensorData.time) }, function (err: any, device: any) { })
         })
     }
 }
