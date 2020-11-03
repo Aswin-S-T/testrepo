@@ -12,10 +12,11 @@ let AlarmRuleSchema = new Schema({
     description: { type: String, required: true },
     clearingMode: { type: String, required: true },
     timeInterval: { type: String },
+    deviceIDs: { type: Array},
     info: { type: Object },
     isDeleted: { type: Boolean, default: false },
     activated: { type: Boolean, default: true },
-    createdBy: { type: mongoose.Types.ObjectId, required: true },
+    //createdBy: { type: mongoose.Types.ObjectId, required: true },
     logs: { type: Array, default: [] }
 }, { timestamps: true })
 

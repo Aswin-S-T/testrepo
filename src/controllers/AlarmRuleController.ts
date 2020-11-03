@@ -11,7 +11,7 @@ export const listAlarmRule = (req: Request, res: Response) => {
     const dataLimit = parseInt(queryParams.limit) || 25;
 
     let query = [
-        { $match: { isDeleted: 0 } },
+        { $match: { isDeleted: false } },
         {
             '$facet': {
                 metadata: [{ $count: "total" }],
@@ -31,6 +31,7 @@ export const listAlarmRule = (req: Request, res: Response) => {
         query.unshift(filter);
     }
     AlarmRule.aggregate(query, async function (err: any, data: any) {
+        console.log(data)
         let response = {
             status: "success",
             message: "",
@@ -67,6 +68,7 @@ export const getAlarmRuleDetails = (req: Request, res: Response) => {
 
 //Alarm Rule - Add
 export const addAlarmRule = (req: Request, res: Response) => {
+    console.log("RULE ADD", req.body)
     let query = { ruleName: req.body.rule_name };
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
@@ -74,13 +76,14 @@ export const addAlarmRule = (req: Request, res: Response) => {
             "status": 'UNPROCESSABLE_ENTITY', "errors": errors.array({ onlyFirstError: true })
         });
     }
-    const { rule_name, description, clearingMode, timeInterval, info } = req.body;
+    const { rule_name, description, clearing_mode, time_interval, deviceIDs } = req.body;
     const alarm = new AlarmRule({
         ruleName: rule_name,
         description: description,
-        clearingMode: clearingMode,
-        timeInterval: timeInterval,
-        info: info
+        clearingMode: clearing_mode,
+        timeInterval: time_interval,
+        deviceIDs: deviceIDs,
+        //info: info
     })
     AlarmRule.findOne(query, (err, existingRule: any) => {
         if (err) {
@@ -108,7 +111,8 @@ export const addAlarmRule = (req: Request, res: Response) => {
 
         alarm.save(function (err: any, rule: any) {
             if (err) {
-                return
+                console.log(err);
+                return err
             }
             return res.status(StatusCodes.CREATED).json({
                 status: "success",
@@ -153,7 +157,7 @@ export const editAlarmRule = (req: Request, res: Response) => {
 
 //Alarm Rule - Delete
 export const deleteAlarmRule = (req: Request, res: Response) => {
-    AlarmRule.findByIdAndUpdate(req.params.id, { isDeleted: true }, { new: true }, function (err: any, rule: any) {
+    AlarmRule.findByIdAndUpdate(req.params.id, { isDeleted: true }, function (err: any, rule: any) {
         if (err) {
             console.log(err);
             return res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({

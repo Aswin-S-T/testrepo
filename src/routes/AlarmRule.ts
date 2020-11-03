@@ -9,6 +9,6 @@ router.post('/', addAlarmRule);
 router.get('/', listAlarmRule);
 router.get('/:id', getAlarmRuleDetails);
 router.put('/:id', editAlarmRule);
-router.delete(':/id', deleteAlarmRule);
+router.delete('/:id', deleteAlarmRule);
 
 export default router;
