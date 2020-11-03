@@ -45,7 +45,7 @@ export const listDevice = (req: Request, res: Response) => {
             now.setMinutes(now.getMinutes() - 10); // timestamp
             match['$and'].push({ isDeleted: false })
             match['$and'].push({ activated: true })
-            match['$and'].push({ lastDataReceiveTime: { $gte: new Date(now).getTime() } })
+            match['$and'].push({ lastDataReceiveTime: { $gte: new Date(now) } })
             break;
         default:
             match['$and'].push({ isDeleted: false })
@@ -138,7 +138,7 @@ export const deleteDevice = (req: Request, res: Response) => {
 export const getDeviceStatistics = (req: Request, res: Response) => {
     var now = new Date();
     now.setMinutes(now.getMinutes() - 10); // timestamp
-    const timeStamp = new Date(now).getTime();
+    const dateTime = new Date(now);
     const pipeline: any = [
         { $match: { isDeleted: false } },
         {
@@ -157,7 +157,7 @@ export const getDeviceStatistics = (req: Request, res: Response) => {
                 },
                 devices_online: {
                     "$sum": {
-                        "$cond": [{ $and: [{ "$gte": ["$lastDataReceiveTime", timeStamp] }, { "$eq": ["$activated", true] }] }, 1, 0]
+                        "$cond": [{ $and: [{ "$gte": ["$lastDataReceiveTime", dateTime] }, { "$eq": ["$activated", true] }] }, 1, 0]
                     }
                 }
             }
