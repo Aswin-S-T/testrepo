@@ -10,3 +10,4 @@ export * from './RawDataController';
 export * from './StatisticsDataController';
 export * from './AlertController';
 export * from './DashboardController';
+export * from './AlarmRuleController';

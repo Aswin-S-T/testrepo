@@ -3,6 +3,7 @@ import { StatusCodes } from "http-status-codes";
 import { AlarmRule } from 'src/models/AlarmRule';
 import { getPagination } from '@utils';
 import { validationResult } from 'express-validator';
+import mongoose from 'src/database/db';
 
 // Alarm Rule - List
 export const listAlarmRule = (req: Request, res: Response) => {
@@ -76,14 +77,15 @@ export const addAlarmRule = (req: Request, res: Response) => {
             "status": 'UNPROCESSABLE_ENTITY', "errors": errors.array({ onlyFirstError: true })
         });
     }
-    const { rule_name, description, clearing_mode, time_interval, deviceIDs } = req.body;
+    const { rule_name, description, clearing_mode, time_interval, info } = req.body;
+    console.log(req.body)
     const alarm = new AlarmRule({
         ruleName: rule_name,
         description: description,
         clearingMode: clearing_mode,
         timeInterval: time_interval,
-        deviceIDs: deviceIDs,
-        //info: info
+        info: info,
+        createdBy: mongoose.Types.ObjectId(req.body.user_id)
     })
     AlarmRule.findOne(query, (err, existingRule: any) => {
         if (err) {
@@ -111,8 +113,7 @@ export const addAlarmRule = (req: Request, res: Response) => {
 
         alarm.save(function (err: any, rule: any) {
             if (err) {
-                console.log(err);
-                return err
+                console.log(err)
             }
             return res.status(StatusCodes.CREATED).json({
                 status: "success",
@@ -121,7 +122,7 @@ export const addAlarmRule = (req: Request, res: Response) => {
             });
         })
     })
-    
+
 }
 
 //Alarm Rule - Edit
@@ -135,7 +136,7 @@ export const editAlarmRule = (req: Request, res: Response) => {
     description ? updateData.description = description : '';
     clearing_mode ? updateData.clearingMode = clearing_mode : '';
     time_interval ? updateData.timeInterval = time_interval : '';
-    info? updateData.info = info:''
+    info ? updateData.info = info : ''
 
     AlarmRule.findByIdAndUpdate(req.params.id, updateData, { new: true }, function (err, rule) {
         if (err) {
