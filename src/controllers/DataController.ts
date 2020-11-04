@@ -131,7 +131,9 @@ export const processDeviceData = async (req: Request, res: Response) => {
         //  Device error handler
         handleDeviceErrors(deviceDeatails, sensorData)
         //  Parse incoming data
-        parseInComingData(deviceDeatails, sensorData)
+        parseInComingData(deviceDeatails, sensorData);
+        //Generate Alarms
+        generateAlerts(deviceId, sensorData);
         return res.status(StatusCodes.OK).json({
             success: true,
             message: "Data has been processed successfully"

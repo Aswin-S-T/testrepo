@@ -171,3 +171,17 @@ export const deleteAlarmRule = (req: Request, res: Response) => {
         });
     })
 }
+
+//get Alarm Rule for generating alarm
+
+export const getRules = (deviceId: any) => {
+    return new Promise((resolve, reject) => {
+        AlarmRule.find({ "info.deviceIds": deviceId, isDeleted: 0, isDisable: 0 })
+            .then((rule: any) => {
+                resolve(rule);
+            })
+            .catch(() => {
+                reject(0);
+            })
+    })
+}
