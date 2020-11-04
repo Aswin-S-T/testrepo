@@ -16,7 +16,7 @@ let AlarmRuleSchema = new Schema({
     info: { type: Object },
     isDeleted: { type: Boolean, default: false },
     activated: { type: Boolean, default: true },
-    //createdBy: { type: mongoose.Types.ObjectId, required: true },
+    createdBy: { type: mongoose.Types.ObjectId, required: true },
     logs: { type: Array, default: [] }
 }, { timestamps: true })
 

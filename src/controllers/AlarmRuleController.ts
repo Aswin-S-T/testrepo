@@ -14,6 +14,15 @@ export const listAlarmRule = (req: Request, res: Response) => {
     let query = [
         { $match: { isDeleted: false } },
         {
+            $lookup:
+            {
+                from: "devices",
+                localField: "deviceIDs",
+                foreignField: "_id",
+                as: "devices"
+            }
+        },
+        {
             '$facet': {
                 metadata: [{ $count: "total" }],
                 data: [{ $skip: dataSkip }, { $limit: dataLimit }]
@@ -32,7 +41,6 @@ export const listAlarmRule = (req: Request, res: Response) => {
         query.unshift(filter);
     }
     AlarmRule.aggregate(query, async function (err: any, data: any) {
-        console.log(data)
         let response = {
             status: "success",
             message: "",
@@ -58,18 +66,34 @@ export const listAlarmRule = (req: Request, res: Response) => {
 
 //Alarm Rule - Details
 export const getAlarmRuleDetails = (req: Request, res: Response) => {
-    AlarmRule.findById(req.params.id, function (err: any, rule: any) {
+    let pipeline = [
+        { $match: { isDeleted: false, _id: mongoose.Types.ObjectId(req.params.id) } },
+        {
+            $lookup: {
+                "from": "devices",
+                "let": { "deviceId": "$deviceIDs" },
+                "pipeline": [
+                    { $match: { $expr: { $in: ["$_id", "$$deviceId"] } } },
+                    { $project: { _id: 1, deviceId: 1 } }
+                ],
+                as: "devices"
+            }
+        },
+    ]
+    AlarmRule.aggregate(pipeline, function (err: any, rule: any) {
+        if (err) {
+            //to do
+        }
         return res.status(StatusCodes.OK).json({
             success: true,
             message: "Alarm Rule details",
-            rule_details: rule
+            rule_details: rule[0] || {}
         });
     })
 }
 
 //Alarm Rule - Add
 export const addAlarmRule = (req: Request, res: Response) => {
-    console.log("RULE ADD", req.body)
     let query = { ruleName: req.body.rule_name };
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
@@ -77,15 +101,15 @@ export const addAlarmRule = (req: Request, res: Response) => {
             "status": 'UNPROCESSABLE_ENTITY', "errors": errors.array({ onlyFirstError: true })
         });
     }
-    const { rule_name, description, clearing_mode, time_interval, info } = req.body;
-    console.log(req.body)
+    const { rule_name, description, clearing_mode, time_interval, info, devices } = req.body;
     const alarm = new AlarmRule({
         ruleName: rule_name,
         description: description,
         clearingMode: clearing_mode,
         timeInterval: time_interval,
         info: info,
-        createdBy: mongoose.Types.ObjectId(req.body.user_id)
+        createdBy: mongoose.Types.ObjectId(req.body.user_id),
+        deviceIDs: devices.map((x: string | number | undefined) => mongoose.Types.ObjectId(x))
     })
     AlarmRule.findOne(query, (err, existingRule: any) => {
         if (err) {
@@ -127,16 +151,14 @@ export const addAlarmRule = (req: Request, res: Response) => {
 
 //Alarm Rule - Edit
 export const editAlarmRule = (req: Request, res: Response) => {
-    const { rule_name, description, clearing_mode, time_interval, info } = req.body;
-    let updateData: any = {
-        ruleName: '', description: '', clearingMode: '', timeInterval: '',
-        info: ''
-    };
+    const { rule_name, description, clearing_mode, time_interval, info, devices } = req.body;
+    const updateData: any = {};
     rule_name ? updateData.ruleName = rule_name : '';
     description ? updateData.description = description : '';
     clearing_mode ? updateData.clearingMode = clearing_mode : '';
     time_interval ? updateData.timeInterval = time_interval : '';
     info ? updateData.info = info : ''
+    devices ? updateData.deviceIDs = devices.map((x: string | number | undefined) => mongoose.Types.ObjectId(x)) : ''
 
     AlarmRule.findByIdAndUpdate(req.params.id, updateData, { new: true }, function (err, rule) {
         if (err) {
