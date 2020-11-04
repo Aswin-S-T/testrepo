@@ -4,6 +4,8 @@ import { validationResult } from 'express-validator';
 import { StatusCodes } from 'http-status-codes';
 import { Types } from 'mongoose';
 import { DeviceErrors } from '../models/DeviceErrors';
+import { Errors, typeOneErr, systemErr } from '@helpers';
+import mongoose from 'src/database/db';
 
 /**
  * Get device errors
@@ -50,6 +52,33 @@ export const getDeviceErrors = (req: Request, res: Response) => {
  * @method handleDeviceErrors
  * @param
  */
-export const handleDeviceErrors = (deviceDetails: any, sensorData: any) => {
+export const handleDeviceErrors = (deviceDetails: any, sensorData: any, sensorDataResult: any) => {
+    Errors.forEach(error => {
+        const errorDescription: any = [];
+        if(sensorData[error]) {
+            const errorDecoded = decode(sensorData[error]);
+            errorDecoded.forEach((err: any, count: any) => {
+                if(err === '1') {
+                    if(error === 'er_system') { errorDescription.push(systemErr[count]) }
+                    else { errorDescription.push(typeOneErr[count]) }
+                }
+            })
+        }
+        const DeviceErrorsModel = new DeviceErrors({
+            deviceId: mongoose.Types.ObjectId(deviceDetails._id),
+            sensorDataId: mongoose.Types.ObjectId(sensorDataResult._id),
+            errorType: error,
+            errorDetails: (errorDescription.length > 0) ? errorDescription.join(', ') : 'No Errors',
+            receivedAt: new Date(sensorData.time)
+        })
+        DeviceErrorsModel.save(function (err: any, result: any) { })
+    })
+}
 
+const decode = (code: any) => {
+    let binary = parseInt(code, 10).toString(2);
+    binary = Array(33).join("0").substr(binary.length) + binary;
+    const binaryArr = binary.split("");
+    binaryArr.reverse();
+    return binaryArr;
 }

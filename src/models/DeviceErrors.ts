@@ -14,8 +14,10 @@ export type DeviceErrorDocument = mongoose.Document & {
 
 let DeviceErrorSchema = new Schema({
     deviceId: { type: mongoose.Types.ObjectId, required: true },
+    sensorDataId: { type: mongoose.Types.ObjectId, required: true },
     errorType: { type: String, enum: ['er_init_sensor', 'er_read_sensor', 'er_system', 'er_data_range'], required: true },
     errorDetails: { type: String, required: true },
+    receivedAt: { type: Date },
     isDeleted: { type: Boolean, default: false },
 }, { timestamps: true });
 

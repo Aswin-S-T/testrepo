@@ -128,8 +128,6 @@ export const processDeviceData = async (req: Request, res: Response) => {
                 sensorData = data
                 break;
         }
-        //  Device error handler
-        handleDeviceErrors(deviceDeatails, sensorData)
         //  Parse incoming data
         parseInComingData(deviceDeatails, sensorData);
         //Generate Alarms
@@ -171,6 +169,8 @@ const parseInComingData = async (deviceDeatails: any, sensorData: any) => {
             receivedAt: new Date(sensorData.time)
         })
         sensorDataModel.save(function (err: any, result: any) {
+            //  Device error handler
+            handleDeviceErrors(deviceDeatails, sensorData, result)
             Devices.findByIdAndUpdate(deviceDeatails._id, { lastDataReceiveTime: new Date(sensorData.time) }, function (err: any, device: any) { })
         })
     }
