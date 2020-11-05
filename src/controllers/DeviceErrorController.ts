@@ -64,14 +64,17 @@ export const handleDeviceErrors = (deviceDetails: any, sensorData: any, sensorDa
                 }
             })
         }
-        const DeviceErrorsModel = new DeviceErrors({
-            deviceId: mongoose.Types.ObjectId(deviceDetails._id),
-            sensorDataId: mongoose.Types.ObjectId(sensorDataResult._id),
-            errorType: error,
-            errorDetails: (errorDescription.length > 0) ? errorDescription.join(', ') : 'No Errors',
-            receivedAt: new Date(sensorData.time)
-        })
-        DeviceErrorsModel.save(function (err: any, result: any) { })
+
+        if(errorDescription.length > 0) {
+            const DeviceErrorsModel = new DeviceErrors({
+                deviceId: mongoose.Types.ObjectId(deviceDetails._id),
+                sensorDataId: mongoose.Types.ObjectId(sensorDataResult._id),
+                errorType: error,
+                errorDetails: errorDescription.join(', '),
+                receivedAt: new Date(sensorData.time)
+            })
+            DeviceErrorsModel.save(function (err: any, result: any) { })
+        } 
     })
 }
 
