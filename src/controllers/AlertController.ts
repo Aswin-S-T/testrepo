@@ -9,104 +9,98 @@ import { getPagination } from '@utils';
  * @param
  */
 export const generateAlerts = async (deviceId: any, sensorData: any) => {
-    const devRules: any = await getRules(deviceId)
+    const devRules: any = await getRules(deviceId);
     for (let i = 0; i < devRules.length; i++) {
         for (let j = 0; j < devRules[i].info.length; j++) {
-            let pname = devRules[i].info[j].paramName;
-            for (let k = 0; k < devRules[i].info[j].rules.data.length; k++) {
-                if (devRules[i].info[j].rules.data[k].funct == 'greater') {
+            let pname = devRules[i].info[j].parameter;
+            if (devRules[i].info[j].function == 'gt') {
+                if (devRules[i].info[j].limit < sensorData[pname]) {
+                    const alert = new Alert({
+                        deviceId: deviceId,
+                        ruleName: devRules[i].ruleName,
+                        status: "Active",
+                        log: devRules[i].info[j].parameter + ' greater than ' + devRules[i].info[j].limit
+                    })
+                    Alert.countDocuments({
+                        status: "Active", deviceId: devRules[i].deviceIds[0],
+                        ruleName: devRules[i].ruleName
+                    }, function (err: any, data: any) {
 
-                    if (devRules[i].info[j].rules.data[k].value < sensorData[pname]) {
+                        if (data == 0) {
+                            alert.save(function (err: any, alert: any) {
+                                if (devRules[0].type == 'Time') {
+                                    timeBasedAlert(devRules, alert._id);
+                                }
+                                return ({
+                                    status: "success",
+                                    message: "Document created",
+                                    alert_details: alert
+                                });
 
-                        const alert = new Alert({
-                            deviceId: deviceId,
-                            ruleName: devRules[i].ruleName,
-                            status: "Active",
-                            log: devRules[i].info[j].paramName + ' greater than ' + devRules[i].info[j].rules.data[k].value
-                        })
-                        Alert.countDocuments({
-                            status: "Active", deviceId: devRules[i].deviceIds[0],
-                            ruleName: devRules[i].ruleName
-                        }, function (err: any, data: any) {
+                            })
+                        }
 
-                            if (data == 0) {
-                                alert.save(function (err: any, alert: any) {
-                                    if (devRules[0].type == 'Time') {
-                                        timeBasedAlert(devRules, alert._id);
-                                    }
-                                    return ({
-                                        status: "success",
-                                        message: "Document created",
-                                        alert_details: alert
-                                    });
-
-                                })
-                            }
-
-                        })
-
-                    }
+                    })
                 }
-                else if (devRules[i].info[j].rules.data[k].funct == 'lesser') {
-                    if (devRules[i].info[j].rules.data[k].value > sensorData[pname]) {
-                        const alert = new Alert({
-                            deviceId: deviceId,
-                            ruleName: devRules[i].ruleName,
-                            status: "Active",
-                            log: devRules[i].info[j].paramName
-                        })
+            }
+            else if (devRules[i].info[j].function == 'lt') {
+                if (devRules[i].info[j].limit > sensorData[pname]) {
+                    const alert = new Alert({
+                        deviceId: deviceId,
+                        ruleName: devRules[i].ruleName,
+                        status: "Active",
+                        log: devRules[i].info[j].parameter + ' less than ' + devRules[i].info[j].limit
+                    })
+                    Alert.countDocuments({
+                        status: "Active", deviceId: devRules[i].deviceIds[0],
+                        ruleName: devRules[i].ruleName
+                    }, function (err: any, data: any) {
 
-                        Alert.countDocuments({
-                            status: "Active", deviceId: devRules[i].deviceIds[0],
-                            ruleName: devRules[i].ruleName
-                        }, function (err: any, data: any) {
+                        if (data == 0) {
+                            alert.save(function (err: any, alert: any) {
+                                if (devRules[0].type == 'Time') {
+                                    timeBasedAlert(devRules, alert._id);
+                                }
+                                return ({
+                                    status: "success",
+                                    message: "Document created",
+                                    alert_details: alert
+                                });
 
-                            if (data == 0) {
-                                alert.save(function (err: any, alert: any) {
-                                    if (devRules[0].type == 'Time') {
-                                        timeBasedAlert(devRules, alert._id);
-                                    }
-                                    return ({
-                                        status: "success",
-                                        message: "Document created",
-                                        alert_details: alert
-                                    });
-                                })
-                            }
+                            })
+                        }
 
-                        })
-                    }
+                    })
                 }
-                else {
-                    if (devRules[i].info[j].rules.data[k].value == sensorData[pname]) {
-                        const alert = new Alert({
-                            deviceId: deviceId,
-                            ruleName: devRules[i].ruleName,
-                            status: "Active",
-                            log: devRules[i].info[j].paramName
-                        })
+            }
+            else {
+                if (devRules[i].info[j].limit == sensorData[pname]) {
+                    const alert = new Alert({
+                        deviceId: deviceId,
+                        ruleName: devRules[i].ruleName,
+                        status: "Active",
+                        log: devRules[i].info[j].parameter + ' greater than ' + devRules[i].info[j].limit
+                    })
+                    Alert.countDocuments({
+                        status: "Active", deviceId: devRules[i].deviceIds[0],
+                        ruleName: devRules[i].ruleName
+                    }, function (err: any, data: any) {
 
-                        Alert.countDocuments({
-                            status: "Active", deviceId: devRules[i].deviceIds[0],
-                            ruleName: devRules[i].ruleName
-                        }, function (err: any, data: any) {
+                        if (data == 0) {
+                            alert.save(function (err: any, alert: any) {
+                                if (devRules[0].type == 'Time') {
+                                    timeBasedAlert(devRules, alert._id);
+                                }
+                                return ({
+                                    status: "success",
+                                    message: "Document created",
+                                    alert_details: alert
+                                });
 
-                            if (data == 0) {
-                                alert.save(function (err: any, alert: any) {
-                                    if (devRules[0].type == 'Time') {
-                                        timeBasedAlert(devRules, alert._id);
-                                    }
-                                    return ({
-                                        status: "success",
-                                        message: "Document created",
-                                        alert_details: alert
-                                    });
+                            })
+                        }
 
-                                })
-                            }
-
-                        })
-                    }
+                    })
                 }
             }
         }

@@ -6,7 +6,7 @@ import { auth } from '../middlewares/Auth';
 
 const router = Router();
 
-router.post('/', auth('Super Admin', 'Admin'), addAlarmRule);
+router.post('/', addAlarmRule);
 router.get('/', listAlarmRule);
 router.get('/:id', getAlarmRuleDetails);
 router.put('/:id', editAlarmRule);

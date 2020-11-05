@@ -130,8 +130,7 @@ export const processDeviceData = async (req: Request, res: Response) => {
         }
         //  Parse incoming data
         parseInComingData(deviceDeatails, sensorData);
-        //Generate Alarms
-        generateAlerts(deviceId, sensorData);
+
         return res.status(StatusCodes.OK).json({
             success: true,
             message: "Data has been processed successfully"
@@ -156,8 +155,9 @@ const parseInComingData = async (deviceDeatails: any, sensorData: any) => {
     const rawDataDetails: any = await saveRawDataAndGetId(rawData);
     if (rawDataDetails) {
         const processedData: any = await parseData(sensorData, deviceDeatails, SensorSpec);
-        processedData.receivedAt = new Date(sensorData.time)
-        generateAlerts(deviceDeatails, sensorData);
+        processedData.receivedAt = new Date(sensorData.time);
+        //Generate Alarms
+        generateAlerts(deviceDeatails.deviceId, sensorData);
 
         // to do raw aqi calculation
         //

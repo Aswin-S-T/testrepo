@@ -4,9 +4,11 @@ import { AlarmRule } from 'src/models/AlarmRule';
 import { getPagination } from '@utils';
 import { validationResult } from 'express-validator';
 import mongoose from 'src/database/db';
+import { Devices } from 'src/models/Devices';
 
 // Alarm Rule - List
 export const listAlarmRule = (req: Request, res: Response) => {
+    
     const queryParams: any = req.query;
     const dataSkip = parseInt(queryParams.skip) || 0;
     const dataLimit = parseInt(queryParams.limit) || 25;
@@ -30,7 +32,7 @@ export const listAlarmRule = (req: Request, res: Response) => {
         }
     ]
     let filter: any = {}
-    if (queryParams.key && queryParams.key != '') {
+    if (queryParams.search && queryParams.search != '') {
         const keyword = queryParams.key;
         filter['$match'] = {
             $or: [
@@ -93,7 +95,7 @@ export const getAlarmRuleDetails = (req: Request, res: Response) => {
 }
 
 //Alarm Rule - Add
-export const addAlarmRule = (req: Request, res: Response) => {
+export const addAlarmRule = async (req: Request, res: Response) => {
     let query = { ruleName: req.body.rule_name };
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
@@ -101,6 +103,9 @@ export const addAlarmRule = (req: Request, res: Response) => {
             "status": 'UNPROCESSABLE_ENTITY', "errors": errors.array({ onlyFirstError: true })
         });
     }
+
+    const deviceIds = await getDeviceId(req.body.devices[0]);
+
     const { rule_name, description, clearing_mode, time_interval, info, devices } = req.body;
     const alarm = new AlarmRule({
         ruleName: rule_name,
@@ -109,7 +114,8 @@ export const addAlarmRule = (req: Request, res: Response) => {
         timeInterval: time_interval,
         info: info,
         createdBy: mongoose.Types.ObjectId(req.body.user_id),
-        deviceIDs: devices.map((x: string | number | undefined) => mongoose.Types.ObjectId(x))
+        deviceIDs: devices.map((x: string | number | undefined) => mongoose.Types.ObjectId(x)),
+        deviceIds: deviceIds
     })
     AlarmRule.findOne(query, (err, existingRule: any) => {
         if (err) {
@@ -199,9 +205,21 @@ export const deleteAlarmRule = (req: Request, res: Response) => {
 
 export const getRules = (deviceId: any) => {
     return new Promise((resolve, reject) => {
-        AlarmRule.find({ "info.deviceIds": deviceId, isDeleted: 0, isDisable: 0 })
+        AlarmRule.find({ "deviceIds": deviceId, isDeleted: false })
             .then((rule: any) => {
                 resolve(rule);
+            })
+            .catch(() => {
+                reject(0);
+            })
+    })
+}
+
+export const getDeviceId = (obId: any) => {
+    return new Promise((resolve, reject) => {
+        Devices.findById(obId)
+            .then((dev: any) => {
+                resolve(dev.deviceId)
             })
             .catch(() => {
                 reject(0);
