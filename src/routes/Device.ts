@@ -11,9 +11,9 @@ import {
 const router = Router();
 
 router.post('/', addDevice);
-router.get('/', listDevice);
+router.get('/', auth('Administrator', 'Supervisor', 'Operator', 'Super Admin'), listDevice);
 router.get('/ids', getDeviceIds);
-router.get('/statistics', getDeviceStatistics);
+router.get('/statistics', auth('Administrator', 'Supervisor', 'Operator', 'Super Admin'), getDeviceStatistics);
 router.get('/errors', getDeviceErrors);
 router.get('/:id', getDeviceDetails);
 router.put('/:id', updateDevice);
