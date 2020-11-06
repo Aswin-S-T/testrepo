@@ -5,7 +5,8 @@ import {
     listDevice, addDevice, updateDevice,
     deleteDevice, getDeviceDetails,
     getDeviceErrors, getDeviceStatistics,
-    getDeviceIds, processDeviceData
+    getDeviceIds, processDeviceData,
+    getLiveData, getStatistics
 } from '@controllers';
 
 const router = Router();
@@ -20,4 +21,6 @@ router.put('/:id', updateDevice);
 router.delete('/:id', deleteDevice);
 
 router.post('/sensor/livedata', processDeviceData);
+router.get('/sensor/livedata', getLiveData);
+router.get('/sensor/statistics', getStatistics);
 export default router;
