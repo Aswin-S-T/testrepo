@@ -3,10 +3,10 @@ import { Request, Response } from 'express';
 import { validationResult } from 'express-validator';
 import { StatusCodes } from 'http-status-codes';
 import { Types } from 'mongoose';
-import mongoose from 'src/database/db';
 import { Devices } from 'src/models/Devices';
 import { User } from 'src/models/Users';
 import { Organization } from '../models/Organization';
+
 
 const updateOrg = (type: string, filter: object, update: object) => {
     return new Promise((resolve, reject) => {
@@ -48,12 +48,12 @@ export const addOrganization = async (req: Request, res: Response) => {
         if (err) { return }
         if (org) {
             if (devices) {
-                const deviceIds = devices.map((x: string | number | undefined) => mongoose.Types.ObjectId(x));
-                await Devices.updateMany({ _id: { $in: deviceIds } }, { organizationId: mongoose.Types.ObjectId(org._id) }, function (err: any, data: any) { })
+                const deviceIds = devices.map((x: string | number | undefined) => Types.ObjectId(x));
+                await Devices.updateMany({ _id: { $in: deviceIds } }, { organizationId: Types.ObjectId(org._id) }, function (err: any, data: any) { })
             }
             if (users) {
-                const userIds = users.map((x: string | number | undefined) => mongoose.Types.ObjectId(x));
-                await User.updateMany({ _id: { $in: userIds } }, { $addToSet: { organization: mongoose.Types.ObjectId(org._id) } }, function (err: any, data: any) { })
+                const userIds = users.map((x: string | number | undefined) => Types.ObjectId(x));
+                await User.updateMany({ _id: { $in: userIds } }, { $addToSet: { organization: Types.ObjectId(org._id) } }, function (err: any, data: any) { })
             }
             return res.status(StatusCodes.CREATED).json({
                 success: true,
@@ -122,16 +122,16 @@ export const updateOrganization = async (req: Request, res: Response) => {
         }
     }
     if (devices) {
-        await Devices.updateMany({ organizationId: mongoose.Types.ObjectId(req.params.id) }, { organizationId: null }, function (err: any, data: any) { })
+        await Devices.updateMany({ organizationId: Types.ObjectId(req.params.id) }, { organizationId: null }, function (err: any, data: any) { })
         devices.forEach(async (id: any) => {
-            await Devices.findByIdAndUpdate(id, { organizationId: mongoose.Types.ObjectId(req.params.id) }, function (err: any, data: any) { })
+            await Devices.findByIdAndUpdate(id, { organizationId: Types.ObjectId(req.params.id) }, function (err: any, data: any) { })
         });
     }
 
     if (users) {
-        await User.updateMany({ organization: { $in: [mongoose.Types.ObjectId(req.params.id)] } }, { $pull: { organization: mongoose.Types.ObjectId(req.params.id) } }, function (err: any, data: any) { })
+        await User.updateMany({ organization: { $in: [Types.ObjectId(req.params.id)] } }, { $pull: { organization: Types.ObjectId(req.params.id) } }, function (err: any, data: any) { })
         users.forEach(async (id: any) => {
-            await User.findByIdAndUpdate(id, { $addToSet: { organization: mongoose.Types.ObjectId(req.params.id) } }, function (err: any, data: any) { })
+            await User.findByIdAndUpdate(id, { $addToSet: { organization: Types.ObjectId(req.params.id) } }, function (err: any, data: any) { })
         });
     }
 
@@ -154,7 +154,7 @@ export const updateOrganization = async (req: Request, res: Response) => {
 export const getOrganizationDetails = (req: Request, res: Response) => {
     const pipeline: any = [
         {
-            $match: { _id: mongoose.Types.ObjectId(req.params.id) }
+            $match: { _id: Types.ObjectId(req.params.id) }
         },
         {
             $lookup: {
@@ -198,11 +198,50 @@ export const getOrganizationDetails = (req: Request, res: Response) => {
 export const deleteOrganization = (req: Request, res: Response) => {
     Organization.findByIdAndUpdate(req.params.id, { isDeleted: true }, { new: true }, async function (err: any, org: any) {
         if (err) { }
-        await Devices.updateMany({ organizationId: mongoose.Types.ObjectId(req.params.id) }, { organizationId: null }, function (err: any, data: any) { })
-        await User.updateMany({ organization: { $in: [mongoose.Types.ObjectId(req.params.id)] } }, { $pull: { organization: mongoose.Types.ObjectId(req.params.id) } }, function (err: any, data: any) { })
+        await Devices.updateMany({ organizationId: Types.ObjectId(req.params.id) }, { organizationId: null }, function (err: any, data: any) { })
+        await User.updateMany({ organization: { $in: [Types.ObjectId(req.params.id)] } }, { $pull: { organization: Types.ObjectId(req.params.id) } }, function (err: any, data: any) { })
         return res.status(StatusCodes.OK).json({
             success: true,
             message: "Successfully deleted the organization"
+        });
+    })
+}
+
+/**
+* Get user organization ids
+*
+* @method  getOrganizationIds
+* 
+* @param   req
+* @param   res
+*/
+export const getOrganizationIds = (req: Request, res: Response) => {
+    const pipeline: any = [
+        {
+            $match: { _id: Types.ObjectId(req.body.user_id) }
+        },
+        {
+            $lookup: {
+                "from": "organizations",
+                "let": { "organization": "$organization" },
+                "pipeline": [
+                    { $match: { $expr: { $in: ["$_id", "$$organization"] } } },
+                    { $project: { _id: 1, name: 1 } }
+                ],
+                as: "organization"
+            }
+        },
+        {
+            $project: {
+                organization: 1
+            }
+        }
+    ]
+    User.aggregate(pipeline, function (err: any, ids: any) {
+        return res.status(StatusCodes.OK).json({
+            success: true,
+            message: "Data successfully retrieved",
+            organization_ids: ids[0].organization || []
         });
     })
 }

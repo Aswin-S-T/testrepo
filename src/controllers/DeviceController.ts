@@ -2,8 +2,10 @@ import { getPagination } from '@utils';
 import { Request, Response } from 'express';
 import { validationResult } from 'express-validator';
 import { StatusCodes } from 'http-status-codes';
+import { Types } from 'mongoose';
 import mongoose from 'src/database/db';
 import { Devices } from "../models/Devices";
+import { userDetails } from '@controllers';
 
 /**
  * Add new device
@@ -23,7 +25,7 @@ export const addDevice = (req: Request, res: Response) => {
  *
  * @param
  */
-export const listDevice = (req: Request, res: Response) => {
+export const listDevice = async (req: Request, res: Response) => {
     let sort: any = { _id: -1 }
     const queryParams: any = req.query;
     const match: any = { $and: [] }
@@ -50,6 +52,16 @@ export const listDevice = (req: Request, res: Response) => {
         default:
             match['$and'].push({ isDeleted: false })
             break;
+    }
+    if (queryParams.organization_id && queryParams.organization_id != 'all') {
+        match['$and'].push({ organizationId: Types.ObjectId(queryParams.organization_id) })
+    } else {
+        const user: any = await userDetails(req.body.user_id);
+        match['$and'].push({ organizationId: { $in: user.organization } })
+    }
+
+    if (queryParams.family && queryParams.family != 'all') {
+        match['$and'].push({ devFamily: queryParams.family })
     }
 
     if (queryParams.search && queryParams.search != '') {
@@ -135,12 +147,13 @@ export const deleteDevice = (req: Request, res: Response) => {
  * @method getDeviceStatistics
  * @param
  */
-export const getDeviceStatistics = (req: Request, res: Response) => {
+export const getDeviceStatistics = async (req: Request, res: Response) => {
     var now = new Date();
     now.setMinutes(now.getMinutes() - 10); // timestamp
     const dateTime = new Date(now);
+    const user: any = await userDetails(req.body.user_id);
     const pipeline: any = [
-        { $match: { isDeleted: false } },
+        { $match: { isDeleted: false,organizationId: { $in: user.organization } } },
         {
             $group: {
                 _id: "$isDeleted",

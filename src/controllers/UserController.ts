@@ -300,3 +300,17 @@ export const getUserIds = (req: Request, res: Response) => {
         });
     })
 }
+
+/**
+* Get -  User details
+*
+* @method  userDetails
+* 
+*/
+export const userDetails = (user_id: string) => {
+    return new Promise((resolve, reject) => {
+        User.findById(user_id, function (err: any, data: any) {
+            resolve(data);
+        })
+    })
+}

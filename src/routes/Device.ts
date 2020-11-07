@@ -5,19 +5,22 @@ import {
     listDevice, addDevice, updateDevice,
     deleteDevice, getDeviceDetails,
     getDeviceErrors, getDeviceStatistics,
-    getDeviceIds, processDeviceData
+    getDeviceIds, processDeviceData,
+    getLiveData, getStatistics
 } from '@controllers';
 
 const router = Router();
 
 router.post('/', addDevice);
-router.get('/', listDevice);
+router.get('/', auth('Administrator', 'Supervisor', 'Operator', 'Super Admin'), listDevice);
 router.get('/ids', getDeviceIds);
-router.get('/statistics', getDeviceStatistics);
+router.get('/statistics', auth('Administrator', 'Supervisor', 'Operator', 'Super Admin'), getDeviceStatistics);
 router.get('/errors', getDeviceErrors);
 router.get('/:id', getDeviceDetails);
 router.put('/:id', updateDevice);
 router.delete('/:id', deleteDevice);
 
 router.post('/sensor/livedata', processDeviceData);
+router.get('/sensor/livedata', getLiveData);
+router.get('/sensor/statistics', getStatistics);
 export default router;
