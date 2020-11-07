@@ -102,8 +102,11 @@ export const addAlarmRule = async (req: Request, res: Response) => {
             "status": 'UNPROCESSABLE_ENTITY', "errors": errors.array({ onlyFirstError: true })
         });
     }
-
-    const deviceIds = await getDeviceId(req.body.devices[0]);
+    const deviceIds = [];
+    for(var i in req.body.devices){
+        const deviceId = await getDeviceId(req.body.devices[i]);
+        deviceIds.push(deviceId);
+    }
 
     const { rule_name, description, clearing_mode, time_interval, info, devices } = req.body;
     const alarm = new AlarmRule({
