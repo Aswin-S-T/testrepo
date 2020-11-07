@@ -2,6 +2,7 @@ import { Request, Response } from 'express';
 import { getRules } from './AlarmRuleController';
 import { Alert } from 'src/models/Alerts';
 import { getPagination } from '@utils';
+import { socketEmit } from 'src/utils/SocketService';
 
 /**
  * Check parameters and generate alerts
@@ -31,6 +32,7 @@ export const generateAlerts = async (deviceId: any, sensorData: any) => {
                                 if (devRules[0].type == 'Time') {
                                     timeBasedAlert(devRules, alert._id);
                                 }
+                                alertPlatformUpdate('New alert - ' + deviceId, devRules[i].info[j].parameter + ' greater than ' + devRules[i].info[j].limit, alert)
                                 return ({
                                     status: "success",
                                     message: "Document created",
@@ -61,6 +63,7 @@ export const generateAlerts = async (deviceId: any, sensorData: any) => {
                                 if (devRules[0].type == 'Time') {
                                     timeBasedAlert(devRules, alert._id);
                                 }
+                                alertPlatformUpdate('New alert - ' + deviceId, devRules[i].info[j].parameter + ' less than ' + devRules[i].info[j].limit, alert)
                                 return ({
                                     status: "success",
                                     message: "Document created",
@@ -91,6 +94,7 @@ export const generateAlerts = async (deviceId: any, sensorData: any) => {
                                 if (devRules[0].type == 'Time') {
                                     timeBasedAlert(devRules, alert._id);
                                 }
+                                alertPlatformUpdate('New alert - ' + deviceId, devRules[i].info[j].parameter + ' equal to ' + devRules[i].info[j].limit, alert)
                                 return ({
                                     status: "success",
                                     message: "Document created",
@@ -198,4 +202,19 @@ export const getActiveAlarms = async (req: Request, res: Response) => {
         })
     });
     return response
+}
+
+const alertPlatformUpdate = async (title: string, message: string, alertInfo: any) => {
+    const alert = {
+        alerts: [
+            {
+                title: title,
+                message: message,
+                alert: alertInfo
+            }
+        ]
+    }
+    console.log("ALERT", alert);
+    socketEmit('new-alert', JSON.stringify(alert));
+     
 }

@@ -12,7 +12,6 @@ export const listAlarmRule = (req: Request, res: Response) => {
     const queryParams: any = req.query;
     const dataSkip = parseInt(queryParams.skip) || 0;
     const dataLimit = parseInt(queryParams.limit) || 25;
-
     let query = [
         { $match: { isDeleted: false } },
         {
@@ -33,7 +32,7 @@ export const listAlarmRule = (req: Request, res: Response) => {
     ]
     let filter: any = {}
     if (queryParams.search && queryParams.search != '') {
-        const keyword = queryParams.key;
+        const keyword = queryParams.search;
         filter['$match'] = {
             $or: [
                 { 'info.deviceIds': { '$regex': keyword, '$options': 'i' } },
