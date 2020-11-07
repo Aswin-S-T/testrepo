@@ -12,7 +12,6 @@ export const listAlarmRule = (req: Request, res: Response) => {
     const queryParams: any = req.query;
     const dataSkip = parseInt(queryParams.skip) || 0;
     const dataLimit = parseInt(queryParams.limit) || 25;
-
     let query = [
         { $match: { isDeleted: false } },
         {
@@ -33,7 +32,7 @@ export const listAlarmRule = (req: Request, res: Response) => {
     ]
     let filter: any = {}
     if (queryParams.search && queryParams.search != '') {
-        const keyword = queryParams.key;
+        const keyword = queryParams.search;
         filter['$match'] = {
             $or: [
                 { 'info.deviceIds': { '$regex': keyword, '$options': 'i' } },
@@ -103,8 +102,11 @@ export const addAlarmRule = async (req: Request, res: Response) => {
             "status": 'UNPROCESSABLE_ENTITY', "errors": errors.array({ onlyFirstError: true })
         });
     }
-
-    const deviceIds = await getDeviceId(req.body.devices[0]);
+    const deviceIds = [];
+    for(var i in req.body.devices){
+        const deviceId = await getDeviceId(req.body.devices[i]);
+        deviceIds.push(deviceId);
+    }
 
     const { rule_name, description, clearing_mode, time_interval, info, devices } = req.body;
     const alarm = new AlarmRule({

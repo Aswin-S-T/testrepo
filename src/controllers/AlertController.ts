@@ -2,6 +2,8 @@ import { Request, Response } from 'express';
 import { getRules } from './AlarmRuleController';
 import { Alert } from 'src/models/Alerts';
 import { getPagination } from '@utils';
+import { socketEmit } from 'src/utils/SocketService';
+import { StatusCodes } from 'http-status-codes';
 
 /**
  * Check parameters and generate alerts
@@ -31,6 +33,7 @@ export const generateAlerts = async (deviceId: any, sensorData: any) => {
                                 if (devRules[0].type == 'Time') {
                                     timeBasedAlert(devRules, alert._id);
                                 }
+                                alertPlatformUpdate('New alert - ' + deviceId, devRules[i].info[j].parameter + ' greater than ' + devRules[i].info[j].limit, alert)
                                 return ({
                                     status: "success",
                                     message: "Document created",
@@ -61,6 +64,7 @@ export const generateAlerts = async (deviceId: any, sensorData: any) => {
                                 if (devRules[0].type == 'Time') {
                                     timeBasedAlert(devRules, alert._id);
                                 }
+                                alertPlatformUpdate('New alert - ' + deviceId, devRules[i].info[j].parameter + ' less than ' + devRules[i].info[j].limit, alert)
                                 return ({
                                     status: "success",
                                     message: "Document created",
@@ -91,6 +95,7 @@ export const generateAlerts = async (deviceId: any, sensorData: any) => {
                                 if (devRules[0].type == 'Time') {
                                     timeBasedAlert(devRules, alert._id);
                                 }
+                                alertPlatformUpdate('New alert - ' + deviceId, devRules[i].info[j].parameter + ' equal to ' + devRules[i].info[j].limit, alert)
                                 return ({
                                     status: "success",
                                     message: "Document created",
@@ -160,8 +165,8 @@ export const getActiveAlarms = async (req: Request, res: Response) => {
     ]
 
     let filter: any = {}
-    if (req.query.key && req.query.key != '' && req.query.key != 'null') {
-        const keyword = req.query.key;
+    if (req.query.search && req.query.search != '' && req.query.search != 'null') {
+        const keyword = req.query.search;
         filter['$match'] = {
             $or: [
                 { 'deviceId': { '$regex': keyword, '$options': 'i' } },
@@ -173,7 +178,7 @@ export const getActiveAlarms = async (req: Request, res: Response) => {
     const response = await new Promise(resolve => {
         Alert.aggregate(query, async function (err: any, data: any) {
 
-            if (req.query.key && req.query.key != '') {
+            if (req.query.search && req.query.search != '') {
                 filter = filter['$match']
             }
             let response = {
@@ -198,4 +203,48 @@ export const getActiveAlarms = async (req: Request, res: Response) => {
         })
     });
     return response
+}
+
+const alertPlatformUpdate = async (title: string, message: string, alertInfo: any) => {
+    const alert = {
+        alerts: [
+            {
+                title: title,
+                message: message,
+                alert: alertInfo
+            }
+        ]
+    }
+    //console.log("ALERT", alert);
+    socketEmit('new-alert', JSON.stringify(alert));
+     
+}
+
+/**
+ * Active alarms - Clear
+ * @method updateAlert
+ * @param
+ */
+export const updateAlert = async (req: Request, res: Response) => {
+
+    const { status } = req.body;
+    let updateData: any = {};
+    status ? updateData.status = status : '';
+
+    Alert.findByIdAndUpdate(req.params.id, updateData, { new: true }, function (err, alert) {
+        if (err) {
+            return res.status(StatusCodes.BAD_REQUEST).json({
+                status: "BAD REQUEST",
+                message: "Some Error Occured",
+                error: err
+            });
+        }
+        return res.status(StatusCodes.OK).json({
+            status: "success",
+            message: "Successfully updated alarm rule",
+            data: {
+                alert_status: alert,
+            }
+        });
+    })
 }
