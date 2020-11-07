@@ -8,8 +8,7 @@ const returnFilter = (obj: any) => {
 }
 
 export const deviceType = ["Sensor"];
-export const deviceFamily = ["Tower"];
-export const deviceSubType = ["threeLeggedTower60m", "threeLeggedTower45m", "threeLeggedTower30m"];
+export const deviceFamily = ["Air", "Water", "Flood"];
 export const deviceGrade = ["Industrial", "Consumer"];
 export const deviceDeployment = ["Outdoor", "Indoor"];
 
@@ -24,7 +23,7 @@ let DeviceSchema = new Schema({
     deviceId: { type: String, index: true },
     type: { type: String, enum: deviceType, required: true },
     devFamily: { type: String, enum: deviceFamily, required: true },
-    subType: { type: String, enum: deviceSubType, required: true },
+    subType: { type: String, required: true },
     registerFrom: { type: String },
     registerTo: { type: String },
     customerName: { type: String, required: true },

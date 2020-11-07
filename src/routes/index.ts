@@ -7,6 +7,7 @@ import DeviceRoute from './Device'
 import OrganizationRoute from './Organization';
 import AlarmRoute from './AlarmRule';
 import AlertRoute from './Alarms';
+import SensorRoute from './Sensors';
 
 // Init router and path
 const router = Router();
@@ -19,5 +20,7 @@ router.use('/device', DeviceRoute)
 router.use('/organization', OrganizationRoute);
 router.use('/alarmrule', AlarmRoute);
 router.use('/alarm', AlertRoute);
+router.use('/sensor', SensorRoute);
+
 // Export the base-router
 export default router;

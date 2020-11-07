@@ -57,7 +57,7 @@ export const addOrganization = async (req: Request, res: Response) => {
             }
             return res.status(StatusCodes.CREATED).json({
                 success: true,
-                message: "Document created successflly",
+                message: "Document created successfully",
                 org_details: org
             });
         }

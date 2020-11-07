@@ -11,3 +11,4 @@ export * from './StatisticsDataController';
 export * from './AlertController';
 export * from './DashboardController';
 export * from './AlarmRuleController';
+export * from './SensorSpecController';
