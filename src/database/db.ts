@@ -3,7 +3,8 @@ import { logger as Logger } from '@utils';
 
 const DB_URL = String(process.env.DB_URL);
 mongoose.set('useFindAndModify', false);
-mongoose.set('useCreateIndex', true)
+mongoose.set('useCreateIndex', true);
+mongoose.set('autoIndex', true);
 mongoose.connect(DB_URL, { useNewUrlParser: true, useUnifiedTopology: true });
 
 // When successfully connected

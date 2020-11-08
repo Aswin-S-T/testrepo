@@ -23,7 +23,7 @@ let DeviceSchema = new Schema({
     deviceId: { type: String, index: true },
     type: { type: String, enum: deviceType, required: true },
     devFamily: { type: String, enum: deviceFamily, required: true },
-    subType: { type: String, required: true },
+    subType: { type: mongoose.Types.ObjectId, required: true },
     registerFrom: { type: String },
     registerTo: { type: String },
     customerName: { type: String, required: true },
