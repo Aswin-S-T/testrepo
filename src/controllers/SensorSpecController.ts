@@ -5,9 +5,8 @@ import { SensorParameters } from "../models/SensorParameters";
 import { getPagination } from '@utils';
 import { Types } from 'mongoose';
 import { validationResult } from 'express-validator';
-import { SensorSpec } from '@helpers';
 import { Devices } from 'src/models/Devices';
-import mongoose from 'src/database/db';
+import { SensorSpec } from '@helpers';
 
 
 /**
@@ -110,23 +109,24 @@ export const updateSensorType = async (req: Request, res: Response) => {
     description ? updateData.description = description : '';
     parameters ? updateData.sensorParamsIds = parameters.map((x: string | number | undefined) => Types.ObjectId(x)) : []
 
-    SensorTypes.find({ name: name, isDeleted: false }, function (err: any, sensor: any) {
-        if (err) { }
-        if (sensor) {
-            return res.status(StatusCodes.OK).json({
-                success: false,
-                message: "Sensor with same name already exists",
-            });
-        } else {
-            SensorTypes.findByIdAndUpdate(req.params.id, updateData, { new: true }, function (err: any, sensorType: any) {
-                if (err) { }
+    if (name) {
+        SensorTypes.find({ name: name, isDeleted: false }, function (err: any, sensor: any) {
+            if (err) { }
+            if (sensor) {
                 return res.status(StatusCodes.OK).json({
-                    success: true,
-                    message: "Successfully updated sensor type details",
-                    sensor_type: sensorType
+                    success: false,
+                    message: "Sensor with same name already exists",
                 });
-            })
-        }
+            }
+        })
+    }
+    SensorTypes.findByIdAndUpdate(req.params.id, updateData, { new: true }, function (err: any, sensorType: any) {
+        if (err) { }
+        return res.status(StatusCodes.OK).json({
+            success: true,
+            message: "Successfully updated sensor type details",
+            sensor_type: sensorType
+        });
     })
 
 }
@@ -278,7 +278,36 @@ export const listSensorSpec = async (req: Request, res: Response) => {
  * @param
  */
 export const updateSensorSpec = async (req: Request, res: Response) => {
+    const { param_name, display_name, display_name_html,
+        unit, unit_html, display_enabled, display_image,
+        is_primary, value_precision, filterable, range_min, range_max, limits } = req.body;
+    let updateData: any = {};
+    param_name ? updateData.paramName = param_name : '';
+    display_name ? updateData.displayName = display_name : '';
+    display_name_html ? updateData.displayNameHtml = display_name : '';
+    unit ? updateData.unit = unit : '';
+    unit_html ? updateData.unitDisplayHtml = unit_html : '';
+    value_precision ? updateData.valuePrecision = value_precision : '';
 
+    if (display_enabled != undefined) {
+        updateData.isDisplayEnabled = display_enabled
+    }
+
+    if (filterable != undefined) {
+        updateData.isFilterable = filterable
+    }
+
+    range_min ? updateData['maxRanges.min'] = range_min: '';
+    range_max ? updateData['maxRanges.max'] = range_max: '';
+
+    SensorParameters.findByIdAndUpdate(req.params.id, updateData, { new: true }, function (err: any, sensorType: any) {
+        if (err) { }
+        return res.status(StatusCodes.OK).json({
+            success: true,
+            message: "Successfully updated sensor parameter details",
+            sensor_type: sensorType
+        });
+    })
 }
 
 /**
@@ -287,7 +316,25 @@ export const updateSensorSpec = async (req: Request, res: Response) => {
  * @param
  */
 export const deleteSensorSpec = async (req: Request, res: Response) => {
-
+    SensorTypes.countDocuments({
+        sensorParamsIds: { $in: [Types.ObjectId(req.params.id)] },
+        isDeleted: false
+    }, function (err: any, count: number) {
+        if (count > 0) {
+            return res.status(StatusCodes.OK).json({
+                success: false,
+                message: "Sensor Spec in use! please remove from sensor type"
+            });
+        } else {
+            SensorParameters.findByIdAndUpdate(req.params.id, { isDeleted: true }, function (err: any, sensorType: any) {
+                if (err) { }
+                return res.status(StatusCodes.OK).json({
+                    success: true,
+                    message: "Successfully deleted sensor spec"
+                });
+            })
+        }
+    });
 }
 
 /**
@@ -305,11 +352,26 @@ export const getSensorSpecDetails = async (req: Request, res: Response) => {
  * @param
  */
 export const listSensorSpecIds = async (req: Request, res: Response) => {
-    SensorParameters.find({}, { _id: 1, displayName: 1 }, function (err: any, ids: any) {
+    SensorParameters.find({ isDeleted: false }, { _id: 1, displayName: 1 }, function (err: any, ids: any) {
         return res.status(StatusCodes.OK).json({
             success: true,
             message: "Data successfully retrieved",
             spec_ids: ids || []
+        });
+    })
+}
+
+/**
+ * Get sensor type ids
+ *
+ * @param
+ */
+export const listSensorTypeIds = async (req: Request, res: Response) => {
+    SensorTypes.find({ isDeleted: false }, { _id: 1, displayName: 1 }, function (err: any, ids: any) {
+        return res.status(StatusCodes.OK).json({
+            success: true,
+            message: "Data successfully retrieved",
+            sensor_type_ids: ids || []
         });
     })
 }
