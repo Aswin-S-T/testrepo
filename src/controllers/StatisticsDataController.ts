@@ -46,6 +46,10 @@ export const getStatistics = (req: Request, res: Response) => {
         }
     }
 
+    const pageQuery = (pageSkip === 'null' && pageLimit ==='null') ? [] : [
+        { $skip: parseInt(pageSkip) }, { $limit: parseInt(pageLimit) }
+    ]
+
     const query = [
         {
             $match: {
@@ -79,16 +83,12 @@ export const getStatistics = (req: Request, res: Response) => {
         {
             '$facet': {
                 metadata: [{ $count: "total" }],
-                data: [{ $skip: parseInt(pageSkip) }, 
-                    { $limit: parseInt(pageLimit) },
-                    {
-                        $project: {
-                            "parameters": statistics,
-                            "sample_count": 1
-                        }
+                data: [...pageQuery, ...[{
+                    $project: {
+                        "parameters": statistics,
+                        "sample_count": 1
                     }
-                
-                ]
+                }]]
             }
         }
     ];

@@ -34,6 +34,10 @@ export const getLiveData = (req: Request, res: Response) => {
         }
     }
 
+    const pageQuery = (pageSkip === 'null' && pageLimit ==='null') ? [] : [
+        { $skip: parseInt(pageSkip) }, { $limit: parseInt(pageLimit) }
+    ]
+
     devices.split(',').forEach((device: any) => {
         SensorData.aggregate([
             { $match: {
@@ -53,10 +57,8 @@ export const getLiveData = (req: Request, res: Response) => {
             {
                 '$facet': {
                     metadata: [{ $count: "total" }],
-                    data: [{ $skip: parseInt(pageSkip) }, 
-                        { $limit: parseInt(pageLimit) },
-                        { $addFields: { parameters: livedata } },
-                        { $unset: "data" }
+                    data: [...pageQuery, ...[{ $addFields: { parameters: livedata } },
+                        { $unset: "data" }]
                     ]
                 }
             }
