@@ -12,8 +12,9 @@ import { SensorSpec } from '@helpers';
  * @param
  */
 export const getLiveData = (req: Request, res: Response) => {
-    const { devs, params, skip, limit } = req.query;
+    const { devs, params, skip, limit, startdate, enddate } = req.query;
     const devices: any = devs; const parameters: any = params;
+    const start: any = startdate; const end: any = enddate;
     const pageSkip: any = skip || 0;
     const pageLimit: any = limit || 10;
 
@@ -35,7 +36,19 @@ export const getLiveData = (req: Request, res: Response) => {
 
     devices.split(',').forEach((device: any) => {
         SensorData.aggregate([
-            { $match: { deviceId: Types.ObjectId(device) } },
+            { $match: {
+                $and: [
+                    {
+                        deviceId: Types.ObjectId(device)
+                    },
+                    {
+                        receivedAt: { $gte: new Date(start) }
+                    },
+                    {
+                        receivedAt: { $lt: new Date(end) }
+                    }
+                ]
+            } },
             { '$sort': { 'createdAt': -1 } },
             {
                 '$facet': {

@@ -12,8 +12,9 @@ import { SensorSpec } from '@helpers';
  * @param
  */
 export const getStatistics = (req: Request, res: Response) => {
-    const { devs, params, skip, limit, statType, timeZone } = req.query;
+    const { devs, params, skip, limit, statType, timeZone, startdate, enddate } = req.query;
     const device: any = devs; const parameters: any = params;
+    const start: any = startdate; const end: any = enddate;
     const pageSkip: any = skip || 0;
     const pageLimit: any = limit || 10;
     const basis: any = statType || 'daily';
@@ -51,6 +52,12 @@ export const getStatistics = (req: Request, res: Response) => {
                 $and: [
                     {
                         deviceId: Types.ObjectId(device)
+                    },
+                    {
+                        receivedAt: { $gte: new Date(start) }
+                    },
+                    {
+                        receivedAt: { $lt: new Date(end) }
                     }
                 ]
             }
