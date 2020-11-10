@@ -241,7 +241,91 @@ export const updateAlert = async (req: Request, res: Response) => {
         }
         return res.status(StatusCodes.OK).json({
             status: "success",
-            message: "Successfully updated alarm rule",
+            message: "Successfully cleared alarm",
+            data: {
+                alert_status: alert,
+            }
+        });
+    })
+}
+
+/**
+ * Alarm History - List
+ * @method getAlarmHistory
+ * @param
+ */
+export const getAlarmHistory = async (req: Request, res: Response) => {
+
+    const queryParams: any = req.query;
+    const dataSkip = parseInt(queryParams.skip) || 0;
+    const dataLimit = parseInt(queryParams.limit) || 25;
+
+    let sort: any = { _id: -1 };
+
+    let query = [
+        { $match: { status: "Inactive" } },
+        {
+            '$facet': {
+                metadata: [{ $count: "total" }],
+                data: [{ $sort: sort }, { $skip: dataSkip }, { $limit: dataLimit }]
+            }
+        }
+    ]
+
+    let filter: any = {}
+    if (req.query.search && req.query.search != '' && req.query.search != 'null') {
+        const keyword = req.query.search;
+        filter['$match'] = {
+            $or: [
+                { 'deviceId': { '$regex': keyword, '$options': 'i' } },
+                { 'ruleName': { '$regex': keyword, '$options': 'i' } }
+            ],
+        }
+        query.unshift(filter);
+    }
+    const response = await new Promise(resolve => {
+        Alert.aggregate(query, async function (err: any, data: any) {
+
+            if (req.query.search && req.query.search != '') {
+                filter = filter['$match']
+            }
+            let response = {
+                status: "success",
+                message: "",
+                alert_history: data,
+                pagination: await getPagination(0, dataSkip, dataLimit)
+            };
+            if (data[0]) {
+                if (data[0].metadata[0]) {
+                    response.pagination = await getPagination(data[0].metadata[0].total, dataSkip, dataLimit)
+                }
+                response.alert_history = data[0].data
+            }
+
+            if (!err) {
+                return res.status(200).json(response);
+            }
+            if (err) {
+                console.log(err);
+            }
+        })
+    });
+    return response
+}
+
+export const clearAllAlerts = async (req: Request, res: Response) => {
+
+    Alert.updateMany({ status: "Active" }, { status: "Inactive" }, function (err, alert) {
+        if (err) {
+            return res.status(StatusCodes.BAD_REQUEST).json({
+                status: "BAD REQUEST",
+                message: "Some Error Occured",
+                error: err
+            });
+        }
+        return res.status(StatusCodes.OK).json({
+            status: "success",
+            message: "Successfully cleared alarms",
             data: {
                 alert_status: alert,
             }
