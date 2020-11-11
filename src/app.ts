@@ -13,6 +13,7 @@ import fs from 'fs';
 const cert = fs.readFileSync('./src/cert/cert.pem');
 const key = fs.readFileSync('./src/cert/key.pem');
 import https from 'https';
+import { socketConnection } from './utils/SocketService';
 // Init express
 const app = express();
 
@@ -57,10 +58,12 @@ if (process.env.HTTPS == 'true') {
     }, app).listen(port, () => {
         Logger.info('Express https server started on port: ' + port);
     });
+    socketConnection(server)
 } else {
-    app.listen(port, () => {
+    const server = app.listen(port, () => {
         Logger.info('Express http server started on port: ' + port);
     });
+    socketConnection(server)
 }
 // Export express instance
 export default app;

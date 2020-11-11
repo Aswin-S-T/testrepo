@@ -205,6 +205,12 @@ export const getActiveAlarms = async (req: Request, res: Response) => {
     return response
 }
 
+/**
+ * Active alarms - Clear
+ * @method alertPlatformUpdate
+ * @param
+ */
+
 const alertPlatformUpdate = async (title: string, message: string, alertInfo: any) => {
     const alert = {
         alerts: [
@@ -215,9 +221,8 @@ const alertPlatformUpdate = async (title: string, message: string, alertInfo: an
             }
         ]
     }
-    //console.log("ALERT", alert);
+    console.log("ALERT", alert);
     socketEmit('new-alert', JSON.stringify(alert));
-     
 }
 
 /**
