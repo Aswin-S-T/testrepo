@@ -169,17 +169,18 @@ export const getSensorTypeDetails = async (req: Request, res: Response) => {
         {
             $lookup: {
                 "from": "sensor_parameters",
-                "let": { "typeId": "$_id" },
+                "let": { "sensorParamsIds": "$sensorParamsIds" },
                 "pipeline": [
-                    { $match: { $expr: { $in: ["$$typeId", "$sensorTypeIds"] } } },
-                    { $project: { _id: 1, name: 1 } }
+                    { $match: { $expr: { $in: ["$_id", "$$sensorParamsIds"] } } }
                 ],
                 as: "specs"
             }
         },
     ]
     SensorTypes.aggregate(pipeline, function (err: any, sensorType: any) {
-        if (err) { }
+        if (err) { 
+            console.log(err)
+        }
         return res.status(StatusCodes.OK).json({
             success: true,
             message: "Sensor type details",
@@ -367,7 +368,7 @@ export const listSensorSpecIds = async (req: Request, res: Response) => {
  * @param
  */
 export const listSensorTypeIds = async (req: Request, res: Response) => {
-    SensorTypes.find({ isDeleted: false }, { _id: 1, displayName: 1 }, function (err: any, ids: any) {
+    SensorTypes.find({ isDeleted: false }, { _id: 1, name: 1 }, function (err: any, ids: any) {
         return res.status(StatusCodes.OK).json({
             success: true,
             message: "Data successfully retrieved",
