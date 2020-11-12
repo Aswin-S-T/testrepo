@@ -8,7 +8,7 @@ let io: { sockets: { emit: (event: any, values: any) => void; }; } | null = null
  */
 export const socketConnection = (server: import("http").Server | import("https").Server) => {
     io = socket(server);
-    //console.log("Made socket connection");
+    console.log("Made socket connection");
 }
 
 /**
