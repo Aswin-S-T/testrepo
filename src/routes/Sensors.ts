@@ -5,13 +5,15 @@ import {
     addSensorType, listSensorType, updateSensorType,
     getSensorTypeDetails, deleteSensorType,
     addSensorSpec, listSensorSpec, updateSensorSpec,
-    getSensorSpecDetails, deleteSensorSpec,listSensorSpecIds
+    getSensorSpecDetails, deleteSensorSpec,listSensorSpecIds,
+    listSensorTypeIds
 } from '@controllers';
 
 const router = Router();
 
 router.post('/type', auth('Super Admin'), addSensorType);
 router.get('/type', listSensorType);
+router.get('/type/ids', listSensorTypeIds);
 router.get('/type/:id', getSensorTypeDetails);
 router.put('/type/:id', auth('Super Admin'), updateSensorType);
 router.delete('/type/:id', auth('Super Admin'), deleteSensorType);
