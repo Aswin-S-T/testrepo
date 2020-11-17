@@ -6,6 +6,7 @@ const returnFilter = (obj: any) => {
     let tmp = { ...obj }
     tmp.password = undefined
     tmp.__v = undefined
+    tmp.visible = undefined
     return tmp
 }
 
@@ -24,11 +25,12 @@ let UserSchema = new Schema({
     password: { type: String, required: true },
     isDeleted: { type: Boolean, default: false },
     activated: { type: Boolean, default: true },
-    role: { type: String, enum: ['Administrator', 'Supervisor', 'Operator', 'Super Admin'], default: 'Operator' },
+    role: { type: String, enum: ['Admin', 'Supervisor', 'Operator', 'Super Admin'], default: 'Operator' },
     userName: { type: String, required: true },
     createdBy: { type: mongoose.Types.ObjectId },
     organization: { type: Array, default: [] },
-    logs: { type: Array, default: [] }
+    logs: { type: Array, default: [] },
+    visible: { type: Boolean, default: true }
 }, { timestamps: true });
 
 UserSchema.methods.toJSON = function () {
