@@ -6,6 +6,7 @@ const returnFilter = (obj: any) => {
     let tmp = { ...obj }
     tmp.password = undefined
     tmp.__v = undefined
+    tmp.visible = undefined
     return tmp
 }
 
@@ -28,7 +29,8 @@ let UserSchema = new Schema({
     userName: { type: String, required: true },
     createdBy: { type: mongoose.Types.ObjectId },
     organization: { type: Array, default: [] },
-    logs: { type: Array, default: [] }
+    logs: { type: Array, default: [] },
+    visible: { type: Boolean, default: true }
 }, { timestamps: true });
 
 UserSchema.methods.toJSON = function () {

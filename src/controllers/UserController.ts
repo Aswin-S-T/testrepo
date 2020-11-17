@@ -18,7 +18,7 @@ export const usersList = (req: Request, res: Response) => {
     const { skip, limit, role, status } = req.query;
     const pageSkip: any = skip || 0;
     const pageLimit: any = limit || 10;
-    const match: any = { isDeleted: false };
+    const match: any = { isDeleted: false, visible: true };
     role != undefined ? match.role = role : '';
     status == 'active' ? match.activated = true : status == 'inactive' ? match.activated = false : '';
 
@@ -292,7 +292,7 @@ export const getUserDetailsById = (req: Request, res: Response) => {
 * @param   res
 */
 export const getUserIds = (req: Request, res: Response) => {
-    User.find({ activated: true, isDeleted: false }, { _id: 1, name: 1 }, function (err: any, ids: any) {
+    User.find({ activated: true, isDeleted: false, visible: true }, { _id: 1, name: 1 }, function (err: any, ids: any) {
         return res.status(StatusCodes.OK).json({
             success: true,
             message: "Data successfully retrieved",
