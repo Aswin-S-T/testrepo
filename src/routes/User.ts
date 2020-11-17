@@ -9,12 +9,12 @@ import {
 import { auth } from '../middlewares/Auth';
 
 const router = Router();
-router.get('/', auth('Administrator', 'Supervisor', 'Operator', 'Super Admin'), usersList);
-router.post('/', auth('Administrator', 'Supervisor', 'Operator', 'Super Admin'), validate.userAdd, addUser);
-router.put('/me', auth('Administrator', 'Supervisor', 'Operator', 'Super Admin'), updateUserDetails);
-router.get('/ids', auth('Administrator', 'Super Admin'), getUserIds);
-router.put('/me/password', auth('Administrator', 'Supervisor', 'Operator', 'Super Admin'), validate.updateUserPassword, updateUserPassword);
-router.get('/me', auth('Administrator', 'Supervisor', 'Operator', 'Super Admin'), getUserDetails);
-router.get('/:id', auth('Administrator', 'Super Admin'), getUserDetailsById);
-router.put('/:id', auth('Administrator', 'Super Admin'), editUser);
+router.get('/', auth('Admin', 'Supervisor', 'Operator', 'Super Admin'), usersList);
+router.post('/', auth('Admin', 'Supervisor', 'Operator', 'Super Admin'), validate.userAdd, addUser);
+router.put('/me', auth('Admin', 'Supervisor', 'Operator', 'Super Admin'), updateUserDetails);
+router.get('/ids', auth('Admin', 'Super Admin'), getUserIds);
+router.put('/me/password', auth('Admin', 'Supervisor', 'Operator', 'Super Admin'), validate.updateUserPassword, updateUserPassword);
+router.get('/me', auth('Admin', 'Supervisor', 'Operator', 'Super Admin'), getUserDetails);
+router.get('/:id', auth('Admin', 'Super Admin'), getUserDetailsById);
+router.put('/:id', auth('Admin', 'Super Admin'), editUser);
 export default router;
