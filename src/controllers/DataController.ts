@@ -76,7 +76,7 @@ const getAqmsConversion = function (data: any) {
     }
     const currentdate = new Date();
     data.receivedTime = currentdate.valueOf();
-    return [data];
+    return data;
 }
 
 // Hashed conversion for multiple data post
@@ -125,7 +125,7 @@ export const processDeviceData = async (req: Request, res: Response) => {
                 }
                 break;
             default:
-                sensorData = data
+                sensorData = getAqmsConversion(data)
                 break;
         }
         //  Parse incoming data
@@ -157,7 +157,8 @@ const parseInComingData = async (deviceDeatails: any, sensorData: any) => {
         const processedData: any = await parseData(sensorData, deviceDeatails, SensorSpec);
         processedData.receivedAt = new Date(sensorData.time);
         //Generate Alarms
-        generateAlerts(deviceDeatails.deviceId, sensorData);
+        console.log("PP", processedData)
+        generateAlerts(deviceDeatails.deviceId, processedData);
 
         // to do raw aqi calculation
         //
@@ -176,6 +177,15 @@ const parseInComingData = async (deviceDeatails: any, sensorData: any) => {
     }
 }
 
+const isAQIApplicableForParamType = (paramName: any) => {
+    paramName = paramName.toUpperCase();
+
+    if (paramName == "PM2P5" || paramName == "PM10" || paramName == "SO2" || paramName == "NO2" ||
+        paramName == "CO" || paramName == "O3" || paramName == "NH3" || paramName == "C6H6")
+        return true;
+    return false;
+}
+
 // WMAFilter
 const WMAFilter = (oldValue: any, newValue: any, filter: any) => {
     return oldValue * filter.weightT0 + newValue * filter.weightT1;
@@ -190,7 +200,7 @@ const parseData = (data: any, device: any, paramDefinitions: any) => {
             filterResult[paramDefinitions[i].paramName] = data[paramDefinitions[i].paramName];
             if (!SensorSpecExclude.includes(paramDefinitions[i].paramName)) {
                 if (filterResult[paramDefinitions[i].paramName]) {
-                    filterResult[paramDefinitions[i].paramName] = parseFloat(filterResult[paramDefinitions[i].paramName].toFixed(2))
+                    filterResult[paramDefinitions[i].paramName] = parseFloat(filterResult[paramDefinitions[i].paramName]).toFixed(3)
                 }
             }
             filterResult[paramDefinitions[i].paramName] = processCalibration(filterResult[paramDefinitions[i].paramName], paramDefinitions[i]);
