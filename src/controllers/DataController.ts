@@ -10,6 +10,7 @@ import mongoose from 'src/database/db';
 import { SensorSpec, SensorSpecExclude } from '@helpers';
 import { handleDeviceErrors, generateAlerts } from '@controllers';
 import { Devices } from '../models/Devices';
+import { aqiCalculator } from 'src/utils/aqiCalculator';
 
 //  Sensor data calibration process
 const processCalibration = (val: any, paramDefinitions: any) => {
@@ -157,12 +158,14 @@ const parseInComingData = async (deviceDeatails: any, sensorData: any) => {
         const processedData: any = await parseData(sensorData, deviceDeatails, SensorSpec);
         processedData.receivedAt = new Date(sensorData.time);
         //Generate Alarms
-        console.log("PP", processedData)
+        // console.log("PP", processedData)
         generateAlerts(deviceDeatails.deviceId, processedData);
 
         // to do raw aqi calculation
-        //
-
+        const rawAqi: any = findAQIFromLiveData(processedData);
+        processedData.rawAQI = rawAqi.AQI.toFixed(3);
+        processedData.prominentPollutant = rawAqi.prominentPollutant;
+        console.log(processedData)
         const sensorDataModel = new SensorData({
             deviceId: mongoose.Types.ObjectId(deviceDeatails._id),
             rawDataId: mongoose.Types.ObjectId(rawDataDetails._id),
@@ -175,6 +178,25 @@ const parseInComingData = async (deviceDeatails: any, sensorData: any) => {
             Devices.findByIdAndUpdate(deviceDeatails._id, { lastDataReceiveTime: new Date(sensorData.time) }, function (err: any, device: any) { })
         })
     }
+}
+const findAQIFromLiveData = (currentData: any) => {
+    const resAqi = -1;
+    var count = 0;
+    var aqiDetails = { AQI: -9999999999, prominentPollutant: '' };
+    var paramValueMap: any = {};
+    for (var paramName in currentData) {
+        if (!isAQIApplicableForParamType(paramName))
+            continue;
+        var tempAvg = currentData[paramName];
+        var subIndexValue: any = aqiCalculator(paramName.toUpperCase(), tempAvg);
+        paramValueMap[paramName.toUpperCase()] = subIndexValue;
+        if (subIndexValue && aqiDetails.AQI < subIndexValue) {
+            aqiDetails.AQI = subIndexValue;
+            aqiDetails.prominentPollutant = paramName;
+        }
+        (paramName === "PM2p5" || paramName == "PM10") ? count++ : '';
+    }
+    return (count >= 1) ? aqiDetails : resAqi;
 }
 
 const isAQIApplicableForParamType = (paramName: any) => {
