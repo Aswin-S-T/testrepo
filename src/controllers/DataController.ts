@@ -219,6 +219,16 @@ const parseData = (data: any, device: any, paramDefinitions: any) => {
         let filterResult: any = {};
 
         for (var i = 0; i < paramDefinitions.length; i++) {
+
+            if (paramDefinitions[i].maxRanges != null) {
+                if (paramDefinitions[i].maxRanges.max != null && data[paramDefinitions[i].paramName] > paramDefinitions[i].maxRanges.max) {
+                    data[paramDefinitions[i].paramName] = paramDefinitions[i].maxRanges.max;
+
+                }
+                if (paramDefinitions[i].maxRanges.min != null && data[paramDefinitions[i].paramName] < paramDefinitions[i].maxRanges.min) {
+                    data[paramDefinitions[i].paramName] = paramDefinitions[i].maxRanges.min;
+                }
+            }
             filterResult[paramDefinitions[i].paramName] = data[paramDefinitions[i].paramName];
             if (!SensorSpecExclude.includes(paramDefinitions[i].paramName)) {
                 if (filterResult[paramDefinitions[i].paramName]) {
