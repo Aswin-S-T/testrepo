@@ -142,6 +142,13 @@ export const getDeviceDetails = (req: Request, res: Response) => {
  * @param
  */
 export const deleteDevice = (req: Request, res: Response) => {
+    Devices.findByIdAndUpdate(req.params.id, { isDeleted: true, activated: false }, { new: true }, function (err: any, data: any) {
+        return res.status(StatusCodes.OK).json({
+            success: true,
+            message: "Device successfully deleted",
+            device_details: data
+        });
+    })
 }
 
 /**
@@ -258,4 +265,19 @@ export const deviceDetails = (query: object) => {
                 reject(null);
             });
     });
+}
+
+/**
+ * Restore device
+ *
+ * @param
+ */
+export const restoreDevice = (req: Request, res: Response) => {
+    Devices.findByIdAndUpdate(req.params.id, { isDeleted: false, activated: true }, { new: true }, function (err: any, data: any) {
+        return res.status(StatusCodes.OK).json({
+            success: true,
+            message: "Device successfully restored",
+            device_details: data
+        });
+    })
 }
