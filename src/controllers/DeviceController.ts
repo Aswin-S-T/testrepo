@@ -3,7 +3,6 @@ import { Request, Response } from 'express';
 import { validationResult } from 'express-validator';
 import { StatusCodes } from 'http-status-codes';
 import { Types } from 'mongoose';
-import mongoose from 'src/database/db';
 import { Devices } from "../models/Devices";
 import { userDetails } from '@controllers';
 
@@ -126,11 +125,46 @@ export const updateDevice = (req: Request, res: Response) => {
  * @param
  */
 export const getDeviceDetails = (req: Request, res: Response) => {
-    Devices.findById(req.params.id, function (err: any, data: any) {
+    const pipeline: any = [
+        {
+            $match: {
+                _id: Types.ObjectId(req.params.id)
+            }
+        },
+        {
+            $lookup: {
+                from: 'organizations',
+                localField: 'organizationId',
+                foreignField: '_id',
+                as: 'organization'
+            }
+        },
+        {
+            $lookup: {
+                from: 'sensor_types',
+                localField: 'subType',
+                foreignField: '_id',
+                as: 'subTypeDetails'
+            }
+        },
+        {
+            $unwind: {
+                path: "$organization",
+                preserveNullAndEmptyArrays: true
+            }
+        },
+        {
+            $unwind: {
+                path: "$subTypeDetails",
+                preserveNullAndEmptyArrays: true
+            }
+        }
+    ]
+    Devices.aggregate(pipeline, function (err: any, data: any) {
         return res.status(StatusCodes.OK).json({
             success: true,
             message: "Data successfully retrieved",
-            device_details: data
+            device_details: data[0] || {}
         });
     })
 }
@@ -233,7 +267,7 @@ export const getDeviceIds = (req: Request, res: Response) => {
                 const pushItem: any = {
                     organizationId: {}
                 }
-                pushItem['organizationId']['$' + query.operation] = mongoose.Types.ObjectId(query.value)
+                pushItem['organizationId']['$' + query.operation] = Types.ObjectId(query.value)
                 filter['$or'].push(pushItem)
                 filter['$or'].push({ 'organizationId': { '$eq': null } })
                 break;
