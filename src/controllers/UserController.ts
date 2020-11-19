@@ -70,7 +70,7 @@ export const addUser = async (req: Request, res: Response) => {
         name: name,
         role: role,
         userName: username,
-        password: await passwordHash(password),
+        password: password,
         email: email
     })
     user.save(function (err: any, data: any) {
