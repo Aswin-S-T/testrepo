@@ -314,3 +314,20 @@ export const userDetails = (user_id: string) => {
         })
     })
 }
+
+/**
+* Delete user
+*
+* @method  deleteUser
+* 
+* @param   req
+* @param   res
+*/
+export const deleteUser = (req: Request, res: Response) => {
+    User.findByIdAndUpdate(req.params.id, { activated: false, isDeleted: true }, function (err: any, ids: any) {
+        return res.status(StatusCodes.OK).json({
+            success: true,
+            message: "User account successfully deleted"
+        });
+    })
+}

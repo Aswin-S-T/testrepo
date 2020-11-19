@@ -4,7 +4,7 @@ import {
     usersList, addUser,
     editUser, updateUserDetails,
     getUserDetails, updateUserPassword,
-    getUserDetailsById, getUserIds
+    getUserDetailsById, getUserIds, deleteUser
 } from '@controllers';
 import { auth } from '../middlewares/Auth';
 
@@ -17,4 +17,5 @@ router.put('/me/password', auth('Admin', 'Supervisor', 'Operator', 'Super Admin'
 router.get('/me', auth('Admin', 'Supervisor', 'Operator', 'Super Admin'), getUserDetails);
 router.get('/:id', auth('Admin', 'Super Admin'), getUserDetailsById);
 router.put('/:id', auth('Admin', 'Super Admin'), editUser);
+router.delete('/:id', auth('Admin', 'Super Admin'), deleteUser);
 export default router;
