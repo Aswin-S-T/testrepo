@@ -44,7 +44,8 @@ let DeviceSchema = new Schema({
     activated: { type: Boolean, default: true },
     lastDataReceiveTime: { type: Date },
     data: { type: Object, default: {} },
-    organizationId: { type: mongoose.Types.ObjectId, required: true }
+    organizationId: { type: mongoose.Types.ObjectId, required: true },
+    rawAqi: { type: Number, default: 0 }
 }, { timestamps: true });
 
 DeviceSchema.methods.toJSON = function () {
