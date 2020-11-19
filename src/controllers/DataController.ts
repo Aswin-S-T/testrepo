@@ -175,7 +175,7 @@ const parseInComingData = async (deviceDeatails: any, sensorData: any) => {
         sensorDataModel.save(function (err: any, result: any) {
             //  Device error handler
             handleDeviceErrors(deviceDeatails, sensorData, result)
-            Devices.findByIdAndUpdate(deviceDeatails._id, { lastDataReceiveTime: new Date(sensorData.time) }, function (err: any, device: any) { })
+            Devices.findByIdAndUpdate(deviceDeatails._id, { lastDataReceiveTime: new Date(sensorData.time), rawAqi: processedData.rawAQI }, function (err: any, device: any) { })
         })
     }
 }
@@ -277,7 +277,7 @@ export const dummyDataSeed = () => {
             if (param == 'receivedTime') {
                 data['time'] = new Date()
             } else {
-                data[param] = Math.floor(Math.random() * 100);
+                data[param] = Math.floor(Math.random() * 10);
             }
         });
         const sensorData: any = {
@@ -297,4 +297,18 @@ export const dummyDataSeed = () => {
             }
         )
     });
+}
+
+/**
+ * Get Device last data
+ * @getDeviceLastData
+ * @param
+ */
+export const getDeviceLastData = (deviceId: any) => {
+    return new Promise((resolve, reject) => {
+        SensorData.findOne({ deviceId: mongoose.Types.ObjectId(deviceId) }).sort('-createdAt').exec(function (err: any, data: any) {
+            console.log(data)
+            resolve(data)
+        })
+    })
 }

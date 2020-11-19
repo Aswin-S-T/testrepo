@@ -55,6 +55,8 @@ export const listDevice = async (req: Request, res: Response) => {
     }
     if (queryParams.organization_id && queryParams.organization_id != 'all') {
         match['$and'].push({ organizationId: Types.ObjectId(queryParams.organization_id) })
+    } else if (queryParams.organization_id == 'all') {
+
     } else {
         const user: any = await userDetails(req.body.user_id);
         match['$and'].push({ organizationId: { $in: user.organization } })
@@ -140,6 +142,13 @@ export const getDeviceDetails = (req: Request, res: Response) => {
  * @param
  */
 export const deleteDevice = (req: Request, res: Response) => {
+    Devices.findByIdAndUpdate(req.params.id, { isDeleted: true, activated: false }, { new: true }, function (err: any, data: any) {
+        return res.status(StatusCodes.OK).json({
+            success: true,
+            message: "Device successfully deleted",
+            device_details: data
+        });
+    })
 }
 
 /**
@@ -153,7 +162,7 @@ export const getDeviceStatistics = async (req: Request, res: Response) => {
     const dateTime = new Date(now);
     const user: any = await userDetails(req.body.user_id);
     const pipeline: any = [
-        { $match: { isDeleted: false,organizationId: { $in: user.organization } } },
+        { $match: { isDeleted: false, organizationId: { $in: user.organization } } },
         {
             $group: {
                 _id: "$isDeleted",
@@ -256,4 +265,19 @@ export const deviceDetails = (query: object) => {
                 reject(null);
             });
     });
+}
+
+/**
+ * Restore device
+ *
+ * @param
+ */
+export const restoreDevice = (req: Request, res: Response) => {
+    Devices.findByIdAndUpdate(req.params.id, { isDeleted: false, activated: true }, { new: true }, function (err: any, data: any) {
+        return res.status(StatusCodes.OK).json({
+            success: true,
+            message: "Device successfully restored",
+            device_details: data
+        });
+    })
 }
