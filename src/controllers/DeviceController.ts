@@ -178,6 +178,19 @@ export const listDevice = async (req: Request, res: Response) => {
  * @param
  */
 export const updateDevice = (req: Request, res: Response) => {
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+        return res.status(StatusCodes.UNPROCESSABLE_ENTITY).json({ success: false, "errors": errors.array({ onlyFirstError: true }) });
+    }
+    const payload = { ...req.body };
+    const update: any = {}
+    Devices.findByIdAndUpdate(req.params.id, update, { new: true }, function (err: any, data: any) {
+        return res.status(StatusCodes.OK).json({
+            success: true,
+            message: "Device successfully updated",
+            device_details: data
+        });
+    })
 }
 
 
