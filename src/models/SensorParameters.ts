@@ -19,8 +19,14 @@ let SensorParametersSchema = new Schema({
     valuePrecision: { type: Number, default: 1 },
     isFilterable: { type: Boolean, default: true },
     maxRanges: { type: Object },
-    limits: { type: Array },
+    limits: { type: Array, default: [] },
     isDeleted: { type: Boolean, default: false },
+    calibration: {
+        type: { type: String, default: 'none' },
+        data: { type: Array, default: [] }
+    },
+    filteringMethod: { type: String, default: 'none' },
+    filteringMethodDef: { type: Object, default: {} }
 }, { timestamps: true });
 
 SensorParametersSchema.methods.toJSON = function () {

@@ -178,7 +178,7 @@ export const getSensorTypeDetails = async (req: Request, res: Response) => {
         },
     ]
     SensorTypes.aggregate(pipeline, function (err: any, sensorType: any) {
-        if (err) { 
+        if (err) {
             console.log(err)
         }
         return res.status(StatusCodes.OK).json({
@@ -298,8 +298,8 @@ export const updateSensorSpec = async (req: Request, res: Response) => {
         updateData.isFilterable = filterable
     }
 
-    range_min ? updateData['maxRanges.min'] = range_min: '';
-    range_max ? updateData['maxRanges.max'] = range_max: '';
+    range_min ? updateData['maxRanges.min'] = range_min : '';
+    range_max ? updateData['maxRanges.max'] = range_max : '';
 
     SensorParameters.findByIdAndUpdate(req.params.id, updateData, { new: true }, function (err: any, sensorType: any) {
         if (err) { }
@@ -374,5 +374,33 @@ export const listSensorTypeIds = async (req: Request, res: Response) => {
             message: "Data successfully retrieved",
             sensor_type_ids: ids || []
         });
+    })
+}
+
+/**
+ * sensor type details
+ *
+ * @param
+ */
+export const sensorTypeDetails = async (id: string) => {
+    const pipeline: any = [
+        {
+            $match: { _id: Types.ObjectId(id) }
+        },
+        {
+            $lookup: {
+                "from": "sensor_parameters",
+                "let": { "sensorParamsIds": "$sensorParamsIds" },
+                "pipeline": [
+                    { $match: { $expr: { $in: ["$_id", "$$sensorParamsIds"] } } }
+                ],
+                as: "specs"
+            }
+        },
+    ]
+    return new Promise((resolve, reject) => {
+        SensorTypes.aggregate(pipeline, function (err: any, sensorType: any) {
+            resolve(sensorType[0])
+        })
     })
 }

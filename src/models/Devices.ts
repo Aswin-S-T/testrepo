@@ -19,7 +19,6 @@ export type DeviceDocument = mongoose.Document & {
 
 let DeviceSchema = new Schema({
     paramDefinitions: { type: Array, default: [] },
-    logicalDeviceId: { type: String, default: null },
     deviceId: { type: String, index: true },
     type: { type: String, enum: deviceType, required: true },
     devFamily: { type: String, enum: deviceFamily, required: true },
@@ -36,7 +35,11 @@ let DeviceSchema = new Schema({
         zone: { type: String, required: true },
         landMark: { type: String, required: true },
         latitude: { type: Number, required: true },
-        longitude: { type: Number, required: true }
+        longitude: { type: Number, required: true },
+        locId: { type: String },
+        building: { type: String },
+        floor: { type: String },
+        slot: { type: String },
     },
     timeZone: { type: String, required: true },
     description: { type: String, default: '' },
