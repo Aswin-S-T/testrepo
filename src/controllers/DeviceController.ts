@@ -177,13 +177,64 @@ export const listDevice = async (req: Request, res: Response) => {
  *
  * @param
  */
-export const updateDevice = (req: Request, res: Response) => {
+export const updateDevice = async (req: Request, res: Response) => {
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
         return res.status(StatusCodes.UNPROCESSABLE_ENTITY).json({ success: false, "errors": errors.array({ onlyFirstError: true }) });
     }
     const payload = { ...req.body };
-    const update: any = {}
+    const update: any = {
+        location: {}
+    }
+
+    const sensorSpec: any = await sensorTypeDetails(payload.device_sub_type);
+    const paramDefinitions = [];
+    for (let index = 0; index < sensorSpec.specs.length; index++) {
+        const param = sensorSpec.specs[index];
+        const definitions = payload.paramDefinitions.find((e: any) => { return e.paramName === param.paramName });
+        param.maxRanges = definitions.maxRanges
+        if (definitions.hasOwnProperty('filterType') && definitions['filterType'] != 'none') {
+            param.filteringMethod = definitions['filterType'];
+            param.filteringMethodDef = {
+                "weightT0": definitions['filteringMethodDef']['weightT0'],
+                "weightT1": definitions['filteringMethodDef']['weightT1']
+            }
+        }
+        if (definitions.hasOwnProperty('calibrationType') && definitions['calibrationType'] != 'none') {
+            param.calibration = {
+                type: definitions['calibrationType'],
+                "data": [
+                    {
+                        "offset": parseInt(definitions['calibration']['offset']),
+                        "min": parseInt(definitions['calibration']['min']),
+                        "max": parseInt(definitions['calibration']['max'])
+                    }
+                ]
+            }
+        }
+        paramDefinitions.push(param)
+
+    }
+    update.paramDefinitions = paramDefinitions
+    payload.customer_name ? update.customerName = payload.customer_name : ''
+    payload.lot_no ? update.customerName = payload.lot_no : ''
+    payload.serial_no ? update.customerName = payload.serial_no : ''
+    payload.device_grade ? update.customerName = payload.device_grade : ''
+    payload.location_id ? update.location.locId = payload.location_id : ''
+    payload.city ? update.location.city = payload.city : ''
+    payload.zone ? update.location.zone = payload.zone : ''
+    payload.land_mark ? update.location.landMark = payload.land_mark : ''
+    payload.latitude ? update.location.latitude = payload.latitude : ''
+    payload.longitude ? update.location.longitude = payload.longitude : ''
+    payload.building ? update.location.building = payload.building : ''
+    payload.floor ? update.location.floor = payload.floor : ''
+
+    payload.device_type ? update.type = payload.device_type : ''
+    payload.device_family ? update.devFamily = payload.device_family : ''
+    payload.device_sub_type ? update.subType = Types.ObjectId(payload.device_sub_type) : ''
+    payload.device_timezone ? update.subType = payload.device_timezone : ''
+    payload.device_organization ? update.organizationId = Types.ObjectId(payload.device_organization) : ''
+
     Devices.findByIdAndUpdate(req.params.id, update, { new: true }, function (err: any, data: any) {
         return res.status(StatusCodes.OK).json({
             success: true,
