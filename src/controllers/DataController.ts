@@ -1,16 +1,14 @@
 import { Request, Response } from 'express';
 import request from 'request';
-import { seedData } from '@utils';
+import { seedData, aqiCalculator } from '@utils';
 import { validationResult } from 'express-validator';
 import { StatusCodes } from 'http-status-codes';
-import { deviceDetails } from '@controllers';
+import { deviceDetails ,handleDeviceErrors, generateAlerts } from '@controllers';
 import { SensorData } from '../models/SensorData';
 import { SensorRawData } from '../models/SensorRawData';
-import mongoose from 'src/database/db';
-import { SensorSpec, SensorSpecExclude } from '@helpers';
-import { handleDeviceErrors, generateAlerts } from '@controllers';
+import { Types } from 'mongoose';
+import { SensorSpecExclude } from '@helpers';
 import { Devices } from '../models/Devices';
-import { aqiCalculator } from 'src/utils/aqiCalculator';
 
 //  Sensor data calibration process
 const processCalibration = (val: any, paramDefinitions: any) => {
@@ -147,7 +145,7 @@ export const processDeviceData = async (req: Request, res: Response) => {
 // Parse incoming data
 const parseInComingData = async (deviceDeatails: any, sensorData: any) => {
     const rawData = {
-        deviceId: mongoose.Types.ObjectId(deviceDeatails._id),
+        deviceId: Types.ObjectId(deviceDeatails._id),
         latitude: deviceDeatails.location.latitude,
         longitude: deviceDeatails.location.longitude,
         data: sensorData,
@@ -155,7 +153,7 @@ const parseInComingData = async (deviceDeatails: any, sensorData: any) => {
     }
     const rawDataDetails: any = await saveRawDataAndGetId(rawData);
     if (rawDataDetails) {
-        const processedData: any = await parseData(sensorData, deviceDeatails, SensorSpec);
+        const processedData: any = await parseData(sensorData, deviceDeatails, deviceDeatails.paramDefinitions);
         processedData.receivedAt = new Date(sensorData.time);
         //Generate Alarms
         // console.log("PP", processedData)
@@ -165,10 +163,10 @@ const parseInComingData = async (deviceDeatails: any, sensorData: any) => {
         const rawAqi: any = findAQIFromLiveData(processedData);
         processedData.rawAQI = rawAqi.AQI.toFixed(3);
         processedData.prominentPollutant = rawAqi.prominentPollutant;
-        console.log(processedData)
+        // console.log(processedData)
         const sensorDataModel = new SensorData({
-            deviceId: mongoose.Types.ObjectId(deviceDeatails._id),
-            rawDataId: mongoose.Types.ObjectId(rawDataDetails._id),
+            deviceId: Types.ObjectId(deviceDeatails._id),
+            rawDataId: Types.ObjectId(rawDataDetails._id),
             data: processedData,
             receivedAt: new Date(sensorData.time)
         })
@@ -229,7 +227,7 @@ const parseData = (data: any, device: any, paramDefinitions: any) => {
 
             if (paramDefinitions[i].filteringMethod == "WMAFilter") {
                 const originalVal = filterResult[paramDefinitions[i].paramName];
-                SensorData.findOne({ deviceId: mongoose.Types.ObjectId(device._id), isDeleted: 0 }, { sort: { 'createdAt': -1 } }, function (err: any, oldData: any) {
+                SensorData.findOne({ deviceId: Types.ObjectId(device._id), isDeleted: 0 }, { sort: { 'createdAt': -1 } }, function (err: any, oldData: any) {
                     if (oldData && oldData[paramDefinitions[i].paramName] != null) {
                         var oldValue = data[paramDefinitions[i].paramName];
                         var newValue = processCalibration(originalVal, paramDefinitions[i]);;
@@ -296,7 +294,7 @@ export const dummyDataSeed = () => {
  */
 export const getDeviceLastData = (deviceId: any) => {
     return new Promise((resolve, reject) => {
-        SensorData.findOne({ deviceId: mongoose.Types.ObjectId(deviceId) }).sort('-createdAt').exec(function (err: any, data: any) {
+        SensorData.findOne({ deviceId: Types.ObjectId(deviceId) }).sort('-createdAt').exec(function (err: any, data: any) {
             console.log(data)
             resolve(data)
         })
