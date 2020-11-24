@@ -1,3 +1,10 @@
+import { Devices } from "../models/Devices";
+import { findAQIFromLiveData } from '@controllers';
+import { Types } from 'mongoose';
+import { SensorData } from '../models/SensorData';
+// import moment from 'moment';
+import * as moment from 'moment';
+import 'moment-timezone';
 
 export const aqiCalculator = (paramName: any, value: any) => {
     var result = 0;
@@ -13,11 +20,12 @@ export const aqiCalculator = (paramName: any, value: any) => {
     }
     if (paramFuncs[temp] != null) {
         result = paramFuncs[temp](value);
-        //console.log("RES", temp, result);
     }
+
     return result;
 }
 const convertPM10u3ToAqi = function (value: any) {
+    calculateHourlyAqi();
     if (value <= 50)
         return value;
     if (value > 50 && value <= 100)
@@ -136,4 +144,105 @@ const convertNH3u3ToAqi = function (value: any) {
         return 400 + (value - 1800) * (100 / 600);
     if (value > 2400)
         return (500);
+}
+
+const calculateHourlyAqi = () => {
+    Devices.find({}, function (err: any, data: any) {
+        if (err) {
+            console.log(err)
+        }
+        else {
+            for (let i = 0; i < data.length; i++) {
+                var utcToHour = new Date();
+                let aqiParamValues = getSubIndex(data, utcToHour);
+                let aqiDetails: any = findAQIFromLiveData(aqiParamValues);
+                utcToHour.setHours(utcToHour.getHours() - 1);
+                if (aqiDetails.AQI >= 0) {
+
+                }
+            }
+        }
+
+    });
+
+}
+
+const getSubIndex = async (device: any, utcToHour: any) => {
+    console.log(utcToHour)
+    var toHour = dateToHourlyUsageKey(utcToHour, null);
+    var from24Hour = new Date(toHour.valueOf() - 60 * 60 * 24 * 1000);
+    var from8Hour = new Date(toHour.valueOf() - 60 * 60 * 8 * 1000);
+    const aqiCalculationParam = ["PM2p5", "PM10", "SO2", "NO2", "CO", "O3", "NH3"];
+     //console.log(device)
+    var hourlyData: any = await getHourlyData(device[0]._id, from24Hour.valueOf(), toHour.valueOf());
+    
+    var hourlyDataTime = new Date(hourlyData[0]._id.timelyStat.hourly).getTime();
+    console.log("HOUR",hourlyDataTime);
+    if(hourlyData[0].O3 != null || hourlyData[0].CO != null) {
+
+    }
+
+}
+
+const dateToHourlyUsageKey = function (dateObj: any, timeZoneName: any) {
+    var utcTime = new Date(dateObj.valueOf())
+    var hour = utcTime.getHours();
+    var key = utcTime.setHours(hour, 0, 0, 0);
+
+    // if (timeZoneName != null) {
+    //     var zoneChanged = moment.tz(dateObj.valueOf(), timeZoneName);;
+    //     key = zoneChanged.setHours(zoneChanged.getHours(), 0, 0, 0);
+    // }
+    return key;
+}
+
+const getHourlyData = (device: any, start: any, end: any) => {
+    return new Promise((resolve, reject) => {
+        let statistics = [];
+        let group: any = {
+            _id: { timelyStat: "$timeLocal" },
+            sample_count: { $sum: 1 }
+        }
+        const devParams = ["PM2p5", "PM10", "SO2", "NO2", "CO", "O3", "NH3"];
+        for (var i = 0; i < devParams.length; i++) {
+            group[devParams[i]] = { $avg: "$data." + devParams[i] }
+        }
+        const query = [
+            {
+                $match: {
+                    $and: [
+                        {
+                            deviceId: Types.ObjectId(device)
+                        },
+                        {
+                            receivedAt: { $gte: new Date(start) }
+                        },
+                        {
+                            receivedAt: { $lt: new Date(end) }
+                        }
+                    ]
+                }
+            },
+            {
+                $addFields: {
+                    timeLocal: {
+                        hourly: { $dateToString: { format: "%Y-%m-%d-%H", date: '$receivedAt' } }
+                    }
+                }
+            },
+            {
+                $group: group
+            }
+        ]
+        SensorData.aggregate(query, async function (err: any, data: any) {
+            if(err){
+                console.log(err)
+            }
+            else{
+                resolve (data) 
+            }
+            
+        })
+    })
+    
 }

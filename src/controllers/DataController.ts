@@ -163,9 +163,9 @@ const parseInComingData = async (deviceDeatails: any, sensorData: any) => {
 
         // to do raw aqi calculation
         const rawAqi: any = findAQIFromLiveData(processedData);
-        processedData.rawAQI = rawAqi.AQI.toFixed(3);
+        processedData.rawAQI = Number(rawAqi.AQI.toFixed(3));
         processedData.prominentPollutant = rawAqi.prominentPollutant;
-        console.log(processedData)
+        // console.log(processedData)
         const sensorDataModel = new SensorData({
             deviceId: mongoose.Types.ObjectId(deviceDeatails._id),
             rawDataId: mongoose.Types.ObjectId(rawDataDetails._id),
@@ -179,7 +179,7 @@ const parseInComingData = async (deviceDeatails: any, sensorData: any) => {
         })
     }
 }
-const findAQIFromLiveData = (currentData: any) => {
+export const findAQIFromLiveData = (currentData: any) => {
     const resAqi = -1;
     var count = 0;
     var aqiDetails = { AQI: -9999999999, prominentPollutant: '' };
@@ -232,7 +232,7 @@ const parseData = (data: any, device: any, paramDefinitions: any) => {
             filterResult[paramDefinitions[i].paramName] = data[paramDefinitions[i].paramName];
             if (!SensorSpecExclude.includes(paramDefinitions[i].paramName)) {
                 if (filterResult[paramDefinitions[i].paramName]) {
-                    filterResult[paramDefinitions[i].paramName] = parseFloat(filterResult[paramDefinitions[i].paramName]).toFixed(3)
+                    filterResult[paramDefinitions[i].paramName] = Number(parseFloat(filterResult[paramDefinitions[i].paramName]).toFixed(3))
                 }
             }
             filterResult[paramDefinitions[i].paramName] = processCalibration(filterResult[paramDefinitions[i].paramName], paramDefinitions[i]);

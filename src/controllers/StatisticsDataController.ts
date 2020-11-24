@@ -102,7 +102,8 @@ export const getStatistics = (req: Request, res: Response) => {
             if (data[0].metadata[0]) {
                 response.pagination = await getPagination(data[0].metadata[0].total, parseInt(pageSkip), parseInt(pageLimit))
             }
-            response.list = data[0].data
+            response.list = data[0].data;
+            // console.log("RES", response.list[0]);
         }
 
         return res.status(StatusCodes.OK).json({
