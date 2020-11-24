@@ -70,7 +70,7 @@ export const addUser = async (req: Request, res: Response) => {
         name: name,
         role: role,
         userName: username,
-        password: await passwordHash(password),
+        password: password,
         email: email
     })
     user.save(function (err: any, data: any) {
@@ -95,7 +95,7 @@ export const editUser = async (req: Request, res: Response) => {
     if (!errors.isEmpty()) {
         return res.status(StatusCodes.UNPROCESSABLE_ENTITY).json({ success: false, "errors": errors.array({ onlyFirstError: true }) });
     }
-    const { name, password, role } = req.body;
+    const { name, password, role, status } = req.body;
     const update: any = {
         name: name
     }
@@ -103,6 +103,9 @@ export const editUser = async (req: Request, res: Response) => {
         update.password = await passwordHash(password)
     }
     role ? update.role = role : ''
+    if (status || !status) {
+        update.activated = status
+    }
     User.findByIdAndUpdate(req.params.id, update, { new: true }, function (err: any, data: any) {
         if (err) {
             return res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({
@@ -312,5 +315,22 @@ export const userDetails = (user_id: string) => {
         User.findById(user_id, function (err: any, data: any) {
             resolve(data);
         })
+    })
+}
+
+/**
+* Delete user
+*
+* @method  deleteUser
+* 
+* @param   req
+* @param   res
+*/
+export const deleteUser = (req: Request, res: Response) => {
+    User.findByIdAndUpdate(req.params.id, { activated: false, isDeleted: true }, function (err: any, ids: any) {
+        return res.status(StatusCodes.OK).json({
+            success: true,
+            message: "User account successfully deleted"
+        });
     })
 }
