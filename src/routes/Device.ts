@@ -24,7 +24,7 @@ router.delete('/permanently/:id', auth('Admin', 'Super Admin'), deleteDevicePerm
 router.put('/restore/:id', auth('Admin', 'Super Admin'), restoreDevice);
 
 router.post('/sensor/livedata', processDeviceData);
-router.get('/sensor/livedata', getLiveData);
+router.get('/sensor/livedata',auth('Admin', 'Supervisor', 'Operator', 'Super Admin'), getLiveData);
 router.get('/sensor/statistics', getStatistics);
 router.get('/sensor/rawdata', getRawData);
 

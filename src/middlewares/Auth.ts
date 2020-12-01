@@ -1,6 +1,7 @@
 import { Request, Response, NextFunction } from 'express';
 import { StatusCodes } from 'http-status-codes';
 import { JwtService } from '@utils';
+import { validateApiKey } from '@controllers';
 
 const jwtService = new JwtService();
 
@@ -11,10 +12,21 @@ export const auth = (...allowed: String[]) => {
         try {
             // Get json-web-token
             let token: any;
+            let apiKey:any;
             if (!req.headers.authorization) {
                 throw Error('JWT not present in authorization header');
             }
             token = req.headers.authorization.split(" ");
+
+            if (req.headers.apikey) {
+                console.log("AP", req.headers.apikey);
+                apiKey = await validateApiKey(req.headers.apikey);
+                console.log(apiKey)
+                if(apiKey.status == 'OK'){
+                    console.log("OK")
+                }
+                //next();
+            }
             // Make sure user role is an admin
             const userData = await jwtService.decodeJwt(token[1]);
             if (isAllowed(userData.user_role)) {

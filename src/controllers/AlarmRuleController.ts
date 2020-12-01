@@ -8,7 +8,7 @@ import { Devices } from 'src/models/Devices';
 
 // Alarm Rule - List
 export const listAlarmRule = (req: Request, res: Response) => {
-    
+
     const queryParams: any = req.query;
     const dataSkip = parseInt(queryParams.skip) || 0;
     const dataLimit = parseInt(queryParams.limit) || 25;
@@ -103,7 +103,7 @@ export const addAlarmRule = async (req: Request, res: Response) => {
         });
     }
     const deviceIds = [];
-    for(var i in req.body.devices){
+    for (var i in req.body.devices) {
         const deviceId = await getDeviceId(req.body.devices[i]);
         deviceIds.push(deviceId);
     }

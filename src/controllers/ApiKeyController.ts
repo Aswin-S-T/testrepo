@@ -5,6 +5,7 @@ import { ApiKey } from '../models/ApiKey';
 import { v4 as uuidv4 } from 'uuid';
 import { Types } from 'mongoose';
 import { getPagination } from '@utils';
+import schedule from 'node-schedule';
 
 /**
  * Api key -  Add
@@ -133,4 +134,40 @@ export const deleteApiKey = (req: Request, res: Response) => {
             message: "Successfully deleted api key"
         });
     })
+}
+
+export const validateApiKey = (apikey: any) => {
+    return new Promise((resolve, reject) => {
+        ApiKey.findOne({ apiKey: apikey, isDeleted: false }, function (err: any, key: any) {
+            console.log("KEY", key);
+            let current = key.currentLimit + 1;
+
+            schedule.scheduleJob('00 * * *', function () {
+                current = 0;
+            })
+            
+            if (current <= key.limit) {
+                ApiKey.findOneAndUpdate({ apiKey: apikey, isDeleted: false }, { currentLimit: current }, function (err: any, data: any) {
+                    let rateLimit: any = {
+                        status: ''
+                    }
+                    if(err){
+                        rateLimit = {
+                            status: 'Error'
+                        }
+                    }
+                    else{
+                        rateLimit = {
+                            status: 'OK'
+                        }
+                    }
+                    
+                    resolve(rateLimit);
+                })
+            }
+
+        })
+
+    })
+
 }

@@ -11,6 +11,7 @@ let ApiKeySchema = new Schema({
     name: { type: String, required: true, unique: true },
     limit: { type: String, required: true },
     apiKey: { type: String, required: true },
+    currentLimit:{ type: String, default: 0},
     isDeleted: { type: Boolean, default: false },
     activated: { type: Boolean, default: true },
     createdBy: { type: mongoose.Types.ObjectId, required: true },
