@@ -1,19 +1,19 @@
 import express from 'express';
 import logger from 'morgan';
 import helmet from 'helmet';
-
-import { logger as Logger } from '@utils';
+import { logger as Logger, calculateHourlyAqi } from '@utils';
 import { Request, Response } from 'express';
 import cors from 'cors';
 import BaseRouter from './routes';
 import './database/db';
-
 import path from 'path';
 import fs from 'fs';
 const cert = fs.readFileSync('./src/cert/cert.pem');
 const key = fs.readFileSync('./src/cert/key.pem');
 import https from 'https';
 import { socketConnection } from './utils/SocketService';
+import cron from 'node-cron';
+
 // Init express
 const app = express();
 
@@ -65,5 +65,11 @@ if (process.env.HTTPS == 'true') {
     });
     socketConnection(server)
 }
+
+// Hourly AQI Calculation
+cron.schedule('0 * * * *', () => {
+    calculateHourlyAqi()
+});
+
 // Export express instance
 export default app;

@@ -9,12 +9,14 @@ const returnFilter = (obj: any) => {
 
 let AqiSchema = new Schema({
     deviceId: {
-        type: mongoose.Types.ObjectId, required: true  
+        type: mongoose.Types.ObjectId, required: true
     },
     data: {
         type: Object, required: true
     },
-    log: { type: String },
+    dateTime: { type: Date },
+    aqi: { type: Number },
+    prominentPollutant: { type: String },
 }, { timestamps: true });
 
 AqiSchema.methods.toJSON = function () {
