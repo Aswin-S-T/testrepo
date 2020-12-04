@@ -74,12 +74,10 @@ const validateApiKey = (apikey: any) => {
 }
 
 export const resetAllLimits = function () {
-    scheduleJob('reset', '00 * * *', function () {
         ApiKey.updateMany({ isDeleted: false }, { currentLimit: 0 }, function (err: any, data: any) {
             if (err)
                 console.log(err);
         })
-    })
 }
 
 export const resetFrequency = function () {

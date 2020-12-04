@@ -2,10 +2,16 @@ import { Devices } from "../models/Devices";
 import { findAQIFromLiveData } from '@controllers';
 import { Types } from 'mongoose';
 import { SensorData } from '../models/SensorData';
-// import moment from 'moment';
-import * as moment from 'moment';
 import 'moment-timezone';
+import _ from 'lodash';
+import { Aqi } from "../models/Aqi";
 
+/**
+ * AQI Subindex calculation functions
+ *
+ * @param paramName
+ * @param value
+ */
 export const aqiCalculator = (paramName: any, value: any) => {
     var result = 0;
     var temp: any = paramName.toUpperCase();
@@ -24,8 +30,14 @@ export const aqiCalculator = (paramName: any, value: any) => {
 
     return result;
 }
+
+/**
+ * PM10 is measured in ug / m3 (micrograms per cubic meter of air). 
+ * The predefined groups are defined in the function below:
+ *
+ * @param value
+ */
 const convertPM10u3ToAqi = function (value: any) {
-    calculateHourlyAqi();
     if (value <= 50)
         return value;
     if (value > 50 && value <= 100)
@@ -41,8 +53,14 @@ const convertPM10u3ToAqi = function (value: any) {
     if (value > 510)
         return (500);
 }
-const convertPM25u3ToAqi = function (value: any) {
 
+/**
+ * PM2.5 is measured in ug / m3 (micrograms per cubic meter of air).
+ * The predefined groups are defined in the function below:
+ *
+ * @param value
+ */
+const convertPM25u3ToAqi = function (value: any) {
     if (value <= 30)
         return value * 50 / 30;
     if (value > 30 && value <= 60)
@@ -58,8 +76,14 @@ const convertPM25u3ToAqi = function (value: any) {
     if (value > 380)
         return (500);
 }
-const convertSO2u3ToAqi = function (value: any) {
 
+/**
+ * SO2 is measured in ug / m3 (micrograms per cubic meter of air). 
+ * The predefined groups are defined in the function below:
+ *
+ * @param value
+ */
+const convertSO2u3ToAqi = function (value: any) {
     if (value <= 40)
         return value * 50 / 40;
     if (value > 40 && value <= 80)
@@ -75,6 +99,13 @@ const convertSO2u3ToAqi = function (value: any) {
     if (value > 2400)
         return (500);
 }
+
+/**
+ * NOx is measured in ppb (parts per billion).
+ * The predefined groups are defined in the function below:
+ *
+ * @param value
+ */
 const convertNoXu3ToAqi = function (value: any) {
     if (value <= 40)
         return value * 50 / 40;
@@ -92,6 +123,12 @@ const convertNoXu3ToAqi = function (value: any) {
         return (500);
 }
 
+/**
+ * CO is measured in mg / m3 (milligrams per cubic meter of air).
+ * The predefined groups are defined in the function below:
+ *
+ * @param value
+ */
 const convertCOu3ToAqi = function (value: any) {
     if (value <= 1)
         return value * 50 / 1;
@@ -110,8 +147,13 @@ const convertCOu3ToAqi = function (value: any) {
         return (500);
 }
 
+/**
+ * O3 is measured in ug / m3 (micrograms per cubic meter of air).
+ * The predefined groups are defined in the function below:
+ *
+ * @param value
+ */
 const convertO3u3ToAqi = function (value: any) {
-
     if (value <= 50)
         return value * 50 / 50;
     if (value > 50 && value <= 100)
@@ -128,8 +170,13 @@ const convertO3u3ToAqi = function (value: any) {
         return (500);
 }
 
+/**
+ * NH3 is measured in ug / m3 (micrograms per cubic meter of air).
+ * The predefined groups are defined in the function below:
+ *
+ * @param value
+ */
 const convertNH3u3ToAqi = function (value: any) {
-
     if (value <= 200)
         return value * 50 / 200;
     if (value > 200 && value <= 400)
@@ -146,19 +193,30 @@ const convertNH3u3ToAqi = function (value: any) {
         return (500);
 }
 
-const calculateHourlyAqi = () => {
-    Devices.find({}, function (err: any, data: any) {
+/**
+ * Hourly AQI
+ *
+ * @param value
+ */
+export const calculateHourlyAqi = () => {
+    const dateTime = new Date();
+    Devices.find({}, async function (err: any, data: any) {
         if (err) {
             console.log(err)
         }
         else {
             for (let i = 0; i < data.length; i++) {
-                var utcToHour = new Date();
-                let aqiParamValues = getSubIndex(data, utcToHour);
+                let aqiParamValues = await getParamsValues(data[i], dateTime);
                 let aqiDetails: any = findAQIFromLiveData(aqiParamValues);
-                utcToHour.setHours(utcToHour.getHours() - 1);
                 if (aqiDetails.AQI >= 0) {
-
+                    const aqi = new Aqi({
+                        deviceId: Types.ObjectId(data[i]._id),
+                        aqi: aqiDetails.AQI,
+                        prominentPollutant: aqiDetails.prominentPollutant,
+                        dateTime: dateTime,
+                        data: aqiParamValues
+                    })
+                    aqi.save(function (err: any, data: any) { })
                 }
             }
         }
@@ -167,21 +225,32 @@ const calculateHourlyAqi = () => {
 
 }
 
-const getSubIndex = async (device: any, utcToHour: any) => {
-    console.log(utcToHour)
-    var toHour = dateToHourlyUsageKey(utcToHour, null);
-    var from24Hour = new Date(toHour.valueOf() - 60 * 60 * 24 * 1000);
-    var from8Hour = new Date(toHour.valueOf() - 60 * 60 * 8 * 1000);
-    const aqiCalculationParam = ["PM2p5", "PM10", "SO2", "NO2", "CO", "O3", "NH3"];
-     //console.log(device)
-    var hourlyData: any = await getHourlyData(device[0]._id, from24Hour.valueOf(), toHour.valueOf());
-    
-    var hourlyDataTime = new Date(hourlyData[0]._id.timelyStat.hourly).getTime();
-    console.log("HOUR",hourlyDataTime);
-    if(hourlyData[0].O3 != null || hourlyData[0].CO != null) {
+const getParamsValues = async (device: any, utcToHour: any) => {
+    return new Promise(async (resolve, reject) => {
+        const toHour = dateToHourlyUsageKey(utcToHour, null);
+        const from24Hour = new Date(toHour.valueOf() - 60 * 60 * 24 * 1000);
+        const from8Hour = new Date(toHour.valueOf() - 60 * 60 * 8 * 1000);
+        const aqiCalculationParam: any = ["PM2p5", "PM10", "SO2", "NO2", "CO", "O3", "NH3"];
+        const hourlyData: any = await getHourlyData(device._id, from24Hour.valueOf(), toHour.valueOf(), ["PM2p5", "PM10", "SO2", "NO2", "NH3"]);
+        let aqiParamvalues = _.zipObject(aqiCalculationParam, [...aqiCalculationParam].fill(0));
+        const eightHourData: any = await getHourlyData(device._id, from8Hour.valueOf(), toHour.valueOf(), ["CO", "O3"]);
 
-    }
+        for (let index = 0; index < hourlyData.length; index++) {
+            const data: any = hourlyData[index];
+            aqiParamvalues['PM2p5'] = data['PM2p5'] || 0;
+            aqiParamvalues['PM10'] = data['PM10'] || 0;
+            aqiParamvalues['SO2'] = data['SO2'] || 0;
+            aqiParamvalues['NO2'] = data['NO2'] || 0;
+            aqiParamvalues['NH3'] = data['NH3'] || 0;
+        };
 
+        for (let index = 0; index < eightHourData.length; index++) {
+            const data: any = eightHourData[index];
+            aqiParamvalues['CO'] = data['CO'] || 0;
+            aqiParamvalues['O3'] = data['O3'] || 0;
+        };
+        resolve(aqiParamvalues);
+    })
 }
 
 const dateToHourlyUsageKey = function (dateObj: any, timeZoneName: any) {
@@ -196,14 +265,13 @@ const dateToHourlyUsageKey = function (dateObj: any, timeZoneName: any) {
     return key;
 }
 
-const getHourlyData = (device: any, start: any, end: any) => {
+const getHourlyData = (device: any, start: any, end: any, devParams: any) => {
     return new Promise((resolve, reject) => {
-        let statistics = [];
         let group: any = {
-            _id: { timelyStat: "$timeLocal" },
+            _id: "$deviceId",
             sample_count: { $sum: 1 }
         }
-        const devParams = ["PM2p5", "PM10", "SO2", "NO2", "CO", "O3", "NH3"];
+
         for (var i = 0; i < devParams.length; i++) {
             group[devParams[i]] = { $avg: "$data." + devParams[i] }
         }
@@ -224,25 +292,18 @@ const getHourlyData = (device: any, start: any, end: any) => {
                 }
             },
             {
-                $addFields: {
-                    timeLocal: {
-                        hourly: { $dateToString: { format: "%Y-%m-%d-%H", date: '$receivedAt' } }
-                    }
-                }
-            },
-            {
                 $group: group
             }
         ]
         SensorData.aggregate(query, async function (err: any, data: any) {
-            if(err){
+            if (err) {
                 console.log(err)
             }
-            else{
-                resolve (data) 
+            else {
+                resolve(data)
             }
-            
+
         })
     })
-    
+
 }

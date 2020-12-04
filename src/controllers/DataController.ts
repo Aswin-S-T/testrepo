@@ -3,7 +3,7 @@ import request from 'request';
 import { seedData, aqiCalculator } from '@utils';
 import { validationResult } from 'express-validator';
 import { StatusCodes } from 'http-status-codes';
-import { deviceDetails ,handleDeviceErrors, generateAlerts } from '@controllers';
+import { deviceDetails, handleDeviceErrors, generateAlerts } from '@controllers';
 import { SensorData } from '../models/SensorData';
 import { SensorRawData } from '../models/SensorRawData';
 import { Types } from 'mongoose';
@@ -179,22 +179,26 @@ const parseInComingData = async (deviceDeatails: any, sensorData: any) => {
 }
 export const findAQIFromLiveData = (currentData: any) => {
     const resAqi = -1;
-    var count = 0;
-    var aqiDetails = { AQI: -9999999999, prominentPollutant: '' };
-    var paramValueMap: any = {};
-    for (var paramName in currentData) {
+    let count = 0;
+    let aqiDetails = { AQI: -9999999999, prominentPollutant: '' };
+    let paramValueMap: any = {};
+    let isPM = false;
+    for (let paramName in currentData) {
         if (!isAQIApplicableForParamType(paramName))
             continue;
-        var tempAvg = currentData[paramName];
-        var subIndexValue: any = aqiCalculator(paramName.toUpperCase(), tempAvg);
+        const subIndexValue: any = aqiCalculator(paramName.toUpperCase(), currentData[paramName]);
         paramValueMap[paramName.toUpperCase()] = subIndexValue;
-        if (subIndexValue && aqiDetails.AQI < subIndexValue) {
-            aqiDetails.AQI = subIndexValue;
-            aqiDetails.prominentPollutant = paramName;
+        if (subIndexValue) {
+            if (aqiDetails.AQI < subIndexValue) {
+                aqiDetails.AQI = subIndexValue;
+                aqiDetails.prominentPollutant = paramName;
+            }
+            (paramName === "PM2p5" || paramName == "PM10") ? isPM = true : '';
+            count++;
         }
-        (paramName === "PM2p5" || paramName == "PM10") ? count++ : '';
+
     }
-    return (count >= 1) ? aqiDetails : resAqi;
+    return (count >= 3 && isPM) ? aqiDetails : resAqi;
 }
 
 const isAQIApplicableForParamType = (paramName: any) => {
