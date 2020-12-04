@@ -221,7 +221,6 @@ const alertPlatformUpdate = async (title: string, message: string, alertInfo: an
             }
         ]
     }
-    console.log("ALERT", alert);
     socketEmit('new-alert', JSON.stringify(alert));
 }
 

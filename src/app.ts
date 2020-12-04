@@ -14,6 +14,7 @@ const cert = fs.readFileSync('./src/cert/cert.pem');
 const key = fs.readFileSync('./src/cert/key.pem');
 import https from 'https';
 import { socketConnection } from './utils/SocketService';
+import { resetAllLimits, resetFrequency } from './utils/apiRateLimit';
 // Init express
 const app = express();
 
@@ -50,6 +51,9 @@ const port = Number(process.env.PORT || 3000);
 app.get('*', function (req, res) {
     res.sendFile(path.join(__dirname, 'public', 'index.html'));
 });
+
+resetAllLimits();
+resetFrequency();
 
 if (process.env.HTTPS == 'true') {
     const server = https.createServer({

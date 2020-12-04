@@ -5,24 +5,31 @@ import { Types } from 'mongoose';
 import { getPagination } from '@utils';
 import { StatusCodes } from 'http-status-codes';
 import { SensorSpec } from '@helpers';
+import { deviceDetails } from '@controllers';
 
 /**
  * Get device livedata
  * @method getLiveData
  * @param
  */
-export const getLiveData = (req: Request, res: Response) => {
-    const { devs, params, skip, limit, startdate, enddate } = req.query;
-    const devices: any = devs; const parameters: any = params;
-    const start: any = startdate; const end: any = enddate;
+export const getLiveData = async (req: Request, res: Response) => {
+    const { devs, params, skip, limit, startdate, enddate, deviceIds } = req.query;
+    let devices: any = '';
+    let devDetails: any = '';
+    deviceIds? devDetails = await deviceDetails({ "deviceId": deviceIds }): ''
+    devs? devices = devs: devices = (devDetails._id).toString() ;
+    
+    const parameters: any = params;
+    const start: any = startdate;
+    const end: any = enddate;
     const pageSkip: any = skip || 0;
     const pageLimit: any = limit || 10;
 
-    let livedata:any = [];
+    let livedata: any = [];
     const devParams: any = SensorSpec;
 
     for (var i = 0; i < devParams.length; i++) {
-        if(devParams[i].valueType !== 'date') {
+        if (devParams[i].valueType !== 'date') {
             livedata.push({
                 paramName: devParams[i].paramName,
                 displayName: devParams[i].displayName,
@@ -34,31 +41,32 @@ export const getLiveData = (req: Request, res: Response) => {
         }
     }
 
-    const pageQuery = (pageSkip === 'null' && pageLimit ==='null') ? [] : [
+    const pageQuery = (pageSkip === 'null' && pageLimit === 'null') ? [] : [
         { $skip: parseInt(pageSkip) }, { $limit: parseInt(pageLimit) }
     ]
-
     devices.split(',').forEach((device: any) => {
         SensorData.aggregate([
-            { $match: {
-                $and: [
-                    {
-                        deviceId: Types.ObjectId(device)
-                    },
-                    {
-                        receivedAt: { $gte: new Date(start) }
-                    },
-                    {
-                        receivedAt: { $lt: new Date(end) }
-                    }
-                ]
-            } },
+            {
+                $match: {
+                    $and: [
+                        {
+                            deviceId: Types.ObjectId(device)
+                        },
+                        {
+                            receivedAt: { $gte: new Date(start) }
+                        },
+                        {
+                            receivedAt: { $lt: new Date(end) }
+                        }
+                    ]
+                }
+            },
             { '$sort': { 'createdAt': -1 } },
             {
                 '$facet': {
                     metadata: [{ $count: "total" }],
                     data: [...pageQuery, ...[{ $addFields: { parameters: livedata } },
-                        { $unset: "data" }]
+                    { $unset: "data" }]
                     ]
                 }
             }
@@ -81,5 +89,5 @@ export const getLiveData = (req: Request, res: Response) => {
             });
         })
     });
-    
+
 }

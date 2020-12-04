@@ -21,6 +21,7 @@ export const addApiKey = (req: Request, res: Response) => {
     const apiKey = new ApiKey({
         name: name,
         limit: limit,
+        currentLimit: 0,
         apiKey: uuidv4(),
         createdBy: Types.ObjectId(req.body.user_id)
     })
@@ -134,40 +135,4 @@ export const deleteApiKey = (req: Request, res: Response) => {
             message: "Successfully deleted api key"
         });
     })
-}
-
-export const validateApiKey = (apikey: any) => {
-    return new Promise((resolve, reject) => {
-        ApiKey.findOne({ apiKey: apikey, isDeleted: false }, function (err: any, key: any) {
-            console.log("KEY", key);
-            let current = key.currentLimit + 1;
-
-            schedule.scheduleJob('00 * * *', function () {
-                current = 0;
-            })
-            
-            if (current <= key.limit) {
-                ApiKey.findOneAndUpdate({ apiKey: apikey, isDeleted: false }, { currentLimit: current }, function (err: any, data: any) {
-                    let rateLimit: any = {
-                        status: ''
-                    }
-                    if(err){
-                        rateLimit = {
-                            status: 'Error'
-                        }
-                    }
-                    else{
-                        rateLimit = {
-                            status: 'OK'
-                        }
-                    }
-                    
-                    resolve(rateLimit);
-                })
-            }
-
-        })
-
-    })
-
 }

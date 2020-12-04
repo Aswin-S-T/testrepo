@@ -5,15 +5,20 @@ import { Types } from 'mongoose';
 import { getPagination } from '@utils';
 import { StatusCodes } from 'http-status-codes';
 import { SensorSpec } from '@helpers';
+import { deviceDetails } from '@controllers';
 
 /**
  * Get device statistics
  * @method getStatistics
  * @param
  */
-export const getStatistics = (req: Request, res: Response) => {
-    const { devs, params, skip, limit, statType, timeZone, startdate, enddate } = req.query;
-    const device: any = devs; const parameters: any = params;
+export const getStatistics = async(req: Request, res: Response) => {
+    const { devs, params, skip, limit, statType, timeZone, startdate, enddate, deviceId } = req.query;
+    let device: any = '';
+    let devDetails: any = '';
+    deviceId? devDetails = await deviceDetails({ "deviceId": deviceId }): ''
+    devs? device = devs: device = devDetails._id;
+    const parameters: any = params;
     const start: any = startdate; const end: any = enddate;
     const pageSkip: any = skip || 0;
     const pageLimit: any = limit || 10;

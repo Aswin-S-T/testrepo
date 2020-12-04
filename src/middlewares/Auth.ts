@@ -1,7 +1,7 @@
 import { Request, Response, NextFunction } from 'express';
 import { StatusCodes } from 'http-status-codes';
 import { JwtService } from '@utils';
-import { validateApiKey } from '@controllers';
+import { livedataApiLimit } from 'src/utils/apiRateLimit';
 
 const jwtService = new JwtService();
 
@@ -9,43 +9,61 @@ const jwtService = new JwtService();
 export const auth = (...allowed: String[]) => {
     const isAllowed = (role: String) => allowed.indexOf(role) > -1;
     return async function (req: Request, res: Response, next: NextFunction) {
-        try {
-            // Get json-web-token
-            let token: any;
-            let apiKey:any;
-            if (!req.headers.authorization) {
-                throw Error('JWT not present in authorization header');
-            }
-            token = req.headers.authorization.split(" ");
-
-            if (req.headers.apikey) {
-                console.log("AP", req.headers.apikey);
-                apiKey = await validateApiKey(req.headers.apikey);
-                console.log(apiKey)
-                if(apiKey.status == 'OK'){
-                    console.log("OK")
+        let token: any;
+        let apiKey: any;
+        if (req.headers.authorization) {
+            try {
+                token = req.headers.authorization.split(" ");
+                const userData = await jwtService.decodeJwt(token[1]);
+                if (isAllowed(userData.user_role)) {
+                    req.body.user_id = userData.user_id;
+                    req.body.user_role = userData.user_role;
+                    next();
+                } else {
+                    return res.status(StatusCodes.UNAUTHORIZED).json({
+                        status: 'failed',
+                        message: "Authentication failed",
+                        error: "Permission denied",
+                    });
                 }
-                //next();
             }
-            // Make sure user role is an admin
-            const userData = await jwtService.decodeJwt(token[1]);
-            if (isAllowed(userData.user_role)) {
-                req.body.user_id = userData.user_id;
-                req.body.user_role = userData.user_role;
-                next();
-            } else {
+            catch (err) {
                 return res.status(StatusCodes.UNAUTHORIZED).json({
                     status: 'failed',
                     message: "Authentication failed",
-                    error: "Permission denied",
+                    error: "Invalid authorization token"
                 });
             }
-        } catch (err) {
+        }
+        else if(req.headers.apikey){
+            try{
+                apiKey = await livedataApiLimit(req);
+                if(apiKey == 'OK'){
+                    next();
+                }
+                else {
+                    return res.status(StatusCodes.UNAUTHORIZED).json({
+                        status: 'failed',
+                        message: "Authentication failed",
+                        error: "Permission denied",
+                    });
+                }
+            }
+            catch(err){
+                return res.status(StatusCodes.UNAUTHORIZED).json({
+                    status: 'failed',
+                    message: "Authentication failed",
+                    error: "Invalid authorization token"
+                });
+            }
+        }
+        else{
             return res.status(StatusCodes.UNAUTHORIZED).json({
                 status: 'failed',
                 message: "Authentication failed",
-                error: "Invalid authorization token"
+                error: "Permission denied",
             });
         }
+
     }
 };
