@@ -1,14 +1,13 @@
 import { Request, Response } from 'express';
 import request from 'request';
-import { seedData } from '@utils';
+import { seedData, aqiCalculator } from '@utils';
 import { validationResult } from 'express-validator';
 import { StatusCodes } from 'http-status-codes';
-import { deviceDetails } from '@controllers';
+import { deviceDetails, handleDeviceErrors, generateAlerts } from '@controllers';
 import { SensorData } from '../models/SensorData';
 import { SensorRawData } from '../models/SensorRawData';
-import mongoose from 'src/database/db';
-import { SensorSpec, SensorSpecExclude } from '@helpers';
-import { handleDeviceErrors, generateAlerts } from '@controllers';
+import { Types } from 'mongoose';
+import { SensorSpecExclude } from '@helpers';
 import { Devices } from '../models/Devices';
 
 //  Sensor data calibration process
@@ -76,7 +75,7 @@ const getAqmsConversion = function (data: any) {
     }
     const currentdate = new Date();
     data.receivedTime = currentdate.valueOf();
-    return [data];
+    return data;
 }
 
 // Hashed conversion for multiple data post
@@ -125,7 +124,7 @@ export const processDeviceData = async (req: Request, res: Response) => {
                 }
                 break;
             default:
-                sensorData = data
+                sensorData = getAqmsConversion(data)
                 break;
         }
         //  Parse incoming data
@@ -146,7 +145,7 @@ export const processDeviceData = async (req: Request, res: Response) => {
 // Parse incoming data
 const parseInComingData = async (deviceDeatails: any, sensorData: any) => {
     const rawData = {
-        deviceId: mongoose.Types.ObjectId(deviceDeatails._id),
+        deviceId: Types.ObjectId(deviceDeatails._id),
         latitude: deviceDeatails.location.latitude,
         longitude: deviceDeatails.location.longitude,
         data: sensorData,
@@ -154,26 +153,61 @@ const parseInComingData = async (deviceDeatails: any, sensorData: any) => {
     }
     const rawDataDetails: any = await saveRawDataAndGetId(rawData);
     if (rawDataDetails) {
-        const processedData: any = await parseData(sensorData, deviceDeatails, SensorSpec);
+        const processedData: any = await parseData(sensorData, deviceDeatails, deviceDeatails.paramDefinitions);
         processedData.receivedAt = new Date(sensorData.time);
         //Generate Alarms
-        generateAlerts(deviceDeatails.deviceId, sensorData);
+        // console.log("PP", processedData)
+        generateAlerts(deviceDeatails.deviceId, processedData);
 
         // to do raw aqi calculation
-        //
-
+        const rawAqi: any = findAQIFromLiveData(processedData);
+        processedData.rawAQI = Number(rawAqi.AQI.toFixed(3));
+        processedData.prominentPollutant = rawAqi.prominentPollutant;
+        // console.log(processedData)
         const sensorDataModel = new SensorData({
-            deviceId: mongoose.Types.ObjectId(deviceDeatails._id),
-            rawDataId: mongoose.Types.ObjectId(rawDataDetails._id),
+            deviceId: Types.ObjectId(deviceDeatails._id),
+            rawDataId: Types.ObjectId(rawDataDetails._id),
             data: processedData,
             receivedAt: new Date(sensorData.time)
         })
         sensorDataModel.save(function (err: any, result: any) {
             //  Device error handler
             handleDeviceErrors(deviceDeatails, sensorData, result)
-            Devices.findByIdAndUpdate(deviceDeatails._id, { lastDataReceiveTime: new Date(sensorData.time) }, function (err: any, device: any) { })
+            Devices.findByIdAndUpdate(deviceDeatails._id, { lastDataReceiveTime: new Date(sensorData.time), rawAqi: processedData.rawAQI }, function (err: any, device: any) { })
         })
     }
+}
+export const findAQIFromLiveData = (currentData: any) => {
+    const resAqi = -1;
+    let count = 0;
+    let aqiDetails = { AQI: -9999999999, prominentPollutant: '' };
+    let paramValueMap: any = {};
+    let isPM = false;
+    for (let paramName in currentData) {
+        if (!isAQIApplicableForParamType(paramName))
+            continue;
+        const subIndexValue: any = aqiCalculator(paramName.toUpperCase(), currentData[paramName]);
+        paramValueMap[paramName.toUpperCase()] = subIndexValue;
+        if (subIndexValue) {
+            if (aqiDetails.AQI < subIndexValue) {
+                aqiDetails.AQI = subIndexValue;
+                aqiDetails.prominentPollutant = paramName;
+            }
+            (paramName === "PM2p5" || paramName == "PM10") ? isPM = true : '';
+            count++;
+        }
+
+    }
+    return (count >= 3 && isPM) ? aqiDetails : resAqi;
+}
+
+const isAQIApplicableForParamType = (paramName: any) => {
+    paramName = paramName.toUpperCase();
+
+    if (paramName == "PM2P5" || paramName == "PM10" || paramName == "SO2" || paramName == "NO2" ||
+        paramName == "CO" || paramName == "O3" || paramName == "NH3" || paramName == "C6H6")
+        return true;
+    return false;
 }
 
 // WMAFilter
@@ -187,17 +221,27 @@ const parseData = (data: any, device: any, paramDefinitions: any) => {
         let filterResult: any = {};
 
         for (var i = 0; i < paramDefinitions.length; i++) {
+
+            if (paramDefinitions[i].maxRanges != null) {
+                if (paramDefinitions[i].maxRanges.max != null && data[paramDefinitions[i].paramName] > paramDefinitions[i].maxRanges.max) {
+                    data[paramDefinitions[i].paramName] = paramDefinitions[i].maxRanges.max;
+
+                }
+                if (paramDefinitions[i].maxRanges.min != null && data[paramDefinitions[i].paramName] < paramDefinitions[i].maxRanges.min) {
+                    data[paramDefinitions[i].paramName] = paramDefinitions[i].maxRanges.min;
+                }
+            }
             filterResult[paramDefinitions[i].paramName] = data[paramDefinitions[i].paramName];
             if (!SensorSpecExclude.includes(paramDefinitions[i].paramName)) {
                 if (filterResult[paramDefinitions[i].paramName]) {
-                    filterResult[paramDefinitions[i].paramName] = parseFloat(filterResult[paramDefinitions[i].paramName].toFixed(2))
+                    filterResult[paramDefinitions[i].paramName] = Number(parseFloat(filterResult[paramDefinitions[i].paramName]).toFixed(3))
                 }
             }
             filterResult[paramDefinitions[i].paramName] = processCalibration(filterResult[paramDefinitions[i].paramName], paramDefinitions[i]);
 
             if (paramDefinitions[i].filteringMethod == "WMAFilter") {
                 const originalVal = filterResult[paramDefinitions[i].paramName];
-                SensorData.findOne({ deviceId: mongoose.Types.ObjectId(device._id), isDeleted: 0 }, { sort: { 'createdAt': -1 } }, function (err: any, oldData: any) {
+                SensorData.findOne({ deviceId: Types.ObjectId(device._id), isDeleted: 0 }, { sort: { 'createdAt': -1 } }, function (err: any, oldData: any) {
                     if (oldData && oldData[paramDefinitions[i].paramName] != null) {
                         var oldValue = data[paramDefinitions[i].paramName];
                         var newValue = processCalibration(originalVal, paramDefinitions[i]);;
@@ -235,7 +279,7 @@ export const dummyDataSeed = () => {
             if (param == 'receivedTime') {
                 data['time'] = new Date()
             } else {
-                data[param] = Math.floor(Math.random() * 100);
+                data[param] = Math.floor(Math.random() * 10);
             }
         });
         const sensorData: any = {
@@ -255,4 +299,18 @@ export const dummyDataSeed = () => {
             }
         )
     });
+}
+
+/**
+ * Get Device last data
+ * @getDeviceLastData
+ * @param
+ */
+export const getDeviceLastData = (deviceId: any) => {
+    return new Promise((resolve, reject) => {
+        SensorData.findOne({ deviceId: Types.ObjectId(deviceId) }).sort('-createdAt').exec(function (err: any, data: any) {
+            console.log(data)
+            resolve(data)
+        })
+    })
 }

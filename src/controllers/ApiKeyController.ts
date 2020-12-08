@@ -5,6 +5,7 @@ import { ApiKey } from '../models/ApiKey';
 import { v4 as uuidv4 } from 'uuid';
 import { Types } from 'mongoose';
 import { getPagination } from '@utils';
+import schedule from 'node-schedule';
 
 /**
  * Api key -  Add
@@ -20,11 +21,17 @@ export const addApiKey = (req: Request, res: Response) => {
     const apiKey = new ApiKey({
         name: name,
         limit: limit,
+        currentLimit: 0,
         apiKey: uuidv4(),
         createdBy: Types.ObjectId(req.body.user_id)
     })
     apiKey.save(function (err: any, api: any) {
-        if (err) { return }
+        if (err) {
+            return res.status(StatusCodes.BAD_REQUEST).json({
+                success: false,
+                message: "Document with same name already exists",
+            });
+        }
         return res.status(StatusCodes.CREATED).json({
             success: true,
             message: "Document created successflly",
@@ -43,9 +50,14 @@ export const updateApiKey = (req: Request, res: Response) => {
     let updateData: any = {};
     name ? updateData.name = name : '';
     limit ? updateData.limit = limit : '';
-    status != undefined ? updateData.activated = status: '';
+    status != undefined ? updateData.activated = status : '';
     ApiKey.findByIdAndUpdate(req.params.id, updateData, { new: true }, function (err: any, api: any) {
-        if (err) { }
+        if (err) {
+            return res.status(StatusCodes.BAD_REQUEST).json({
+                success: false,
+                message: "Document with same name already exists",
+            });
+        }
         return res.status(StatusCodes.OK).json({
             success: true,
             message: "Successfully updated api details",
@@ -63,8 +75,8 @@ export const listApiKey = (req: Request, res: Response) => {
     const { skip, limit, status } = req.query;
     const pageSkip: any = skip || 0;
     const pageLimit: any = limit || 10;
-    const match:any = { isDeleted: false };
-    status == 'enabled' ? match.activated = true : status == 'disabled' ? match.activated = false : '' 
+    const match: any = { isDeleted: false };
+    status == 'enabled' ? match.activated = true : status == 'disabled' ? match.activated = false : ''
 
     ApiKey.aggregate([
         { $match: match },
