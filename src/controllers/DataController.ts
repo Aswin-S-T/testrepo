@@ -9,6 +9,8 @@ import { SensorRawData } from '../models/SensorRawData';
 import { Types } from 'mongoose';
 import { SensorSpecExclude } from '@helpers';
 import { Devices } from '../models/Devices';
+import { Aqi } from '../models/Aqi';
+import moment from 'moment';
 
 //  Sensor data calibration process
 const processCalibration = (val: any, paramDefinitions: any) => {
@@ -310,6 +312,19 @@ export const getDeviceLastData = (deviceId: any) => {
     return new Promise((resolve, reject) => {
         SensorData.findOne({ deviceId: Types.ObjectId(deviceId) }).sort('-createdAt').exec(function (err: any, data: any) {
             console.log(data)
+            resolve(data)
+        })
+    })
+}
+
+/**
+ * Get Device last hour AQI Details
+ * @getDeviceLastData
+ * @param
+ */
+export const getDeviceLastHourAQI = (deviceId: any) => {
+    return new Promise((resolve, reject) => {
+        Aqi.findOne({ deviceId: Types.ObjectId(deviceId), dateTime : { $gte : new Date(moment().subtract(60, 'minutes').format())}}).sort('-createdAt').exec(function (err: any, data: any) {
             resolve(data)
         })
     })
