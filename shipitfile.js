@@ -85,7 +85,7 @@ module.exports = shipit => {
             'npm run ' + shipit.config.forntendBuildCmd,
             'cp -r build/  ' + shipit.config.backendAppPath + '/public/',
             'cd '+ shipit.config.backendAppPath ,
-            'nvm use 8',
+            'nvm use 12',
             'npm install',
             'pm2 stop ' + shipit.config.pm2AppNames + ' || true',
             'pm2 delete ' + shipit.config.pm2AppNames + ' || true',

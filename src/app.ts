@@ -11,9 +11,9 @@ import fs from 'fs';
 const cert = fs.readFileSync('./src/cert/cert.pem');
 const key = fs.readFileSync('./src/cert/key.pem');
 import https from 'https';
-import { socketConnection } from './utils/SocketService';
-import { resetAllLimits, resetFrequency } from './utils/apiRateLimit';
+import { resetAllLimits, resetFrequency, socketConnection, socketEmit } from '@utils';
 import cron from 'node-cron';
+import { dummyDataSeed } from '@controllers';
 
 // Init express
 const app = express();
@@ -52,20 +52,25 @@ app.get('*', function (req, res) {
     res.sendFile(path.join(__dirname, 'public', 'index.html'));
 });
 
+let server: any = '';
 if (process.env.HTTPS == 'true') {
-    const server = https.createServer({
+    server = https.createServer({
         key: key,
         cert: cert
     }, app).listen(port, () => {
         Logger.info('Express https server started on port: ' + port);
     });
-    socketConnection(server)
 } else {
-    const server = app.listen(port, () => {
+    server = app.listen(port, () => {
         Logger.info('Express http server started on port: ' + port);
     });
-    socketConnection(server)
 }
+socketConnection(server)
+
+cron.schedule('* * * * *', () => {
+    socketEmit('alerts', { 'hi': 'ajith' })
+    dummyDataSeed();
+});
 
 // Hourly AQI Calculation
 cron.schedule('25 * * * *', () => {
