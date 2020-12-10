@@ -68,7 +68,7 @@ if (process.env.HTTPS == 'true') {
 }
 
 // Hourly AQI Calculation
-cron.schedule('0 * * * *', () => {
+cron.schedule('25 * * * *', () => {
     calculateHourlyAqi()
 });
 

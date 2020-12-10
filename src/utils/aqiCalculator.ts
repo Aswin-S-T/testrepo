@@ -208,6 +208,7 @@ export const calculateHourlyAqi = () => {
             for (let i = 0; i < data.length; i++) {
                 let aqiParamValues = await getParamsValues(data[i], dateTime);
                 let aqiDetails: any = findAQIFromLiveData(aqiParamValues);
+                console.log("AQI Details", aqiDetails)
                 if (aqiDetails.AQI >= 0) {
                     const aqi = new Aqi({
                         deviceId: Types.ObjectId(data[i]._id),
@@ -216,7 +217,9 @@ export const calculateHourlyAqi = () => {
                         dateTime: dateTime,
                         data: aqiParamValues
                     })
-                    aqi.save(function (err: any, data: any) { })
+                    aqi.save(function (err: any, data: any) {
+                        console.log("AQI", data)
+                     })
                 }
             }
         }
