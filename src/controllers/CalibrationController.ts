@@ -5,23 +5,36 @@ import { Calibration } from '../models/Calibration';
 import { Types } from 'mongoose';
 import { getPagination } from '@utils';
 
+/**
+ * Add device calibration certificate
+ * @method addCalibCert
+ * @param
+ */
 export const addCalibCert = (req: Request, res: Response) => {
-console.log("REQ", req.body);
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
         return res.status(StatusCodes.UNPROCESSABLE_ENTITY).json({ success: false, "errors": errors.array({ onlyFirstError: true }) });
     }
-    const { certId, expDate } = req.body;
+    /** Multer gives us file info in req.file object */
+    if (!req.file) {
+        return res
+            .status(StatusCodes.UNPROCESSABLE_ENTITY)
+            .json({ status: "UNPROCESSABLE_ENTITY", errors: "No file passed" });
+    }
+
+    const { cert_id, expire_date, device_id } = req.body;
     const calibCert = new Calibration({
-        certId: certId,
-        expiry: expDate,
-        createdBy: Types.ObjectId(req.body.user_id)
+        certificateId: cert_id,
+        expireDate: new Date(expire_date + ' 00:00:00').toISOString(),
+        createdBy: Types.ObjectId(req.body.user_id),
+        deviceId: Types.ObjectId(device_id),
+        fileName: req.file.filename
     })
     calibCert.save(function (err: any, calib: any) {
         if (err) {
             return res.status(StatusCodes.BAD_REQUEST).json({
                 success: false,
-                message: "Document with same name already exists",
+                message: "Something went wrong please try later",
             });
         }
         return res.status(StatusCodes.CREATED).json({
@@ -31,6 +44,7 @@ console.log("REQ", req.body);
         });
     })
 }
+
 
 export const listCalibCert = (req: Request, res: Response) => {
     const { skip, limit, status } = req.query;

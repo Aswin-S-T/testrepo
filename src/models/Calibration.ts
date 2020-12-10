@@ -8,10 +8,13 @@ const returnFilter = (obj: any) => {
 }
 
 let CalibrationSchema = new Schema({
-    certId: {type: String, required: true},
-    expiry: {type: String, required: true},
+    certificateId: { type: String, required: true },
+    expireDate: { type: Date, required: true },
     isDeleted: { type: Boolean, default: false },
     activated: { type: Boolean, default: true },
+    deviceId: { type: mongoose.Types.ObjectId, required: true },
+    createdBy: { type: mongoose.Types.ObjectId, required: true },
+    fileName: { type: String, required: true }
 }, { timestamps: true });
 
 CalibrationSchema.methods.toJSON = function () {
