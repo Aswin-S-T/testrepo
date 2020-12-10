@@ -4,3 +4,4 @@ npm-debug.log
 /pm2
 env/*.env
 src/public
+/uploads
