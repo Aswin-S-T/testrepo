@@ -4,13 +4,14 @@ import { StatusCodes } from 'http-status-codes';
 import { Calibration } from '../models/Calibration';
 import { Types } from 'mongoose';
 import { getPagination } from '@utils';
+import { getDeviceId } from '@controllers';
 
 /**
  * Add device calibration certificate
  * @method addCalibCert
  * @param
  */
-export const addCalibCert = (req: Request, res: Response) => {
+export const addCalibCert = async (req: Request, res: Response) => {
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
         return res.status(StatusCodes.UNPROCESSABLE_ENTITY).json({ success: false, "errors": errors.array({ onlyFirstError: true }) });
@@ -23,12 +24,13 @@ export const addCalibCert = (req: Request, res: Response) => {
     }
 
     const { cert_id, expire_date, device_id } = req.body;
-    
+    const device = await getDeviceId(device_id);
     const calibCert = new Calibration({
         certificateId: cert_id,
         expireDate: new Date(expire_date + ' 00:00:00').toISOString(),
         createdBy: Types.ObjectId(req.body.user_id),
         deviceId: Types.ObjectId(device_id),
+        device: device,
         fileName: req.file.filename,
         fileLocation: req.file.path
     })
@@ -47,7 +49,11 @@ export const addCalibCert = (req: Request, res: Response) => {
     })
 }
 
-
+/**
+ * List device calibration certificate
+ * @method listCalibCert
+ * @param
+ */
 export const listCalibCert = (req: Request, res: Response) => {
     const { skip, limit, status } = req.query;
     const pageSkip: any = skip || 0;
@@ -74,14 +80,16 @@ export const listCalibCert = (req: Request, res: Response) => {
                 response.pagination = await getPagination(data[0].metadata[0].total, parseInt(pageSkip), parseInt(pageLimit))
             }
             for (let i = 0; i < data[0].data.length; i++) {
+                
                 if (data[0].data[i].activated == true) {
-                    let expiry = data[0].data[i].expiry;
+                    let expiry = data[0].data[i].expireDate;
                     let currentDate = new Date();
                     let expiryDate = new Date(expiry);
                     if (currentDate.getTime() > expiryDate.getTime()) {
                         data[0].data[i].activated = false;
                     }
                 }
+                data[0].data[i].expireDate = new Date(data[0].data[i].expireDate).toISOString().slice(0,10)
             }
             response.list = data[0].data;
         }
@@ -93,3 +101,25 @@ export const listCalibCert = (req: Request, res: Response) => {
         });
     })
 }
+
+/**
+ * Delete device calibration certificate
+ * @method deleteCalibCert
+ * @param
+ */
+
+ export const deleteCalibCert = (req: Request, res: Response) =>{
+    Calibration.findByIdAndUpdate(req.params.id, { isDeleted: true }, function (err: any, data: any) {
+        if (err) {
+            console.log(err);
+            return res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({
+                success: false,
+                message: "Error"
+            })
+        }
+        return res.status(StatusCodes.OK).json({
+            success: true,
+            message: "Successfully deleted alarm rule"
+        });
+    })
+ }

@@ -13,6 +13,7 @@ let CalibrationSchema = new Schema({
     isDeleted: { type: Boolean, default: false },
     activated: { type: Boolean, default: true },
     deviceId: { type: mongoose.Types.ObjectId, required: true },
+    device: { type: String, required: true },
     createdBy: { type: mongoose.Types.ObjectId, required: true },
     fileName: { type: String, required: true },
     fileLocation: { type: String, required: true }
