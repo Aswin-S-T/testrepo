@@ -18,7 +18,7 @@ export const socketConnection = (server: import("http").Server | import("https")
  */
 export const socketEmit = (event: any, values: any) => {
     if (io) {
-        console.log(values);
+        // console.log(values);
         io.sockets.emit(event, values);
     }
 }

@@ -14,7 +14,8 @@ let CalibrationSchema = new Schema({
     activated: { type: Boolean, default: true },
     deviceId: { type: mongoose.Types.ObjectId, required: true },
     createdBy: { type: mongoose.Types.ObjectId, required: true },
-    fileName: { type: String, required: true }
+    fileName: { type: String, required: true },
+    fileLocation: { type: String, required: true }
 }, { timestamps: true });
 
 CalibrationSchema.methods.toJSON = function () {

@@ -23,12 +23,14 @@ export const addCalibCert = (req: Request, res: Response) => {
     }
 
     const { cert_id, expire_date, device_id } = req.body;
+    
     const calibCert = new Calibration({
         certificateId: cert_id,
         expireDate: new Date(expire_date + ' 00:00:00').toISOString(),
         createdBy: Types.ObjectId(req.body.user_id),
         deviceId: Types.ObjectId(device_id),
-        fileName: req.file.filename
+        fileName: req.file.filename,
+        fileLocation: req.file.path
     })
     calibCert.save(function (err: any, calib: any) {
         if (err) {
