@@ -24,7 +24,7 @@ export const generateAlerts = async (deviceId: any, sensorData: any) => {
                         log: devRules[i].info[j].parameter + ' greater than ' + devRules[i].info[j].limit
                     })
                     Alert.countDocuments({
-                        status: "Active", deviceId: devRules[i].deviceIds[0],
+                        status: "Active", deviceId: devRules[i].deviceIds,
                         ruleName: devRules[i].ruleName
                     }, function (err: any, data: any) {
 
@@ -55,7 +55,7 @@ export const generateAlerts = async (deviceId: any, sensorData: any) => {
                         log: devRules[i].info[j].parameter + ' less than ' + devRules[i].info[j].limit
                     })
                     Alert.countDocuments({
-                        status: "Active", deviceId: devRules[i].deviceIds[0],
+                        status: "Active", deviceId: devRules[i].deviceIds,
                         ruleName: devRules[i].ruleName
                     }, function (err: any, data: any) {
 
@@ -83,10 +83,10 @@ export const generateAlerts = async (deviceId: any, sensorData: any) => {
                         deviceId: deviceId,
                         ruleName: devRules[i].ruleName,
                         status: "Active",
-                        log: devRules[i].info[j].parameter + ' greater than ' + devRules[i].info[j].limit
+                        log: devRules[i].info[j].parameter + ' equal to ' + devRules[i].info[j].limit
                     })
                     Alert.countDocuments({
-                        status: "Active", deviceId: devRules[i].deviceIds[0],
+                        status: "Active", deviceId: devRules[i].deviceIds,
                         ruleName: devRules[i].ruleName
                     }, function (err: any, data: any) {
 
@@ -150,7 +150,7 @@ export const getActiveAlarms = async (req: Request, res: Response) => {
 
     const queryParams: any = req.query;
     const dataSkip = parseInt(queryParams.skip) || 0;
-    const dataLimit = parseInt(queryParams.limit) || 25;
+    const dataLimit = parseInt(queryParams.limit) || 10;
 
     let sort: any = { _id: -1 };
 
@@ -191,7 +191,10 @@ export const getActiveAlarms = async (req: Request, res: Response) => {
                 if (data[0].metadata[0]) {
                     response.pagination = await getPagination(data[0].metadata[0].total, dataSkip, dataLimit)
                 }
-                response.active_alerts = data[0].data
+                for (let i = 0; i < data[0].data.length; i++) {
+                    data[0].data[i].updatedAt = new Date(data[0].data[i].updatedAt).toLocaleString()
+                }
+                response.active_alerts = data[0].data;
             }
 
             if (!err) {
@@ -302,6 +305,9 @@ export const getAlarmHistory = async (req: Request, res: Response) => {
             if (data[0]) {
                 if (data[0].metadata[0]) {
                     response.pagination = await getPagination(data[0].metadata[0].total, dataSkip, dataLimit)
+                }
+                for (let i = 0; i < data[0].data.length; i++) {
+                    data[0].data[i].updatedAt = new Date(data[0].data[i].updatedAt).toLocaleString()
                 }
                 response.alert_history = data[0].data
             }

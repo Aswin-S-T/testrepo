@@ -188,7 +188,7 @@ export const editAlarmRule = (req: Request, res: Response) => {
 
 //Alarm Rule - Delete
 export const deleteAlarmRule = (req: Request, res: Response) => {
-    AlarmRule.findByIdAndUpdate(req.params.id, { isDeleted: true }, function (err: any, rule: any) {
+    AlarmRule.findByIdAndUpdate(req.params.id, { isDeleted: true },{ new: true }, function (err: any, rule: any) {
         if (err) {
             console.log(err);
             return res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({
