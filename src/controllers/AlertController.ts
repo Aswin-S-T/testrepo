@@ -4,6 +4,7 @@ import { Alert } from 'src/models/Alerts';
 import { getPagination } from '@utils';
 import { socketEmit } from 'src/utils/SocketService';
 import { StatusCodes } from 'http-status-codes';
+import { postAlertsToUrls } from './WebhookController';
 
 /**
  * Check parameters and generate alerts
@@ -34,6 +35,7 @@ export const generateAlerts = async (deviceId: any, sensorData: any) => {
                                     timeBasedAlert(devRules, alert._id);
                                 }
                                 alertPlatformUpdate('New alert - ' + deviceId, devRules[i].info[j].parameter + ' greater than ' + devRules[i].info[j].limit, alert)
+                                postAlertsToUrls('New alert - ' + deviceId +':'+ devRules[i].info[j].parameter + ' greater than ' + devRules[i].info[j].limit + alert)
                                 return ({
                                     status: "success",
                                     message: "Document created",
@@ -65,6 +67,7 @@ export const generateAlerts = async (deviceId: any, sensorData: any) => {
                                     timeBasedAlert(devRules, alert._id);
                                 }
                                 alertPlatformUpdate('New alert - ' + deviceId, devRules[i].info[j].parameter + ' less than ' + devRules[i].info[j].limit, alert)
+                                postAlertsToUrls('New alert - ' + deviceId +':'+ devRules[i].info[j].parameter + ' less than ' + devRules[i].info[j].limit + alert)
                                 return ({
                                     status: "success",
                                     message: "Document created",
@@ -96,6 +99,7 @@ export const generateAlerts = async (deviceId: any, sensorData: any) => {
                                     timeBasedAlert(devRules, alert._id);
                                 }
                                 alertPlatformUpdate('New alert - ' + deviceId, devRules[i].info[j].parameter + ' equal to ' + devRules[i].info[j].limit, alert)
+                                postAlertsToUrls('New alert - ' + deviceId +':'+ devRules[i].info[j].parameter + ' equal to ' + devRules[i].info[j].limit + alert)
                                 return ({
                                     status: "success",
                                     message: "Document created",

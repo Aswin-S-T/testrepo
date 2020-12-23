@@ -11,6 +11,7 @@ import { SensorSpecExclude } from '@helpers';
 import { Devices } from '../models/Devices';
 import { Aqi } from '../models/Aqi';
 import moment from 'moment';
+import { postSensorDatatoUrls } from './WebhookController';
 
 //  Sensor data calibration process
 const processCalibration = (val: any, paramDefinitions: any) => {
@@ -160,6 +161,7 @@ const parseInComingData = async (deviceDeatails: any, sensorData: any) => {
         //Generate Alarms
         // console.log("PP", processedData)
         generateAlerts(deviceDeatails.deviceId, processedData);
+        postSensorDatatoUrls(processedData);
 
         // to do raw aqi calculation
         const rawAqi: any = findAQIFromLiveData(processedData);

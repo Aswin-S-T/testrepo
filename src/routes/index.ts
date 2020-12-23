@@ -10,6 +10,7 @@ import AlertRoute from './Alarms';
 import SensorRoute from './Sensors';
 import DashboardRoute from './Dashboard';
 import Calibration from './Calibration';
+import WebhookRoute from './Webhook';
 
 // Init router and path
 const router = Router();
@@ -25,6 +26,7 @@ router.use('/alarm', AlertRoute);
 router.use('/sensor', SensorRoute);
 router.use('/dashboard', DashboardRoute);
 router.use('/calibration', Calibration);
+router.use('/webhook', WebhookRoute);
 
 // Export the base-router
 export default router;
