@@ -6,33 +6,53 @@ import { Webhook } from '../models/Webhooks';
 import { Types } from 'mongoose';
 import axios from 'axios';
 
-export const addWebhook = (req: Request, res: Response) => {
+export const addWebhook = async (req: Request, res: Response) => {
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
         return res.status(StatusCodes.UNPROCESSABLE_ENTITY).json({
             "status": 'UNPROCESSABLE_ENTITY', "errors": errors.array({ onlyFirstError: true })
         });
     }
-    const { customer_name, url, sensor_data, alerts } = req.body;
+    const { url, sensor_data, alerts, key } = req.body;
+
+    const pattern = /(https):\/\/(\w+:{0,1}\w*@)?(\S+)(:[0-9]+)?(\/|\/([\w#!:.?+=&%@!\-\/]))?/
+    if (pattern.test(url) == false) {
+        return res.status(StatusCodes.UNPROCESSABLE_ENTITY).json({
+            success: false,
+            message: "Please provide https url",
+        });
+    }
+
     const webhook = new Webhook({
-        customerName: customer_name,
         url: url,
         sensorData: sensor_data,
         alerts: alerts,
+        secretKey: key,
         createdBy: Types.ObjectId(req.body.user_id)
     })
-    webhook.save(function (err: any, data: any) {
+    webhook.save(async function (err: any, data: any) {
         if (err) {
             return res.status(StatusCodes.BAD_REQUEST).json({
                 success: false,
                 message: "Document with same name already exists",
             });
         }
-        return res.status(StatusCodes.CREATED).json({
-            success: true,
-            message: "Document created successflly",
-            webhook_details: data
-        });
+        const isReachableUrl = await postJsonToUrl([url], { "message": "test" }, [key]);
+        if (isReachableUrl == 201) {
+            return res.status(StatusCodes.CREATED).json({
+                success: true,
+                message: "Document created successflly, URL is reachable",
+                webhook_details: data
+            });
+        }
+        else {
+            return res.status(StatusCodes.CREATED).json({
+                success: true,
+                message: "Document created successflly, URL is not reachable",
+                webhook_details: data
+            });
+        }
+
     })
 }
 
@@ -93,15 +113,17 @@ export const listWebhook = (req: Request, res: Response) => {
 
 export const postSensorDatatoUrls = async (postData: any) => {
     let sensorArray: any = [];
+    let token: any = [];
     Webhook.find({ sensorData: true, isDeleted: false }, function (err: any, data: any) {
         if (err)
             console.log(err)
         else {
             for (let i = 0; i < data.length; i++) {
-                sensorArray.push(data[i].url)
+                sensorArray.push(data[i].url);
+                token.push(data[i].secretKey)
             }
             if (sensorArray.length > 0) {
-                postJsonToUrl(sensorArray, postData);
+                postJsonToUrl(sensorArray, postData, token);
             }
         }
     })
@@ -109,29 +131,74 @@ export const postSensorDatatoUrls = async (postData: any) => {
 
 export const postAlertsToUrls = async (postData: any) => {
     let alertsArray: any = [];
+    let token: any = [];
     Webhook.find({ alerts: true, isDeleted: false }, function (err: any, data: any) {
         if (err)
             console.log(err)
         else {
             for (let i = 0; i < data.length; i++) {
                 alertsArray.push(data[i].url)
+                token.push(data[i].secretKey)
             }
             if (alertsArray.length > 0) {
-                postJsonToUrl(alertsArray, postData);
+                postJsonToUrl(alertsArray, postData, token);
             }
         }
     })
 }
 
-export const postJsonToUrl = (urls: any, data: any) => {
+export const postJsonToUrl = (urls: any, data: any, key: any) => {
+    return new Promise((resolve, reject) => {
+        for (let i = 0; i < urls.length; i++) {
+            const url = urls[i];
+            axios.post(url, data, {
+                headers: {
+                    'Authorization': `Basic ${key[i]}`
+                }
+            })
+                .then((res) => {
+                    console.log(`Status: ${res.status}`);
+                    resolve(res.status)
+                }).catch((err) => {
+                    // console.error(err);
+                    resolve(500)
+                });
+        }
+    })
 
-    for (let i = 0; i < urls.length; i++) {
-        const url = urls[i];
-        axios.post(url, data)
-            .then((res) => {
-                console.log(`Status: ${res.status}`);
-            }).catch((err) => {
-                console.error(err);
+    // return status;
+}
+
+export const getWebhookDetails = (req: Request, res: Response) => {
+    Webhook.findById(req.params.id, function (err: any, data: any) {
+        return res.status(StatusCodes.OK).json({
+            success: true,
+            message: "Webhook details",
+            hook_details: data
+        });
+    })
+}
+
+export const updateWebhook = (req: Request, res: Response) => {
+    const { url, key, sensor_data, alerts } = req.body;
+    let updateData: any = {};
+    url ? updateData.url = url : '';
+    key ? updateData.secretKey = key : '';
+    sensor_data ? updateData.sensorData = sensor_data : '';
+    alerts ? updateData.alerts = alerts : '';
+
+    Webhook.findByIdAndUpdate(req.params.id, updateData, { new: true }, function (err: any, data: any) {
+        if (err) {
+            return res.status(StatusCodes.BAD_REQUEST).json({
+                success: false,
+                message: "Document with same name already exists",
             });
-    }
-} 
+        }
+        return res.status(StatusCodes.OK).json({
+            success: true,
+            message: "Successfully updated webhook details",
+            hook_details: data
+        });
+    })
+}
+

@@ -24,4 +24,10 @@ export const validate = {
         check('name', "Name doesn't exists").exists(),
         check('limit', "Limit doesn't exists").exists(),
     ],
+    webhookAdd: [
+        check('url', "URL doesn't exists").exists(),
+        check('key', "Secret key doesn't exists").exists(),
+        check('sensor_data', "Sensor data doesn't exists").exists(),
+        check('alerts', "Alerts doesn't exists").exists(),
+    ]
 }

@@ -8,10 +8,10 @@ const returnFilter = (obj: any) => {
 }
 
 let WebhookSchema = new Schema({
-    customerName:{ type: String, required: true},
     url : { type: String, required: true, unique: true },
     sensorData:{ type: Boolean, required: true},
     alerts:{ type: Boolean, required: true},
+    secretKey:{ type: String, required: true},
     createdBy:{ type: mongoose.Types.ObjectId, required: true },
     isDeleted: { type: Boolean, default: false },
     activated: { type: Boolean, default: true },
