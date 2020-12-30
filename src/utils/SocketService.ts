@@ -1,4 +1,3 @@
-import socket from 'socket.io';
 let io: { sockets: { emit: (event: any, values: any) => void; }; } | null = null;
 
 /**
@@ -7,7 +6,13 @@ let io: { sockets: { emit: (event: any, values: any) => void; }; } | null = null
  * @param
  */
 export const socketConnection = (server: import("http").Server | import("https").Server) => {
-    io = socket(server);
+    io = require('socket.io')(server, {
+        cors: {
+            origin: "http://localhost:3000",
+            methods: ["GET", "POST"],
+            credentials: true
+        }
+    });
     console.log("Made socket connection");
 }
 
@@ -18,7 +23,6 @@ export const socketConnection = (server: import("http").Server | import("https")
  */
 export const socketEmit = (event: any, values: any) => {
     if (io) {
-        // console.log(values);
         io.sockets.emit(event, values);
     }
 }
