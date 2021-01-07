@@ -25,17 +25,17 @@ export const generateAlerts = async (deviceId: any, sensorData: any) => {
                         log: devRules[i].info[j].parameter + ' greater than ' + devRules[i].info[j].limit
                     })
                     Alert.countDocuments({
-                        status: "Active", deviceId: devRules[i].deviceIds,
+                        status: "Active", deviceId: deviceId,
                         ruleName: devRules[i].ruleName
                     }, function (err: any, data: any) {
-
+                        console.log(data)
                         if (data == 0) {
                             alert.save(function (err: any, alert: any) {
                                 if (devRules[0].type == 'Time') {
                                     timeBasedAlert(devRules, alert._id);
                                 }
                                 alertPlatformUpdate('New alert - ' + deviceId, devRules[i].info[j].parameter + ' greater than ' + devRules[i].info[j].limit, alert)
-                                postAlertsToUrls('New alert - ' + deviceId +':'+ devRules[i].info[j].parameter + ' greater than ' + devRules[i].info[j].limit + alert)
+                                postAlertsToUrls('New alert - ' + deviceId + ':' + devRules[i].info[j].parameter + ' greater than ' + devRules[i].info[j].limit + alert)
                                 return ({
                                     status: "success",
                                     message: "Document created",
@@ -67,7 +67,7 @@ export const generateAlerts = async (deviceId: any, sensorData: any) => {
                                     timeBasedAlert(devRules, alert._id);
                                 }
                                 alertPlatformUpdate('New alert - ' + deviceId, devRules[i].info[j].parameter + ' less than ' + devRules[i].info[j].limit, alert)
-                                postAlertsToUrls('New alert - ' + deviceId +':'+ devRules[i].info[j].parameter + ' less than ' + devRules[i].info[j].limit + alert)
+                                postAlertsToUrls('New alert - ' + deviceId + ':' + devRules[i].info[j].parameter + ' less than ' + devRules[i].info[j].limit + alert)
                                 return ({
                                     status: "success",
                                     message: "Document created",
@@ -99,7 +99,7 @@ export const generateAlerts = async (deviceId: any, sensorData: any) => {
                                     timeBasedAlert(devRules, alert._id);
                                 }
                                 alertPlatformUpdate('New alert - ' + deviceId, devRules[i].info[j].parameter + ' equal to ' + devRules[i].info[j].limit, alert)
-                                postAlertsToUrls('New alert - ' + deviceId +':'+ devRules[i].info[j].parameter + ' equal to ' + devRules[i].info[j].limit + alert)
+                                postAlertsToUrls('New alert - ' + deviceId + ':' + devRules[i].info[j].parameter + ' equal to ' + devRules[i].info[j].limit + alert)
                                 return ({
                                     status: "success",
                                     message: "Document created",
@@ -220,15 +220,12 @@ export const getActiveAlarms = async (req: Request, res: Response) => {
 
 const alertPlatformUpdate = async (title: string, message: string, alertInfo: any) => {
     const alert = {
-        alerts: [
-            {
-                title: title,
-                message: message,
-                alert: alertInfo
-            }
-        ]
+        title: title,
+        message: message,
+        alert: alertInfo,
+        alertType: 'warning'
     }
-    socketEmit('new-alert', JSON.stringify(alert));
+    socketEmit('alarm-alerts', alert);
 }
 
 /**
