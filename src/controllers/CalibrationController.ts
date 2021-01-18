@@ -5,6 +5,8 @@ import { Calibration } from '../models/Calibration';
 import { Types } from 'mongoose';
 import { getPagination } from '@utils';
 import { getDeviceId } from '@controllers';
+const fs = require('fs');
+const path = require('path');
 
 /**
  * Add device calibration certificate
@@ -80,7 +82,7 @@ export const listCalibCert = (req: Request, res: Response) => {
                 response.pagination = await getPagination(data[0].metadata[0].total, parseInt(pageSkip), parseInt(pageLimit))
             }
             for (let i = 0; i < data[0].data.length; i++) {
-                
+
                 if (data[0].data[i].activated == true) {
                     let expiry = data[0].data[i].expireDate;
                     let currentDate = new Date();
@@ -89,7 +91,7 @@ export const listCalibCert = (req: Request, res: Response) => {
                         data[0].data[i].activated = false;
                     }
                 }
-                data[0].data[i].expireDate = new Date(data[0].data[i].expireDate).toISOString().slice(0,10)
+                data[0].data[i].expireDate = new Date(data[0].data[i].expireDate).toISOString().slice(0, 10)
             }
             response.list = data[0].data;
         }
@@ -108,7 +110,7 @@ export const listCalibCert = (req: Request, res: Response) => {
  * @param
  */
 
- export const deleteCalibCert = (req: Request, res: Response) =>{
+export const deleteCalibCert = (req: Request, res: Response) => {
     Calibration.findByIdAndUpdate(req.params.id, { isDeleted: true }, function (err: any, data: any) {
         if (err) {
             console.log(err);
@@ -122,4 +124,9 @@ export const listCalibCert = (req: Request, res: Response) => {
             message: "Successfully deleted alarm rule"
         });
     })
- }
+}
+
+export const initiateDownload = (req: Request, res: Response) => {
+    console.log("TY", req.query.path)
+    res.sendFile(path.join(__dirname,'../uploads', req.query.path));
+}
