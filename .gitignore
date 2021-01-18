@@ -2,5 +2,6 @@ npm-debug.log
 /node_modules
 /public/build
 /pm2
+env/*.env
 src/public
 src/uploads
