@@ -66,7 +66,6 @@ export const login = (req: Request, res: Response) => {
  * @param res
  */
 export const register = (req: Request, res: Response) => {
-    
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
         return res.status(StatusCodes.UNPROCESSABLE_ENTITY).json({ "status": 'UNPROCESSABLE_ENTITY', "errors": errors.array({ onlyFirstError: true }) });
@@ -83,6 +82,7 @@ export const register = (req: Request, res: Response) => {
 
     User.findOne({ email: email }, (err, existingUser) => {
         if (err) {
+            console.log(err)
             return res.status(StatusCodes.BAD_REQUEST).json({
                 success: false,
                 message: "",
@@ -97,6 +97,7 @@ export const register = (req: Request, res: Response) => {
         }
         user.save(function (err: any, userInfo: any) {
             if (err) { 
+                console.log(err)
                 return err}
             return res.status(StatusCodes.CREATED).json({
                 success: true,
