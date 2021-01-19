@@ -61,7 +61,7 @@ export const listCalibCert = (req: Request, res: Response) => {
     const pageSkip: any = skip || 0;
     const pageLimit: any = limit || 10;
     const match: any = { isDeleted: false };
-    status == 'enabled' ? match.activated = true : status == 'disabled' ? match.activated = false : ''
+    status == 'valid' ? match.activated = true : status == 'expired' ? match.activated = false : ''
 
     Calibration.aggregate([
         { $match: match },
