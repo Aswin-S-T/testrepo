@@ -7,6 +7,6 @@ import { uploadDiskStorage } from '@utils'
 const router = Router();
 router.post('/', uploadDiskStorage.single('calibration-cert'), addCalibCert);
 router.get('/', auth('Admin', 'Supervisor', 'Operator', 'Super Admin'), listCalibCert);
-router.get('/init', initiateDownload);
+router.get('/download/:id', initiateDownload);
 router.delete('/:id', deleteCalibCert);
 export default router;

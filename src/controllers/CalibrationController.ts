@@ -126,7 +126,22 @@ export const deleteCalibCert = (req: Request, res: Response) => {
     })
 }
 
+/**
+ * Initiate calibration certificate files
+ * @method initiateDownload
+ * @param
+ */
+
 export const initiateDownload = (req: Request, res: Response) => {
-    console.log("TY", req.query.path)
-    res.sendFile(path.join(__dirname,'../uploads', req.query.path));
+    Calibration.findById(req.params.id, function (err: any, file: any) {
+        if (err) { }
+        try {
+            res.download(file.fileLocation)
+        } catch (error) {
+            return res.status(StatusCodes.OK).json({
+                success: false,
+                message: "File not found"
+            });
+        }
+    })
 }
