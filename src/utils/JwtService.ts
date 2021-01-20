@@ -17,6 +17,7 @@ export class JwtService {
     constructor() {
         this.secret = (process.env.JWT_SECRET || randomString.generate(100));
         this.options = {
+            issuer: 'alcodex.com'
         };
     }
 
@@ -28,7 +29,7 @@ export class JwtService {
      */
     public getJwt(data: ClientData): Promise<string> {
         return new Promise((resolve, reject) => {
-            jsonwebtoken.sign(data, this.secret, this.options, (err, token) => {
+            jsonwebtoken.sign(data, this.secret, this.options, (err: any, token: any) => {
                 err ? reject(err) : resolve(token);
             });
         });
