@@ -116,9 +116,7 @@ export const listDevice = async (req: Request, res: Response) => {
     }
     if (queryParams.organization_id && queryParams.organization_id != 'all') {
         match['$and'].push({ organizationId: Types.ObjectId(queryParams.organization_id) })
-    } else if (queryParams.organization_id == 'all') {
-
-    } else {
+    }else {
         const user: any = await userDetails(req.body.user_id);
         match['$and'].push({ organizationId: { $in: user.organization } })
     }
