@@ -19,8 +19,12 @@ export const usersList = (req: Request, res: Response) => {
     const pageSkip: any = skip || 0;
     const pageLimit: any = limit || 10;
     const match: any = { isDeleted: false, visible: true };
-    role != undefined ? match.role = role : '';
     status == 'active' ? match.activated = true : status == 'inactive' ? match.activated = false : '';
+    if (role) {
+        match.role = role;
+    } else if (req.body.user_role !== 'Super Admin') {
+        match.role = { $ne: 'Super Admin' }
+    }
 
     User.aggregate([
         { $match: match },
