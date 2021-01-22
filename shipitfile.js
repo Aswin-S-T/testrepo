@@ -24,7 +24,7 @@ module.exports = shipit => {
         },
         stage: {
             servers: 'user@localhost',
-            buildCmd: 'start:dev',
+            buildCmd: 'start:stage',
             forntendBuildCmd: 'build:staging',
             pm2AppNames: 'envitusV2-stage'
         }
