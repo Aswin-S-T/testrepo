@@ -334,3 +334,28 @@ export const deleteUser = (req: Request, res: Response) => {
         });
     })
 }
+
+/**
+* Seed user data
+*
+* @method  seedUsers
+* 
+* @param   req
+* @param   res
+*/
+export const seedUsers = () => {
+    const rootUser = {
+        name: "Root ES",
+        email: "root@envitus.com",
+        password: process.env.ROOT_USER_PASSWORD,
+        role: 'Root',
+        userName: 'root',
+        isActive: true
+    }
+    User.findOne({ email: rootUser.email }, function (err: any, data: any) {
+        if (!data) {
+            const userModel = new User(rootUser);
+            userModel.save(function (err: any, data: any) { })
+        }
+    })
+}
