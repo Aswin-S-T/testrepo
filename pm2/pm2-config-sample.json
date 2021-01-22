@@ -1,8 +1,8 @@
 {
     "apps": [
         {
-            "name": "Envitus-Jhansi-dev",
-            "script": "Main.js",
+            "name": "Envitus-dev",
+            "script": "src/app.ts",
             "cwd": ".",
             "log_date_format": "YYYY-MM-DD HH:mm Z",
             "autorestart": true,
@@ -26,7 +26,8 @@
                 "SUBDOMAIN":"",
                 "OIDC_CLIENT_ID":"",
                 "OIDC_CLIENT_SECRET":"",
-                "OIDC_REDIRECT_URI":""
+                "OIDC_REDIRECT_URI":"",
+                "ROOT_USER_PASSWORD":""
             }
         }
     ]
