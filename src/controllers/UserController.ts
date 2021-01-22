@@ -348,7 +348,7 @@ export const seedUsers = () => {
         name: "Root ES",
         email: "root@envitus.com",
         password: process.env.ROOT_USER_PASSWORD,
-        role: 'Root',
+        role: 'Super Admin',
         userName: 'root',
         isActive: true
     }
