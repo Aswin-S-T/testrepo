@@ -25,7 +25,7 @@ let UserSchema = new Schema({
     password: { type: String, required: true },
     isDeleted: { type: Boolean, default: false },
     activated: { type: Boolean, default: true },
-    role: { type: String, enum: ['Admin', 'Supervisor', 'Operator', 'Super Admin'], default: 'Operator' },
+    role: { type: String, enum: ['Admin', 'Supervisor', 'Operator', 'Super Admin', 'Root'], default: 'Operator' },
     userName: { type: String, required: true },
     createdBy: { type: mongoose.Types.ObjectId },
     organization: { type: Array, default: [] },

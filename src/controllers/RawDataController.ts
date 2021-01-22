@@ -5,21 +5,24 @@ import { Types } from 'mongoose';
 import { getPagination } from '@utils';
 import { StatusCodes } from 'http-status-codes';
 import { SensorSpec } from '@helpers';
+import { deviceDetails } from '@controllers';
 
 /**
  * Get device rawdata
  * @method getRawData
  * @param
  */
-export const getRawData = (req: Request, res: Response) => {
-    const { devs, skip, limit, startdate, enddate } = req.query;
+export const getRawData = async (req: Request, res: Response) => {
+    const { devs, skip, limit, startdate, enddate, deviceId } = req.query;
     const devices: any = devs;
     const start: any = startdate; const end: any = enddate;
     const pageSkip: any = skip || 0;
     const pageLimit: any = limit || 10;
-
+    let devDetails: any = '';
+    deviceId ? devDetails = await deviceDetails({ "deviceId": deviceId }): devDetails = await deviceDetails({ "_id": devs })
+    
     let rawdata:any = [];
-    const devParams: any = SensorSpec;
+    const devParams: any = devDetails.paramDefinitions || [];
 
     for (var i = 0; i < devParams.length; i++) {
         if(devParams[i].valueType !== 'date') {

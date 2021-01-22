@@ -16,7 +16,7 @@ export const getStatistics = async(req: Request, res: Response) => {
     const { devs, params, skip, limit, statType, timeZone, startdate, enddate, deviceId } = req.query;
     let device: any = '';
     let devDetails: any = '';
-    deviceId? devDetails = await deviceDetails({ "deviceId": deviceId }): ''
+    deviceId? devDetails = await deviceDetails({ "deviceId": deviceId }): devDetails = await deviceDetails({ "_id": devs })
     devs? device = devs: device = devDetails._id;
     const parameters: any = params;
     const start: any = startdate; const end: any = enddate;
@@ -31,7 +31,7 @@ export const getStatistics = async(req: Request, res: Response) => {
     }
 
     let statistics = [];
-    const devParams: any = SensorSpec;
+    const devParams: any = devDetails.paramDefinitions || [];
 
     for (var i = 0; i < devParams.length; i++) {
         if (devParams[i].valueType !== 'string' && devParams[i].valueType !== 'date') {

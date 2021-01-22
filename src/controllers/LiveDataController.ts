@@ -16,17 +16,16 @@ export const getLiveData = async (req: Request, res: Response) => {
     const { devs, params, skip, limit, startdate, enddate, deviceIds } = req.query;
     let devices: any = '';
     let devDetails: any = '';
-    deviceIds? devDetails = await deviceDetails({ "deviceId": deviceIds }): ''
+    deviceIds? devDetails = await deviceDetails({ "deviceId": deviceIds }): devDetails = await deviceDetails({ "_id": devs })
     devs? devices = devs: devices = (devDetails._id).toString() ;
     
-    const parameters: any = params;
     const start: any = startdate;
     const end: any = enddate;
     const pageSkip: any = skip || 0;
     const pageLimit: any = limit || 10;
 
     let livedata: any = [];
-    const devParams: any = SensorSpec;
+    const devParams: any = devDetails.paramDefinitions || [];
 
     for (var i = 0; i < devParams.length; i++) {
         if (devParams[i].valueType !== 'date') {

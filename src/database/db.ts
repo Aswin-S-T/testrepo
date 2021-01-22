@@ -1,5 +1,6 @@
 import mongoose from 'mongoose';
 import { logger as Logger } from '@utils';
+import { seedUsers} from '@controllers';
 
 const DB_URL = String(process.env.DB_URL);
 mongoose.set('useFindAndModify', false);
@@ -10,6 +11,7 @@ mongoose.connect(DB_URL, { useNewUrlParser: true, useUnifiedTopology: true });
 // When successfully connected
 mongoose.connection.on('connected', function () {
     Logger.info('Mongoose default connection open to ' + DB_URL);
+    seedUsers();
 });
 
 // If the connection throws an error

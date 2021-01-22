@@ -117,21 +117,27 @@ export const processDeviceData = async (req: Request, res: Response) => {
     const deviceDeatails = await deviceDetails({ "deviceId": deviceId });
     if (deviceDeatails) {
         let sensorData = {};
+        let isAqi = false;
         //  Convert data parameters
         switch (process.env.PROJECT_TYPE) {
             case 'AQMS':
+                isAqi = true;
                 if (process.env.SINGLET_POST === "false") {
                     sensorData = getHashedConversion(data)
                 } else {
                     sensorData = getAqmsConversion(data)
                 }
                 break;
+            case 'SOIL':
+                sensorData = data;
+                break;
             default:
+                isAqi = true;
                 sensorData = getAqmsConversion(data)
                 break;
         }
         //  Parse incoming data
-        parseInComingData(deviceDeatails, sensorData);
+        parseInComingData(deviceDeatails, sensorData, isAqi);
 
         return res.status(StatusCodes.OK).json({
             success: true,
@@ -146,38 +152,45 @@ export const processDeviceData = async (req: Request, res: Response) => {
 }
 
 // Parse incoming data
-const parseInComingData = async (deviceDeatails: any, sensorData: any) => {
+const parseInComingData = async (deviceDeatails: any, sensorData: any, isAqi: boolean) => {
+    let receivedAt = new Date();
+    if(sensorData.time){
+        receivedAt = new Date(sensorData.time);
+    }
     const rawData = {
         deviceId: Types.ObjectId(deviceDeatails._id),
         latitude: deviceDeatails.location.latitude,
         longitude: deviceDeatails.location.longitude,
         data: sensorData,
-        receivedAt: new Date(sensorData.time)
+        receivedAt: receivedAt
     }
+
     const rawDataDetails: any = await saveRawDataAndGetId(rawData);
     if (rawDataDetails) {
         const processedData: any = await parseData(sensorData, deviceDeatails, deviceDeatails.paramDefinitions);
-        processedData.receivedAt = new Date(sensorData.time);
+        processedData.receivedAt = receivedAt
+
         //Generate Alarms
-        // console.log("PP", processedData)
         generateAlerts(deviceDeatails.deviceId, processedData);
         postSensorDatatoUrls(processedData);
 
         // to do raw aqi calculation
-        const rawAqi: any = findAQIFromLiveData(processedData);
-        processedData.rawAQI = Number(rawAqi.AQI.toFixed(3));
-        processedData.prominentPollutant = rawAqi.prominentPollutant;
-        // console.log(processedData)
+        if (isAqi) {
+            const rawAqi: any = findAQIFromLiveData(processedData);
+            processedData.rawAQI = Number(rawAqi.AQI.toFixed(3));
+            processedData.prominentPollutant = rawAqi.prominentPollutant;
+        }
+
         const sensorDataModel = new SensorData({
             deviceId: Types.ObjectId(deviceDeatails._id),
             rawDataId: Types.ObjectId(rawDataDetails._id),
             data: processedData,
-            receivedAt: new Date(sensorData.time)
+            receivedAt: receivedAt
         })
         sensorDataModel.save(function (err: any, result: any) {
             //  Device error handler
             handleDeviceErrors(deviceDeatails, sensorData, result)
-            Devices.findByIdAndUpdate(deviceDeatails._id, { lastDataReceiveTime: new Date(sensorData.time), rawAqi: processedData.rawAQI }, function (err: any, device: any) { })
+            Devices.findByIdAndUpdate(deviceDeatails._id, { lastDataReceiveTime: receivedAt, rawAqi: processedData.rawAQI }, function (err: any, device: any) { })
         })
     }
 }
@@ -326,7 +339,7 @@ export const getDeviceLastData = (deviceId: any) => {
  */
 export const getDeviceLastHourAQI = (deviceId: any) => {
     return new Promise((resolve, reject) => {
-        Aqi.findOne({ deviceId: Types.ObjectId(deviceId), dateTime : { $gte : new Date(moment().subtract(60, 'minutes').format())}}).sort('-createdAt').exec(function (err: any, data: any) {
+        Aqi.findOne({ deviceId: Types.ObjectId(deviceId), dateTime: { $gte: new Date(moment().subtract(60, 'minutes').format()) } }).sort('-createdAt').exec(function (err: any, data: any) {
             resolve(data)
         })
     })
