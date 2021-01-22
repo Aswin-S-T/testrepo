@@ -28,14 +28,6 @@
                 "OIDC_CLIENT_SECRET":"",
                 "OIDC_REDIRECT_URI":""
             }
-        },
-        {
-            "name": "Envitus-Jhansi-AlarmService",
-            "script": "AlarmService.js",
-            "env": {
-                "DB_Name": "",
-                "DB_IP": ""
-            }
         }
     ]
 }
