@@ -326,7 +326,7 @@ export const getAlarmHistory = async (req: Request, res: Response) => {
 
 export const clearAllAlerts = async (req: Request, res: Response) => {
 
-    Alert.updateMany({ status: "Active" }, { status: "Inactive" }, function (err, alert) {
+    Alert.updateMany({ status: "Active" }, { status: "Inactive" }, {}, function (err: any, alert: any) {
         if (err) {
             return res.status(StatusCodes.BAD_REQUEST).json({
                 status: "BAD REQUEST",

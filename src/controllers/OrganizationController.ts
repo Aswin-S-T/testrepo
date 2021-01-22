@@ -12,7 +12,7 @@ const updateOrg = (type: string, filter: object, update: object) => {
     return new Promise((resolve, reject) => {
         switch (type) {
             case 'many':
-                Organization.updateMany(filter, update, function (err: any, data: any) {
+                Organization.updateMany(filter, update, {}, function (err: any, data: any) {
                     resolve(data)
                 })
                 break;
@@ -49,11 +49,11 @@ export const addOrganization = async (req: Request, res: Response) => {
         if (org) {
             if (devices) {
                 const deviceIds = devices.map((x: string | number | undefined) => Types.ObjectId(x));
-                await Devices.updateMany({ _id: { $in: deviceIds } }, { organizationId: Types.ObjectId(org._id) }, function (err: any, data: any) { })
+                await Devices.updateMany({ _id: { $in: deviceIds } }, { organizationId: Types.ObjectId(org._id) }, {}, function (err: any, data: any) { })
             }
             if (users) {
                 const userIds = users.map((x: string | number | undefined) => Types.ObjectId(x));
-                await User.updateMany({ _id: { $in: userIds } }, { $addToSet: { organization: Types.ObjectId(org._id) } }, function (err: any, data: any) { })
+                await User.updateMany({ _id: { $in: userIds } }, { $addToSet: { organization: Types.ObjectId(org._id) } }, {}, function (err: any, data: any) { })
             }
             return res.status(StatusCodes.CREATED).json({
                 success: true,
@@ -118,20 +118,20 @@ export const updateOrganization = async (req: Request, res: Response) => {
     if (is_default != undefined && (is_default || !is_default)) {
         updateData.isDefault = is_default
         if (is_default) {
-            await Organization.updateMany({ isDeleted: false, isDefault: true }, { isDefault: false }, function (err: any, data: any) { })
+            await Organization.updateMany({ isDeleted: false, isDefault: true }, { isDefault: false }, {}, function (err: any, data: any) { })
         }
     }
     if (devices) {
-        await Devices.updateMany({ organizationId: Types.ObjectId(req.params.id) }, { organizationId: null }, function (err: any, data: any) { })
+        await Devices.updateMany({ organizationId: Types.ObjectId(req.params.id) }, { organizationId: null }, {}, function (err: any, data: any) { })
         devices.forEach(async (id: any) => {
-            await Devices.findByIdAndUpdate(id, { organizationId: Types.ObjectId(req.params.id) }, function (err: any, data: any) { })
+            await Devices.findByIdAndUpdate(id, { organizationId: Types.ObjectId(req.params.id) }, {}, function (err: any, data: any) { })
         });
     }
 
     if (users) {
-        await User.updateMany({ organization: { $in: [Types.ObjectId(req.params.id)] } }, { $pull: { organization: Types.ObjectId(req.params.id) } }, function (err: any, data: any) { })
+        await User.updateMany({ organization: { $in: [Types.ObjectId(req.params.id)] } }, { $pull: { organization: Types.ObjectId(req.params.id) } }, {}, function (err: any, data: any) { })
         users.forEach(async (id: any) => {
-            await User.findByIdAndUpdate(id, { $addToSet: { organization: Types.ObjectId(req.params.id) } }, function (err: any, data: any) { })
+            await User.findByIdAndUpdate(id, { $addToSet: { organization: Types.ObjectId(req.params.id) } }, {}, function (err: any, data: any) { })
         });
     }
 
@@ -198,8 +198,8 @@ export const getOrganizationDetails = (req: Request, res: Response) => {
 export const deleteOrganization = (req: Request, res: Response) => {
     Organization.findByIdAndUpdate(req.params.id, { isDeleted: true }, { new: true }, async function (err: any, org: any) {
         if (err) { }
-        await Devices.updateMany({ organizationId: Types.ObjectId(req.params.id) }, { organizationId: null }, function (err: any, data: any) { })
-        await User.updateMany({ organization: { $in: [Types.ObjectId(req.params.id)] } }, { $pull: { organization: Types.ObjectId(req.params.id) } }, function (err: any, data: any) { })
+        await Devices.updateMany({ organizationId: Types.ObjectId(req.params.id) }, { organizationId: null }, {}, function (err: any, data: any) { })
+        await User.updateMany({ organization: { $in: [Types.ObjectId(req.params.id)] } }, { $pull: { organization: Types.ObjectId(req.params.id) } }, {}, function (err: any, data: any) { })
         return res.status(StatusCodes.OK).json({
             success: true,
             message: "Successfully deleted the organization"

@@ -119,7 +119,7 @@ export const addAlarmRule = async (req: Request, res: Response) => {
         deviceIDs: devices.map((x: string | number | undefined) => mongoose.Types.ObjectId(x)),
         deviceIds: deviceIds
     })
-    AlarmRule.findOne(query, (err, existingRule: any) => {
+    AlarmRule.findOne(query, (err: any, existingRule: any) => {
         if (err) {
             return res.status(StatusCodes.BAD_REQUEST).json({
                 status: "BAD REQUEST",
@@ -135,7 +135,7 @@ export const addAlarmRule = async (req: Request, res: Response) => {
                 });
             }
             else {
-                AlarmRule.findOneAndDelete(query, (err, data) => {
+                AlarmRule.findOneAndDelete(query, {}, (err: any, data: any) => {
                     if (!err) {
                         console.log("Deleted existing one")
                     }
@@ -188,7 +188,7 @@ export const editAlarmRule = (req: Request, res: Response) => {
 
 //Alarm Rule - Delete
 export const deleteAlarmRule = (req: Request, res: Response) => {
-    AlarmRule.findByIdAndUpdate(req.params.id, { isDeleted: true },{ new: true }, function (err: any, rule: any) {
+    AlarmRule.findByIdAndUpdate(req.params.id, { isDeleted: true }, { new: true }, function (err: any, rule: any) {
         if (err) {
             console.log(err);
             return res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({

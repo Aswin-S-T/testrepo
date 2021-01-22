@@ -116,7 +116,7 @@ export const listDevice = async (req: Request, res: Response) => {
     }
     if (queryParams.organization_id && queryParams.organization_id != 'all') {
         match['$and'].push({ organizationId: Types.ObjectId(queryParams.organization_id) })
-    }else {
+    } else {
         const user: any = await userDetails(req.body.user_id);
         match['$and'].push({ organizationId: { $in: user.organization } })
     }
@@ -301,7 +301,7 @@ export const getDeviceDetails = (req: Request, res: Response) => {
  */
 export const deleteDevice = (req: Request, res: Response) => {
     if (req.body.delete) {
-        Devices.findByIdAndDelete(req.params.id, function (err: any, data: any) {
+        Devices.findByIdAndDelete(req.params.id, {}, function (err: any, data: any) {
             return res.status(StatusCodes.OK).json({
                 success: true,
                 message: "Device successfully deleted"
@@ -323,7 +323,7 @@ export const deleteDevice = (req: Request, res: Response) => {
  * @param
  */
 export const deleteDevicePermanently = (req: Request, res: Response) => {
-    Devices.findByIdAndDelete(req.params.id, function (err: any, data: any) {
+    Devices.findByIdAndDelete(req.params.id, {}, function (err: any, data: any) {
         return res.status(StatusCodes.OK).json({
             success: true,
             message: "Device successfully deleted"
@@ -426,7 +426,7 @@ export const getDeviceIds = (req: Request, res: Response) => {
                 break;
         }
     }
-    Devices.find(filter, { _id: 1, deviceId: 1 }, function (err: any, ids: any) {
+    Devices.find(filter, { _id: 1, deviceId: 1 }, {}, function (err: any, ids: any) {
         console.log(err)
         return res.status(StatusCodes.OK).json({
             success: true,

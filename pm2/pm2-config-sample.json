@@ -11,6 +11,7 @@
             "exec_mode": "fork",
             "instances": 1,
             "watch": true,
+            "node_args": "-r tsconfig-paths/register",
             "env": {
                 "PORT": 7002,
                 "NODE_ENV": "development",

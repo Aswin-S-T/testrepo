@@ -22,7 +22,7 @@ export const login = (req: Request, res: Response) => {
         return res.status(StatusCodes.UNPROCESSABLE_ENTITY).json({ success: false, "errors": errors.array({ onlyFirstError: true }) });
     }
     const { username, password } = req.body;
-    User.findOne({ $or: [{ email: username }, { userName: username }], activated: true }, (err, user) => {
+    User.findOne({ $or: [{ email: username }, { userName: username }], activated: true }, (err: any, user: any) => {
         if (err) {
             return res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({
                 success: false,
@@ -80,7 +80,7 @@ export const register = (req: Request, res: Response) => {
         contact: contact
     });
 
-    User.findOne({ email: email }, (err, existingUser) => {
+    User.findOne({ email: email }, (err: any, existingUser: any) => {
         if (err) {
             console.log(err)
             return res.status(StatusCodes.BAD_REQUEST).json({
@@ -96,9 +96,10 @@ export const register = (req: Request, res: Response) => {
             });
         }
         user.save(function (err: any, userInfo: any) {
-            if (err) { 
+            if (err) {
                 console.log(err)
-                return err}
+                return err
+            }
             return res.status(StatusCodes.CREATED).json({
                 success: true,
                 message: "User document created",

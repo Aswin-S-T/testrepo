@@ -20,7 +20,7 @@ module.exports = shipit => {
             servers: 'user@localhost',
             buildCmd: 'start:dev',
             forntendBuildCmd: 'build:dev',
-            pm2AppNames: 'Envitus-dev Envitus-AlarmService'
+            pm2AppNames: 'envitusV2-dev'
         },
         stage: {
             servers: 'user@localhost',
@@ -39,10 +39,10 @@ module.exports = shipit => {
             'yarn run ' + shipit.config.forntendBuildCmd,
             'mv  build/  ' + shipit.config.backendAppPath + '/src/public/',
             'cd '+ shipit.config.backendAppPath ,
-            'npm install',
+            'yarn install',
             'pm2 stop ' + shipit.config.pm2AppNames + ' || true',
             'pm2 delete ' + shipit.config.pm2AppNames + ' || true',
-            'npm run ' + shipit.config.buildCmd
+            'yarn run ' + shipit.config.buildCmd
         ].join('&&'));
     });
 

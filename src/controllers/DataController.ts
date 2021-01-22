@@ -154,7 +154,7 @@ export const processDeviceData = async (req: Request, res: Response) => {
 // Parse incoming data
 const parseInComingData = async (deviceDeatails: any, sensorData: any, isAqi: boolean) => {
     let receivedAt = new Date();
-    if(sensorData.time){
+    if (sensorData.time) {
         receivedAt = new Date(sensorData.time);
     }
     const rawData = {
@@ -190,7 +190,7 @@ const parseInComingData = async (deviceDeatails: any, sensorData: any, isAqi: bo
         sensorDataModel.save(function (err: any, result: any) {
             //  Device error handler
             handleDeviceErrors(deviceDeatails, sensorData, result)
-            Devices.findByIdAndUpdate(deviceDeatails._id, { lastDataReceiveTime: receivedAt, rawAqi: processedData.rawAQI }, function (err: any, device: any) { })
+            Devices.findByIdAndUpdate(deviceDeatails._id, { lastDataReceiveTime: receivedAt, rawAqi: processedData.rawAQI }, {}, function (err: any, device: any) { })
         })
     }
 }
@@ -258,7 +258,7 @@ const parseData = (data: any, device: any, paramDefinitions: any) => {
 
             if (paramDefinitions[i].filteringMethod == "WMAFilter") {
                 const originalVal = filterResult[paramDefinitions[i].paramName];
-                SensorData.findOne({ deviceId: Types.ObjectId(device._id), isDeleted: 0 }, { sort: { 'createdAt': -1 } }, function (err: any, oldData: any) {
+                SensorData.findOne({ deviceId: Types.ObjectId(device._id), isDeleted: 0 }, { sort: { 'createdAt': -1 } }, {}, function (err: any, oldData: any) {
                     if (oldData && oldData[paramDefinitions[i].paramName] != null) {
                         var oldValue = data[paramDefinitions[i].paramName];
                         var newValue = processCalibration(originalVal, paramDefinitions[i]);;

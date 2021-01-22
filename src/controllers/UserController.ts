@@ -210,7 +210,7 @@ export const updateUserPassword = (req: Request, res: Response) => {
             message: "Your password and confirmation password do not match",
         });
     }
-    User.findById(req.body.user_id, (err, user) => {
+    User.findById(req.body.user_id, (err: any, user: any) => {
         if (err) {
             return res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({
                 success: false,
@@ -295,7 +295,7 @@ export const getUserDetailsById = (req: Request, res: Response) => {
 * @param   res
 */
 export const getUserIds = (req: Request, res: Response) => {
-    User.find({ activated: true, isDeleted: false, visible: true }, { _id: 1, name: 1 }, function (err: any, ids: any) {
+    User.find({ activated: true, isDeleted: false, visible: true }, { _id: 1, name: 1 }, {}, function (err: any, ids: any) {
         return res.status(StatusCodes.OK).json({
             success: true,
             message: "Data successfully retrieved",
@@ -327,7 +327,7 @@ export const userDetails = (user_id: string) => {
 * @param   res
 */
 export const deleteUser = (req: Request, res: Response) => {
-    User.findByIdAndUpdate(req.params.id, { activated: false, isDeleted: true }, function (err: any, ids: any) {
+    User.findByIdAndUpdate(req.params.id, { activated: false, isDeleted: true }, {}, function (err: any, ids: any) {
         return res.status(StatusCodes.OK).json({
             success: true,
             message: "User account successfully deleted"

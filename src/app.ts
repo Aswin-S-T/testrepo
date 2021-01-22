@@ -1,7 +1,10 @@
 import express from 'express';
 import logger from 'morgan';
 import helmet from 'helmet';
-import { logger as Logger, calculateHourlyAqi } from '@utils';
+import {
+    logger as Logger, calculateHourlyAqi,
+    resetAllLimits, resetFrequency, socketConnection
+} from '@utils';
 import { Request, Response } from 'express';
 import cors from 'cors';
 import BaseRouter from './routes';
@@ -11,7 +14,6 @@ import fs from 'fs';
 const cert = fs.readFileSync('./src/cert/cert.pem');
 const key = fs.readFileSync('./src/cert/key.pem');
 import https from 'https';
-import { resetAllLimits, resetFrequency, socketConnection } from '@utils';
 import cron from 'node-cron';
 
 // Init express

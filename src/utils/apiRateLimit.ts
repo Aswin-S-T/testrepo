@@ -43,7 +43,7 @@ const validateApiKey = (apikey: any) => {
                 let freq = key.frequency - 1;
                 if (current <= key.limit) {
                     if (key.frequency > 0) {
-                        ApiKey.findOneAndUpdate({ apiKey: apikey, isDeleted: false }, { currentLimit: current, frequency: freq }, function (err: any, data: any) {
+                        ApiKey.findOneAndUpdate({ apiKey: apikey, isDeleted: false }, { currentLimit: current, frequency: freq }, {}, function (err: any, data: any) {
 
                             if (err) {
                                 console.log(err)
@@ -74,16 +74,16 @@ const validateApiKey = (apikey: any) => {
 }
 
 export const resetAllLimits = function () {
-        ApiKey.updateMany({ isDeleted: false }, { currentLimit: 0 }, function (err: any, data: any) {
-            if (err)
-                console.log(err);
-        })
+    ApiKey.updateMany({ isDeleted: false }, { currentLimit: 0 }, {}, function (err: any, data: any) {
+        if (err)
+            console.log(err);
+    })
 }
 
 export const resetFrequency = function () {
 
     setInterval(() => {
-        ApiKey.updateMany({ isDeleted: false }, { frequency: 10 }, function (err: any, data: any) {
+        ApiKey.updateMany({ isDeleted: false }, { frequency: 10 }, {}, function (err: any, data: any) {
             if (err)
                 console.log(err);
         })

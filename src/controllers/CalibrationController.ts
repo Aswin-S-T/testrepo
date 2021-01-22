@@ -111,7 +111,7 @@ export const listCalibCert = (req: Request, res: Response) => {
  */
 
 export const deleteCalibCert = (req: Request, res: Response) => {
-    Calibration.findByIdAndUpdate(req.params.id, { isDeleted: true }, function (err: any, data: any) {
+    Calibration.findByIdAndUpdate(req.params.id, { isDeleted: true }, {}, function (err: any, data: any) {
         if (err) {
             console.log(err);
             return res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({

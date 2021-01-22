@@ -144,7 +144,7 @@ export const deleteSensorType = async (req: Request, res: Response) => {
                 message: "Sensor type in use! please remove from device"
             });
         } else {
-            SensorTypes.findByIdAndUpdate(req.params.id, { isDeleted: true }, function (err: any, sensorType: any) {
+            SensorTypes.findByIdAndUpdate(req.params.id, { isDeleted: true }, {}, function (err: any, sensorType: any) {
                 if (err) { }
                 return res.status(StatusCodes.OK).json({
                     success: true,
@@ -327,7 +327,7 @@ export const deleteSensorSpec = async (req: Request, res: Response) => {
                 message: "Sensor Spec in use! please remove from sensor type"
             });
         } else {
-            SensorParameters.findByIdAndUpdate(req.params.id, { isDeleted: true }, function (err: any, sensorType: any) {
+            SensorParameters.findByIdAndUpdate(req.params.id, { isDeleted: true }, {}, function (err: any, sensorType: any) {
                 if (err) { }
                 return res.status(StatusCodes.OK).json({
                     success: true,
@@ -353,7 +353,7 @@ export const getSensorSpecDetails = async (req: Request, res: Response) => {
  * @param
  */
 export const listSensorSpecIds = async (req: Request, res: Response) => {
-    SensorParameters.find({ isDeleted: false }, { _id: 1, displayName: 1 }, function (err: any, ids: any) {
+    SensorParameters.find({ isDeleted: false }, { _id: 1, displayName: 1 }, {}, function (err: any, ids: any) {
         return res.status(StatusCodes.OK).json({
             success: true,
             message: "Data successfully retrieved",
@@ -368,7 +368,7 @@ export const listSensorSpecIds = async (req: Request, res: Response) => {
  * @param
  */
 export const listSensorTypeIds = async (req: Request, res: Response) => {
-    SensorTypes.find({ isDeleted: false }, { _id: 1, name: 1 }, function (err: any, ids: any) {
+    SensorTypes.find({ isDeleted: false }, { _id: 1, name: 1 }, {}, function (err: any, ids: any) {
         return res.status(StatusCodes.OK).json({
             success: true,
             message: "Data successfully retrieved",
