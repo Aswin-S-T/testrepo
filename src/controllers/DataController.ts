@@ -177,8 +177,12 @@ const parseInComingData = async (deviceDeatails: any, sensorData: any, isAqi: bo
         // to do raw aqi calculation
         if (isAqi) {
             const rawAqi: any = findAQIFromLiveData(processedData);
-            processedData.rawAQI = Number(rawAqi.AQI.toFixed(3));
-            processedData.prominentPollutant = rawAqi.prominentPollutant;
+            if(rawAqi == -1){
+            }else{
+                processedData.rawAQI = Number(rawAqi.AQI.toFixed(3));
+                processedData.prominentPollutant = rawAqi.prominentPollutant;
+            }
+            
         }
 
         const sensorDataModel = new SensorData({
