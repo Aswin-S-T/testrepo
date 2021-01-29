@@ -114,7 +114,7 @@ export const processDeviceData = async (req: Request, res: Response) => {
         return res.status(StatusCodes.UNPROCESSABLE_ENTITY).json({ "success": false, "errors": errors.array({ onlyFirstError: true }) });
     }
     const { deviceId, data } = req.body;
-    console.log(data);
+    
     const deviceDeatails = await deviceDetails({ "deviceId": deviceId });
     if (deviceDeatails) {
         let sensorData = {};
