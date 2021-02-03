@@ -43,6 +43,9 @@ export const dashboardStatistics = async (req: Request, res: Response) => {
             const aqiParams = ['PM2p5', 'PM10', 'CO', 'NO2', 'SO2', 'O3'];
             aqiParams.forEach(param => {
                 const paramIndex = device.paramDefinitions.findIndex((e: { paramName: string; }) => { return e.paramName === param })
+                if (response.pollutants[param] === 0) {
+                    response.pollutants[param] == '0'
+                }
                 if (paramIndex == -1) {
                     delete response.pollutants[param]
                 }
