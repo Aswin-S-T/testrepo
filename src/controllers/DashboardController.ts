@@ -40,6 +40,13 @@ export const dashboardStatistics = async (req: Request, res: Response) => {
                 UV: deviceLastData.data.UV,
                 rain: deviceLastData.data.rain
             }
+            const aqiParams = ['PM2p5', 'PM10', 'CO', 'NO2', 'SO2', 'O3'];
+            aqiParams.forEach(param => {
+                const paramIndex = device.paramDefinitions.findIndex((e: { paramName: string; }) => { return e.paramName === param })
+                if (paramIndex == -1) {
+                    delete response.pollutants[param]
+                }
+            });
         }
         response.device_details = {
             _id: device._id,
