@@ -32,7 +32,15 @@ export const dashboardStatistics = async (req: Request, res: Response) => {
                 NO2: deviceLastData.data.NO2,
                 SO2: deviceLastData.data.SO2,
                 O3: deviceLastData.data.O3,
-                prominentPollutant: deviceLastData.prominentPollutant
+                prominentPollutant: deviceLastData.prominentPollutant,
+                display: {
+                    PM2p5: true,
+                    PM10: true,
+                    CO: true,
+                    NO2: true,
+                    SO2: true,
+                    O3: true
+                }
             }
             response.weather = {
                 temperature: deviceLastData.data.temperature,
@@ -40,6 +48,13 @@ export const dashboardStatistics = async (req: Request, res: Response) => {
                 UV: deviceLastData.data.UV,
                 rain: deviceLastData.data.rain
             }
+            const aqiParams = ['PM2p5', 'PM10', 'CO', 'NO2', 'SO2', 'O3'];
+            aqiParams.forEach(param => {
+                const paramIndex = device.paramDefinitions.findIndex((e: { paramName: string; }) => { return e.paramName === param })
+                if (paramIndex == -1) {
+                    response.pollutants.display[param] = false;
+                }
+            });
         }
         response.device_details = {
             _id: device._id,

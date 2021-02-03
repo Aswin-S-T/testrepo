@@ -114,6 +114,7 @@ export const processDeviceData = async (req: Request, res: Response) => {
         return res.status(StatusCodes.UNPROCESSABLE_ENTITY).json({ "success": false, "errors": errors.array({ onlyFirstError: true }) });
     }
     const { deviceId, data } = req.body;
+    
     const deviceDeatails = await deviceDetails({ "deviceId": deviceId });
     if (deviceDeatails) {
         let sensorData = {};
@@ -177,8 +178,12 @@ const parseInComingData = async (deviceDeatails: any, sensorData: any, isAqi: bo
         // to do raw aqi calculation
         if (isAqi) {
             const rawAqi: any = findAQIFromLiveData(processedData);
-            processedData.rawAQI = Number(rawAqi.AQI.toFixed(3));
-            processedData.prominentPollutant = rawAqi.prominentPollutant;
+            if(rawAqi == -1){
+            }else{
+                processedData.rawAQI = Number(rawAqi.AQI.toFixed(3));
+                processedData.prominentPollutant = rawAqi.prominentPollutant;
+            }
+            
         }
 
         const sensorDataModel = new SensorData({
