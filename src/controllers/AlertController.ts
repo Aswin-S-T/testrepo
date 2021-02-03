@@ -213,7 +213,7 @@ export const getActiveAlarms = async (req: Request, res: Response) => {
 }
 
 /**
- * Active alarms - Clear
+ * Alert platform update
  * @method alertPlatformUpdate
  * @param
  */
@@ -327,6 +327,25 @@ export const getAlarmHistory = async (req: Request, res: Response) => {
 export const clearAllAlerts = async (req: Request, res: Response) => {
 
     Alert.updateMany({ status: "Active" }, { status: "Inactive" }, {}, function (err: any, alert: any) {
+        if (err) {
+            return res.status(StatusCodes.BAD_REQUEST).json({
+                status: "BAD REQUEST",
+                message: "Some Error Occured",
+                error: err
+            });
+        }
+        return res.status(StatusCodes.OK).json({
+            status: "success",
+            message: "Successfully cleared alarms",
+            data: {
+                alert_status: alert,
+            }
+        });
+    })
+}
+export const clearAllAlertHistory = async (req: Request, res: Response) => {
+
+    Alert.updateMany({ status: "Inactive" }, { status: "Cleared" }, {}, function (err: any, alert: any) {
         if (err) {
             return res.status(StatusCodes.BAD_REQUEST).json({
                 status: "BAD REQUEST",

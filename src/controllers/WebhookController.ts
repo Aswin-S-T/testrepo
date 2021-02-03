@@ -58,7 +58,12 @@ export const addWebhook = async (req: Request, res: Response) => {
 
 export const deleteWebhook = (req: Request, res: Response) => {
     Webhook.findByIdAndUpdate(req.params.id, { isDeleted: true }, { new: true }, function (err: any, data: any) {
-        if (err) { }
+        if (err) {
+            return res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({
+                success: false,
+                message: "Error"
+            })
+        }
         return res.status(StatusCodes.OK).json({
             success: true,
             message: "Successfully deleted webhook"

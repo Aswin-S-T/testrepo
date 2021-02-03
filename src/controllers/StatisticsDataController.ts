@@ -108,14 +108,19 @@ export const getStatistics = async(req: Request, res: Response) => {
                 response.pagination = await getPagination(data[0].metadata[0].total, parseInt(pageSkip), parseInt(pageLimit))
             }
             response.list = data[0].data;
-            // console.log("RES", response.list[0]);
+            // console.log("RES", data[0]);
         }
-
-        return res.status(StatusCodes.OK).json({
-            success: true,
-            message: "Successfully retrived data",
-            statistics: response.list,
-            pagination: response.pagination
-        });
+        if(!err){
+            return res.status(StatusCodes.OK).json({
+                success: true,
+                message: "Successfully retrived data",
+                statistics: response.list,
+                pagination: response.pagination
+            });
+        }
+        if(err){
+            console.log(err)
+        }
+        
     })    
 }

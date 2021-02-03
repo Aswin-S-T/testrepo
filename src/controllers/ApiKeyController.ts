@@ -129,7 +129,12 @@ export const getApiKeyDetails = (req: Request, res: Response) => {
  */
 export const deleteApiKey = (req: Request, res: Response) => {
     ApiKey.findByIdAndUpdate(req.params.id, { isDeleted: true }, { new: true }, function (err: any, api: any) {
-        if (err) { }
+        if (err) {
+            return res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({
+                success: false,
+                message: "Error"
+            })
+        }
         return res.status(StatusCodes.OK).json({
             success: true,
             message: "Successfully deleted api key"

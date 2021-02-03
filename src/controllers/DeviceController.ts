@@ -134,7 +134,6 @@ export const listDevice = async (req: Request, res: Response) => {
             ],
         })
     }
-
     const dataSkip = parseInt(queryParams.skip) || 0;
     const dataLimit = parseInt(queryParams.limit) || 25;
     let pipeline = [
@@ -158,6 +157,7 @@ export const listDevice = async (req: Request, res: Response) => {
             if (data[0].metadata[0]) {
                 response.pagination = await getPagination(data[0].metadata[0].total, dataSkip, dataLimit)
             }
+            // console.log("DEVICES", data[0].data)
             response.device_list = data[0].data
         }
 
