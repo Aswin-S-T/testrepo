@@ -16,7 +16,16 @@ export const dashboardStatistics = async (req: Request, res: Response) => {
     }
     const response: any = {
         aqi: -1,
-        pollutants: {},
+        pollutants: {
+            display: {
+                PM2p5: true,
+                PM10: true,
+                CO: true,
+                NO2: true,
+                SO2: true,
+                O3: true
+            }
+        },
         weather: {},
         device_details: {}
     }
@@ -25,23 +34,14 @@ export const dashboardStatistics = async (req: Request, res: Response) => {
         const deviceLastData: any = await getDeviceLastHourAQI(req.params.deviceId);
         if (deviceLastData) {
             response.aqi = Math.round(deviceLastData.aqi)
-            response.pollutants = {
-                PM2p5: deviceLastData.data.PM2p5,
-                PM10: deviceLastData.data.PM10,
-                CO: deviceLastData.data.CO,
-                NO2: deviceLastData.data.NO2,
-                SO2: deviceLastData.data.SO2,
-                O3: deviceLastData.data.O3,
-                prominentPollutant: deviceLastData.prominentPollutant,
-                display: {
-                    PM2p5: true,
-                    PM10: true,
-                    CO: true,
-                    NO2: true,
-                    SO2: true,
-                    O3: true
-                }
-            }
+            response.pollutants.PM2p5 = deviceLastData.data.PM2p5
+            response.pollutants.PM10 = deviceLastData.data.PM10
+            response.pollutants.CO = deviceLastData.data.CO
+            response.pollutants.NO2 = deviceLastData.data.NO2
+            response.pollutants.SO2 = deviceLastData.data.SO2
+            response.pollutants.O3 = deviceLastData.data.O3
+            response.pollutants.prominentPollutant = deviceLastData.data.prominentPollutant
+
             response.weather = {
                 temperature: deviceLastData.data.temperature,
                 humidity: deviceLastData.data.humidity,
