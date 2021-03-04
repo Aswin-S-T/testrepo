@@ -17,6 +17,12 @@ export const addDevice = async (req: Request, res: Response) => {
         return res.status(StatusCodes.UNPROCESSABLE_ENTITY).json({ success: false, "errors": errors.array({ onlyFirstError: true }) });
     }
     const payload = { ...req.body };
+    if(!payload.device_organization){
+        return res.status(StatusCodes.BAD_REQUEST).json({
+            success: false,
+            message: "NO ORGANIZATION"
+        });
+    }
     const sensorSpec: any = await sensorTypeDetails(payload.device_sub_type);
     const paramDefinitions = [];
     for (let index = 0; index < sensorSpec.specs.length; index++) {
@@ -71,11 +77,20 @@ export const addDevice = async (req: Request, res: Response) => {
     })
 
     device.save(function (err: any, data: any) {
-        return res.status(StatusCodes.OK).json({
-            success: true,
-            message: "Device successfully added",
-            device_details: data
-        });
+        if(err){
+            return res.status(StatusCodes.BAD_REQUEST).json({
+                status: "BAD REQUEST",
+                message: "",
+                error: err
+            });
+        }
+        else{
+            return res.status(StatusCodes.OK).json({
+                success: true,
+                message: "Device successfully added",
+                device_details: data
+            });
+        }
     })
 
 }

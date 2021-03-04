@@ -17,24 +17,21 @@ import { postSensorDatatoUrls } from './WebhookController';
 const processCalibration = (val: any, paramDefinitions: any) => {
     if (val != undefined) {
         if (paramDefinitions.calibration != null) {
-            if (paramDefinitions.calibration.type == "curve") {
+            for (let i = 0; i < paramDefinitions.calibration.data.length; i++) {
+                const calibItem = paramDefinitions.calibration.data[i];
+                if (calibItem.offset == undefined) {
+                    calibItem.offset = 0;
+                }
 
-                for (let i = 0; i < paramDefinitions.calibration.data.length; i++) {
-                    const calibItem = paramDefinitions.calibration.data[i];
-                    if (calibItem.offset == undefined) {
-                        calibItem.offset = 0;
+                if (val >= calibItem.min && val <= calibItem.max) {
+                    if (paramDefinitions.calibration.type == null || paramDefinitions.calibration.type == "translate") {
+                        val = val + calibItem.offset;
                     }
-
-                    if (val >= calibItem.min && val <= calibItem.max) {
-                        if (calibItem.funct == null || calibItem.funct == "translate") {
-                            val = val + calibItem.offset;
-                        }
-                        else if (calibItem.funct == "scale") {
-                            val = val * calibItem.offset;
-                        }
-                        break;
-
+                    else if (paramDefinitions.calibration.type == "scale") {
+                        val = val * calibItem.offset;
                     }
+                    break;
+
                 }
             }
         }
@@ -114,7 +111,7 @@ export const processDeviceData = async (req: Request, res: Response) => {
         return res.status(StatusCodes.UNPROCESSABLE_ENTITY).json({ "success": false, "errors": errors.array({ onlyFirstError: true }) });
     }
     const { deviceId, data } = req.body;
-    
+
     const deviceDeatails = await deviceDetails({ "deviceId": deviceId });
     if (deviceDeatails) {
         let sensorData = {};
@@ -126,7 +123,7 @@ export const processDeviceData = async (req: Request, res: Response) => {
                 if (process.env.SINGLET_POST === "false") {
                     sensorData = getHashedConversion(data)
                 } else {
-                    sensorData = getAqmsConversion(data)
+                    sensorData = getAqmsConversion(data);
                 }
                 break;
             case 'SOIL':
@@ -178,12 +175,12 @@ const parseInComingData = async (deviceDeatails: any, sensorData: any, isAqi: bo
         // to do raw aqi calculation
         if (isAqi) {
             const rawAqi: any = findAQIFromLiveData(processedData);
-            if(rawAqi == -1){
-            }else{
+            if (rawAqi == -1) {
+            } else {
                 processedData.rawAQI = Number(rawAqi.AQI.toFixed(3));
                 processedData.prominentPollutant = rawAqi.prominentPollutant;
             }
-            
+
         }
 
         const sensorDataModel = new SensorData({
