@@ -20,17 +20,33 @@ module.exports = shipit => {
             servers: 'user@localhost',
             buildCmd: 'start:dev',
             forntendBuildCmd: 'build:dev',
-            pm2AppNames: 'envitusV2-dev'
+            pm2AppNames: process.env.PM2_APP_NAME
         },
         stage: {
             servers: 'user@localhost',
             buildCmd: 'start:stage',
             forntendBuildCmd: 'build:staging',
-            pm2AppNames: 'envitusV2-stage'
+            pm2AppNames: process.env.PM2_APP_NAME
         }
     });
 
     shipit.blTask('startDev', async () => {
+        return shipit.local([
+            'rm -rf ' + shipit.config.backendAppPath + '/src/public/',
+            'cd ' + shipit.config.frontendAppPath,
+            'rm -rf build',
+            'yarn install',
+            'yarn run ' + shipit.config.forntendBuildCmd,
+            'mv  build/  ' + shipit.config.backendAppPath + '/src/public/',
+            'cd '+ shipit.config.backendAppPath ,
+            'yarn install',
+            'pm2 stop ' + shipit.config.pm2AppNames + ' || true',
+            'pm2 delete ' + shipit.config.pm2AppNames + ' || true',
+            'yarn run ' + shipit.config.buildCmd
+        ].join('&&'));
+    });
+
+    shipit.blTask('startES', async () => {
         return shipit.local([
             'rm -rf ' + shipit.config.backendAppPath + '/src/public/',
             'cd ' + shipit.config.frontendAppPath,
