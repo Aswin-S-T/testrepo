@@ -27,6 +27,7 @@ let UserSchema = new Schema({
     activated: { type: Boolean, default: true },
     role: { type: String, enum: ['Admin', 'Supervisor', 'Operator', 'Super Admin', 'Root'], default: 'Operator' },
     userName: { type: String, required: true },
+    deviceLimit: { type: String },
     createdBy: { type: mongoose.Types.ObjectId },
     organization: { type: Array, default: [] },
     logs: { type: Array, default: [] },

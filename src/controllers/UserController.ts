@@ -139,9 +139,10 @@ export const updateUserDetails = async (req: Request, res: Response) => {
     if (!errors.isEmpty()) {
         return res.status(StatusCodes.UNPROCESSABLE_ENTITY).json({ success: false, "errors": errors.array({ onlyFirstError: true }) });
     }
-    const { name } = req.body;
+    const { name, limit } = req.body;
     const update: any = {
-        name: name
+        name: name,
+        deviceLimit: limit
     }
     User.findByIdAndUpdate(req.body.user_id, update, { new: true }, function (err: any, data: any) {
         if (err) {

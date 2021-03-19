@@ -5,6 +5,7 @@ import { StatusCodes } from 'http-status-codes';
 import { Types } from 'mongoose';
 import { Devices } from "../models/Devices";
 import { userDetails, sensorTypeDetails } from '@controllers';
+import { User } from 'src/models/Users';
 
 /**
  * Add new device
@@ -17,10 +18,21 @@ export const addDevice = async (req: Request, res: Response) => {
         return res.status(StatusCodes.UNPROCESSABLE_ENTITY).json({ success: false, "errors": errors.array({ onlyFirstError: true }) });
     }
     const payload = { ...req.body };
-    if(!payload.device_organization){
+    if (!payload.device_organization) {
         return res.status(StatusCodes.BAD_REQUEST).json({
             success: false,
             message: "NO ORGANIZATION"
+        });
+    }
+    const deviceAdded: any = await deviceCount();
+    let deviceLimit: any = await superAdminLimit();
+    if(deviceLimit == undefined){
+        deviceLimit = '25';
+    }
+    if(deviceAdded >= deviceLimit){
+        return res.status(StatusCodes.BAD_REQUEST).json({
+            success: false,
+            message: "DEVICE LIMIT REACHED"
         });
     }
     const sensorSpec: any = await sensorTypeDetails(payload.device_sub_type);
@@ -77,14 +89,14 @@ export const addDevice = async (req: Request, res: Response) => {
     })
 
     device.save(function (err: any, data: any) {
-        if(err){
+        if (err) {
             return res.status(StatusCodes.BAD_REQUEST).json({
                 status: "BAD REQUEST",
                 message: "",
                 error: err
             });
         }
-        else{
+        else {
             return res.status(StatusCodes.OK).json({
                 success: true,
                 message: "Device successfully added",
@@ -160,7 +172,7 @@ export const listDevice = async (req: Request, res: Response) => {
             }
         }
     ]
-
+    
     Devices.aggregate(pipeline, async function (err: any, data: any) {
         const response: any = {
             success: true,
@@ -476,5 +488,29 @@ export const restoreDevice = (req: Request, res: Response) => {
             message: "Device successfully restored",
             device_details: data
         });
+    })
+}
+
+const deviceCount = () => {
+    return new Promise((resolve, reject) => {
+        Devices.count({ isDeleted: false, activated: true })
+            .then((device: any) => {
+                resolve(device)
+            })
+            .catch(() => {
+                reject(null);
+            });
+    })
+}
+
+const superAdminLimit = () => {
+    return new Promise((resolve, reject) => {
+        User.find({ role: 'Super Admin', isDeleted: false, activated: true })
+            .then((user: any) => {
+                resolve(user[0].deviceLimit)
+            })
+            .catch(() => {
+                reject(null);
+            });
     })
 }
