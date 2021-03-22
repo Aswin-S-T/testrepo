@@ -4,6 +4,9 @@ import { User } from "../models/Users";
 import bcrypt from 'bcryptjs';
 import { validationResult } from 'express-validator';
 import { getPagination } from '@utils';
+import { DeviceLimit } from 'src/models/DeviceLimit';
+import mongoose from 'src/database/db';
+import { Types } from 'mongoose';
 
 /**
  * List -  User
@@ -139,10 +142,33 @@ export const updateUserDetails = async (req: Request, res: Response) => {
     if (!errors.isEmpty()) {
         return res.status(StatusCodes.UNPROCESSABLE_ENTITY).json({ success: false, "errors": errors.array({ onlyFirstError: true }) });
     }
-    const { name, limit } = req.body;
+    if (req.body.limit) {
+        mongoose.connection.db.listCollections({ name: 'device_limits' })
+            .next(function (err: any, collinfo: any) {
+                if (collinfo) {
+                    DeviceLimit.update({}, { deviceLimit: req.body.limit }, function (err: any, data: any) {
+                        if (err) {
+                            console.log(err)
+                        }
+                        else {
+                            console.log("Device Limit Updated")
+                        }
+                    })
+                }
+                else {
+                    const limit = new DeviceLimit({
+                        deviceLimit: req.body.limit,
+                        createdBy: Types.ObjectId(req.body.user_id)
+                    })
+                    limit.save(function (err: any, data: any) {
+                        console.log("CREATED")
+                    })
+                }
+            });
+    }
+    const { name } = req.body;
     const update: any = {
         name: name,
-        deviceLimit: limit
     }
     User.findByIdAndUpdate(req.body.user_id, update, { new: true }, function (err: any, data: any) {
         if (err) {
@@ -167,14 +193,38 @@ export const updateUserDetails = async (req: Request, res: Response) => {
 * @param   req
 * @param   res
 */
-export const getUserDetails = (req: Request, res: Response) => {
+export const getUserDetails = async (req: Request, res: Response) => {
+    const limit = await getDeviceLimit();
     User.findById(req.body.user_id, function (err: any, data: any) {
         return res.status(StatusCodes.OK).json({
             success: true,
             message: "Data successfully retrived",
-            user_details: data
+            user_details: data,
+            device_limit: limit
         });
     })
+}
+
+/**
+* Get -  Device Limit
+*
+* @method  getDeviceLimit
+* 
+* @param   req
+* @param   res
+*/
+export const getDeviceLimit = () => {
+    return new Promise((resolve, reject) => {
+        DeviceLimit.findOne({}, function (err: any, data: any) {
+            if (data) {
+                resolve(data.deviceLimit)
+            }
+            else{
+                resolve('25')
+            }
+        })
+    })
+
 }
 
 /**

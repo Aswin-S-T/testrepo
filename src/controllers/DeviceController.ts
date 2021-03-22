@@ -6,6 +6,7 @@ import { Types } from 'mongoose';
 import { Devices } from "../models/Devices";
 import { userDetails, sensorTypeDetails } from '@controllers';
 import { User } from 'src/models/Users';
+import { DeviceLimit } from 'src/models/DeviceLimit';
 
 /**
  * Add new device
@@ -505,9 +506,9 @@ const deviceCount = () => {
 
 const superAdminLimit = () => {
     return new Promise((resolve, reject) => {
-        User.find({ role: 'Super Admin', isDeleted: false, activated: true })
-            .then((user: any) => {
-                resolve(user[0].deviceLimit)
+        DeviceLimit.find({ activated: true })
+            .then((limit: any) => {
+                resolve(limit[0].deviceLimit)
             })
             .catch(() => {
                 reject(null);
