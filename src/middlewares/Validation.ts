@@ -1,4 +1,4 @@
-import { check } from 'express-validator';
+import { body, check, query } from 'express-validator';
 
 export const validate = {
     login: [
@@ -29,5 +29,16 @@ export const validate = {
         check('key', "Secret key doesn't exists").exists(),
         check('sensor_data', "Sensor data doesn't exists").exists(),
         check('alerts', "Alerts doesn't exists").exists(),
+    ],
+    addPreference: [
+        check('type', "Preference type doesn't exists").exists(),
+        body('type', 'Preference type invalid.').isIn(['device:limit', 'email:config',
+            'sms:config', 'report:schedule']),
+        check('preference', "Preference values doesn't exists").exists(),
+    ],
+    getPreference: [
+        query('type', "Preference type doesn't exists").exists(),
+        query('type', 'Invalid preference type').optional().isIn(['device:limit', 'email:config',
+            'sms:config', 'report:schedule'])
     ]
 }
