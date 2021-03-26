@@ -1,6 +1,7 @@
 import { Router } from 'express';
 import { validate } from '../middlewares/Validation';
 import { auth } from '../middlewares/Auth';
+import { dataAuth } from '../middlewares/DataAuth';
 import {
     listDevice, addDevice, updateDevice,
     deleteDevice, getDeviceDetails,
@@ -23,9 +24,9 @@ router.delete('/:id', auth('Admin', 'Super Admin'), deleteDevice);
 router.delete('/permanently/:id', auth('Admin', 'Super Admin'), deleteDevicePermanently);
 router.put('/restore/:id', auth('Admin', 'Super Admin'), restoreDevice);
 
-router.post('/sensor/livedata', processDeviceData);
-router.get('/sensor/livedata',auth('Admin', 'Supervisor', 'Operator', 'Super Admin'), getLiveData);
-router.get('/sensor/statistics',auth('Admin', 'Supervisor', 'Operator', 'Super Admin'), getStatistics);
+router.post('/sensor/livedata', dataAuth(), processDeviceData);
+router.get('/sensor/livedata', auth('Admin', 'Supervisor', 'Operator', 'Super Admin'), getLiveData);
+router.get('/sensor/statistics', auth('Admin', 'Supervisor', 'Operator', 'Super Admin'), getStatistics);
 router.get('/sensor/rawdata', getRawData);
 
 export default router;
