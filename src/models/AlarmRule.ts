@@ -12,6 +12,7 @@ let AlarmRuleSchema = new Schema({
     description: { type: String, required: true },
     clearingMode: { type: String, required: true },
     timeInterval: { type: String },
+    date: { type: String},
     deviceIDs: { type: Array},
     deviceIds: { type: Array},
     info: { type: Object },

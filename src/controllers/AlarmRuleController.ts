@@ -108,12 +108,13 @@ export const addAlarmRule = async (req: Request, res: Response) => {
         deviceIds.push(deviceId);
     }
 
-    const { rule_name, description, clearing_mode, time_interval, info, devices } = req.body;
+    const { rule_name, description, clearing_mode, time_interval, date, info, devices } = req.body;
     const alarm = new AlarmRule({
         ruleName: rule_name,
         description: description,
         clearingMode: clearing_mode,
         timeInterval: time_interval,
+        date: date,
         info: info,
         createdBy: mongoose.Types.ObjectId(req.body.user_id),
         deviceIDs: devices.map((x: string | number | undefined) => mongoose.Types.ObjectId(x)),

@@ -167,7 +167,6 @@ const parseInComingData = async (deviceDeatails: any, sensorData: any, isAqi: bo
     if (rawDataDetails) {
         const processedData: any = await parseData(sensorData, deviceDeatails, deviceDeatails.paramDefinitions);
         processedData.receivedAt = receivedAt
-
         //Generate Alarms
         generateAlerts(deviceDeatails.deviceId, processedData);
         postSensorDatatoUrls(processedData);
