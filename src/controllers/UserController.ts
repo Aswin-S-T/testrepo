@@ -146,7 +146,7 @@ export const updateUserDetails = async (req: Request, res: Response) => {
         mongoose.connection.db.listCollections({ name: 'device_limits' })
             .next(function (err: any, collinfo: any) {
                 if (collinfo) {
-                    DeviceLimit.update({}, { deviceLimit: req.body.limit }, function (err: any, data: any) {
+                    DeviceLimit.updateMany({}, { deviceLimit: req.body.limit }, { new: true }, function (err: any, data: any) {
                         if (err) {
                             console.log(err)
                         }
@@ -219,7 +219,7 @@ export const getDeviceLimit = () => {
             if (data) {
                 resolve(data.deviceLimit)
             }
-            else{
+            else {
                 resolve('25')
             }
         })

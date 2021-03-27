@@ -32,13 +32,13 @@ module.exports = shipit => {
 
     shipit.blTask('startDev', async () => {
         return shipit.local([
-            'rm -rf ' + shipit.config.backendAppPath + '/src/public/',
             'cd ' + shipit.config.frontendAppPath,
             'rm -rf build',
             'yarn install',
             'yarn run ' + shipit.config.forntendBuildCmd,
+            'rm -rf ' + shipit.config.backendAppPath + '/src/public/',
             'mv  build/  ' + shipit.config.backendAppPath + '/src/public/',
-            'cd '+ shipit.config.backendAppPath ,
+            'cd ' + shipit.config.backendAppPath,
             'yarn install',
             'pm2 stop ' + shipit.config.pm2AppNames + ' || true',
             'pm2 delete ' + shipit.config.pm2AppNames + ' || true',
@@ -48,13 +48,13 @@ module.exports = shipit => {
 
     shipit.blTask('startES', async () => {
         return shipit.local([
-            'rm -rf ' + shipit.config.backendAppPath + '/src/public/',
             'cd ' + shipit.config.frontendAppPath,
             'rm -rf build',
             'yarn install',
             'yarn run ' + shipit.config.forntendBuildCmd,
+            'rm -rf ' + shipit.config.backendAppPath + '/src/public/',
             'mv  build/  ' + shipit.config.backendAppPath + '/src/public/',
-            'cd '+ shipit.config.backendAppPath ,
+            'cd ' + shipit.config.backendAppPath,
             'yarn install',
             'pm2 stop ' + shipit.config.pm2AppNames + ' || true',
             'pm2 delete ' + shipit.config.pm2AppNames + ' || true',
@@ -62,16 +62,16 @@ module.exports = shipit => {
         ].join('&&'));
     });
 
-    shipit.on('fetched',function() {
+    shipit.on('fetched', function () {
         console.log(shipit.environment)
-        if(shipit.environment === 'dev_deploy') {
+        if (shipit.environment === 'dev_deploy') {
             shipit.start("buildLocalTask");
         } else {
             shipit.start("buildTask");
         }
     })
 
-    shipit.on('deployed',function() {
+    shipit.on('deployed', function () {
         shipit.start("remoteUpTask");
     })
 }

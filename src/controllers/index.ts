@@ -12,4 +12,5 @@ export * from './AlertController';
 export * from './DashboardController';
 export * from './AlarmRuleController';
 export * from './SensorSpecController';
-export * from './DashboardController'
+export * from './DashboardController';
+export * from './PreferenceController';
