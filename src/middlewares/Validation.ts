@@ -39,6 +39,6 @@ export const validate = {
     getPreference: [
         query('type', "Preference type doesn't exists").exists(),
         query('type', 'Invalid preference type').optional().isIn(['device:limit', 'email:config',
-            'sms:config', 'report:schedule'])
+            'sms:config', 'report:schedule', 'notification'])
     ]
 }

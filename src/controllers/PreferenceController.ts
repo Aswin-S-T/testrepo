@@ -42,7 +42,7 @@ export const addPreferences = async (req: Request, res: Response) => {
         return res.status(StatusCodes.OK).json({
             success: true,
             message: "Preference successfully added",
-            preference_details: preferenceModel
+            preference: preferenceModel
         });
     })
 }
@@ -57,4 +57,33 @@ export const updatePreferences = async (req: Request, res: Response) => {
     if (!errors.isEmpty()) {
         return res.status(StatusCodes.UNPROCESSABLE_ENTITY).json({ success: false, "errors": errors.array({ onlyFirstError: true }) });
     }
+    let update: any = {}
+    const { email_notify, sms_notify, device_limit, is_schedule, schedule_frequency, email } = req.body
+    if (email_notify != undefined) {
+        update['data.email_notify'] = email_notify
+    }
+    if (sms_notify != undefined) {
+        update['data.sms_notify'] = sms_notify
+    }
+    if (device_limit != undefined) {
+        update['data.limit'] = device_limit
+    }
+
+    if (is_schedule != undefined) {
+        update['data.is_schedule'] = is_schedule
+    }
+    if (schedule_frequency != undefined) {
+        update['data.schedule_frequency'] = schedule_frequency
+    }
+    if (email != undefined) {
+        update['data.email'] = email
+    }
+
+    Preferences.findByIdAndUpdate(req.params.id, { $set: update }, { new: true }, function (err: any, preferenceDetails: any) {
+        return res.status(StatusCodes.OK).json({
+            success: true,
+            message: "Preference successfully updated",
+            preference: preferenceDetails
+        });
+    })
 }
