@@ -5,8 +5,7 @@ import { StatusCodes } from 'http-status-codes';
 import { Types } from 'mongoose';
 import { Devices } from "../models/Devices";
 import { userDetails, sensorTypeDetails } from '@controllers';
-import { User } from 'src/models/Users';
-import { DeviceLimit } from 'src/models/DeviceLimit';
+import { Preferences } from '../models/Preferences';
 
 /**
  * Add new device
@@ -26,11 +25,8 @@ export const addDevice = async (req: Request, res: Response) => {
         });
     }
     const deviceAdded: any = await deviceCount();
-    let deviceLimit: any = await superAdminLimit();
-    if(deviceLimit == undefined){
-        deviceLimit = '25';
-    }
-    if(deviceAdded >= deviceLimit){
+    let deviceLimit: any = await deviceLimitPreference();
+    if (deviceAdded >= deviceLimit) {
         return res.status(StatusCodes.BAD_REQUEST).json({
             success: false,
             message: "DEVICE LIMIT REACHED"
@@ -173,7 +169,7 @@ export const listDevice = async (req: Request, res: Response) => {
             }
         }
     ]
-    
+
     Devices.aggregate(pipeline, async function (err: any, data: any) {
         const response: any = {
             success: true,
@@ -492,26 +488,28 @@ export const restoreDevice = (req: Request, res: Response) => {
     })
 }
 
+/**
+ * Find device count
+ *
+ * @param
+ */
 const deviceCount = () => {
     return new Promise((resolve, reject) => {
-        Devices.count({ isDeleted: false, activated: true })
-            .then((device: any) => {
-                resolve(device)
-            })
-            .catch(() => {
-                reject(null);
-            });
+        Devices.countDocuments({ isDeleted: false, activated: true }, function (err: any, deviceCount: number) {
+            resolve(deviceCount)
+        })
     })
 }
 
-const superAdminLimit = () => {
+/**
+ * Get device limit preference
+ *
+ * @param
+ */
+const deviceLimitPreference = () => {
     return new Promise((resolve, reject) => {
-        DeviceLimit.find({ activated: true })
-            .then((limit: any) => {
-                resolve(limit[0].deviceLimit)
-            })
-            .catch(() => {
-                reject(null);
-            });
+        Preferences.findOne({ type: 'device:limit' }, function (err: any, data: any) {
+            resolve(data.data.limit)
+        })
     })
 }
