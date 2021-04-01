@@ -87,3 +87,47 @@ export const updatePreferences = async (req: Request, res: Response) => {
         });
     })
 }
+
+/**
+* Seed user data
+*
+* @method  seedPreferences
+* 
+* @param   req
+* @param   res
+*/
+export const seedPreferences = () => {
+    const preferences = [
+        {
+            "type": "device:limit",
+            "data": {
+                "limit": "25"
+            }
+        },
+        {
+            "type": "notification",
+            "data": {
+                "email_notify": false,
+                "sms_notify": false
+            }
+        },
+        {
+            "type": "report:schedule",
+            "data": {
+                "is_schedule": true,
+                "schedule_frequency": "monthly",
+                "email": "admin@boustead.com"
+            }
+        }
+    ]
+
+    for (let index = 0; index < preferences.length; index++) {
+        const element = preferences[index];
+        Preferences.findOne({ type: element.type }, function (err: any, data: any) {
+            if (!data) {
+                const preferenceModel = new Preferences(element);
+                preferenceModel.save(function (err: any, data: any) { })
+            }
+        })
+    }
+}

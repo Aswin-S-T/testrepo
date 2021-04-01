@@ -9,7 +9,7 @@ const returnFilter = (obj: any) => {
 
 let PreferencesSchema = new Schema({
     type: {
-        type: String, enum: ['device:limit', 'email:config', 'sms:config', 'report:schedule']
+        type: String, enum: ['device:limit', 'email:config', 'sms:config', 'report:schedule', 'notification']
     },
     data: { type: Object }
 }, { timestamps: true })
