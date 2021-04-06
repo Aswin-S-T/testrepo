@@ -8,7 +8,7 @@ let io: { sockets: { emit: (event: any, values: any) => void; }; } | null = null
 export const socketConnection = (server: import("http").Server | import("https").Server) => {
     io = require('socket.io')(server, {
         cors: {
-            origin: "http://localhost:3000",
+            origin: process.env.FRONT_END_APP_ADDR,
             methods: ["GET", "POST"],
             credentials: true
         }
