@@ -404,3 +404,18 @@ export const sensorTypeDetails = async (id: string) => {
         })
     })
 }
+
+/**
+ * Get sensor parameters
+ *
+ * @param
+ */
+export const getSensorParameters = async (req: Request, res: Response) => {
+    SensorParameters.find({ isDeleted: false }, { _id: 1, displayName: 1, paramName: 1 }, {}, function (err: any, parameters: any) {
+        return res.status(StatusCodes.OK).json({
+            success: true,
+            message: "Data successfully retrieved",
+            parameters: parameters || []
+        });
+    })
+}
