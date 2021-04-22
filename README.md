@@ -1,14 +1,15 @@
 # Envitus-V2
+
 This project is Node based back end app for AQMS.
 
-## Requirement ##
+## Requirement
 
 1. NodeJS >= v12.16.1
 2. MongoDB >= 4.2
 3. pm2
 4. pm2 typescript support
 
-## How to run ##
+## How to run
 
 1. Clone the repo and enter project repo.
 
@@ -16,10 +17,10 @@ This project is Node based back end app for AQMS.
 
 3. Install the dependencies
 
-    ```
-    npm install
-    npm install pm2@4.2.3 -g
-    pm2 install typescript
-    ```
+   ```
+   yarn install
+   npm install pm2@4.2.3 -g
+   pm2 install typescript
+   ```
 
-## Deployment Development ##
+## Deployment Development
