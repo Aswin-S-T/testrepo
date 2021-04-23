@@ -27,7 +27,13 @@ module.exports = shipit => {
             buildCmd: 'start:stage',
             forntendBuildCmd: 'build:staging',
             pm2AppNames: process.env.PM2_APP_NAME
-        }
+        },
+        prod: {
+            servers: 'user@localhost',
+            buildCmd: 'start:prod',
+            forntendBuildCmd: 'build:prod',
+            pm2AppNames: process.env.PM2_APP_NAME
+        },
     });
 
     shipit.blTask('startDev', async () => {
@@ -61,6 +67,21 @@ module.exports = shipit => {
             'yarn run ' + shipit.config.buildCmd
         ].join('&&'));
     });
+
+    shipit.blTask('startDocker', async () => {
+        return shipit.local([
+            'cd ' + shipit.config.frontendAppPath,
+            'yarn install',
+            'yarn run ' + shipit.config.forntendBuildCmd,
+            'cp -r build/  ' + shipit.config.backendAppPath + '/src/public/',
+            'cd ' + shipit.config.backendAppPath,
+            'docker container stop $(docker container ls -a -q --filter name=envitus) || true',
+            'docker rm $(docker container ls -a -q --filter name=envitus) || true',
+            'docker rmi $(docker images "envitus" -q | uniq) || true',
+            'docker build -t envitus . ',
+            'docker run -d --name envitus --network host envitus'
+        ].join('&&'));
+    })
 
     shipit.on('fetched', function () {
         console.log(shipit.environment)
