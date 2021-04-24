@@ -83,6 +83,17 @@ module.exports = shipit => {
         ].join('&&'));
     })
 
+    shipit.blTask('buildDockerImg', () => {
+        return shipit.local([
+            'cd ' + shipit.workspace,
+            'docker container stop $(docker container ls -a -q --filter name=envitus) || true',
+            'docker rm $(docker container ls -a -q --filter name=envitus) || true',
+            'docker image rmi $(docker images "envitus" -q | uniq) || true',
+            'docker build -t envitus . --build-arg runCommand=' + shipit.config.dockerBuildCmd,
+            'docker save envitus | gzip envitus.tar.gz'
+        ].join('&&'))
+    });
+
     shipit.on('fetched', function () {
         console.log(shipit.environment)
         if (shipit.environment === 'dev_deploy') {
