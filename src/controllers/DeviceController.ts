@@ -12,7 +12,7 @@ import { Preferences } from '../models/Preferences';
  *
  * @param
  */
-export const addDevice = async (req: Request, res: Response) => {
+export const addDevice = (req: Request, res: Response) => {
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
         return res.status(StatusCodes.UNPROCESSABLE_ENTITY).json({ success: false, "errors": errors.array({ onlyFirstError: true }) });
@@ -24,84 +24,92 @@ export const addDevice = async (req: Request, res: Response) => {
             message: "NO ORGANIZATION"
         });
     }
-    const deviceAdded: any = await deviceCount();
-    let deviceLimit: any = await deviceLimitPreference();
-    if (deviceAdded >= deviceLimit) {
-        return res.status(StatusCodes.BAD_REQUEST).json({
-            success: false,
-            message: "DEVICE LIMIT REACHED"
-        });
-    }
-    const sensorSpec: any = await sensorTypeDetails(payload.device_sub_type);
-    const paramDefinitions = [];
-    for (let index = 0; index < sensorSpec.specs.length; index++) {
-        const param = sensorSpec.specs[index];
-        const definitions = payload.paramDefinitions.find((e: any) => { return e.paramName === param.paramName });
-        param.maxRanges = definitions.maxRanges
-        if (definitions.hasOwnProperty('filterType')) {
-            param.filteringMethod = definitions['filterType'];
-            param.filteringMethodDef = {
-                "weightT0": definitions['filter']['weightT0'],
-                "weightT1": definitions['filter']['weightT1']
-            }
-        }
-        if (definitions.hasOwnProperty('calibrationType')) {
-            param.calibration = {
-                type: definitions['calibrationType'],
-                "data": [
-                    {
-                        "offset": parseInt(definitions['calibration']['offset']),
-                        "min": parseInt(definitions['calibration']['min']),
-                        "max": parseInt(definitions['calibration']['max'])
-                    }
-                ]
-            }
-        }
-        paramDefinitions.push(param)
-    }
-
-    const device = new Devices({
-        paramDefinitions: paramDefinitions,
-        deviceId: payload.device_id,
-        type: payload.device_type,
-        devFamily: payload.device_family,
-        subType: Types.ObjectId(payload.device_sub_type),
-        customerName: payload.customer_name,
-        lotNo: payload.lot_no,
-        serialNo: payload.serial_no,
-        grade: payload.device_grade,
-        deployment: payload.device_deployment,
-        location: {
-            locId: payload.location_id,
-            city: payload.city,
-            zone: payload.zone,
-            landMark: payload.land_mark,
-            latitude: payload.latitude,
-            longitude: payload.longitude,
-            building: payload.building,
-            floor: payload.floor
-        },
-        timeZone: payload.device_timezone,
-        organizationId: Types.ObjectId(payload.device_organization),
-    })
-
-    device.save(function (err: any, data: any) {
-        if (err) {
+    Devices.findOne({ deviceId: payload.device_id }, async function (err: any, data: any) {
+        if (data) {
             return res.status(StatusCodes.BAD_REQUEST).json({
-                status: "BAD REQUEST",
-                message: "",
-                error: err
+                success: false,
+                message: "Device already added"
             });
-        }
-        else {
-            return res.status(StatusCodes.OK).json({
-                success: true,
-                message: "Device successfully added",
-                device_details: data
-            });
+        } else {
+            const deviceAdded: any = await deviceCount();
+            let deviceLimit: any = await deviceLimitPreference();
+            if (deviceAdded >= deviceLimit) {
+                return res.status(StatusCodes.BAD_REQUEST).json({
+                    success: false,
+                    message: "DEVICE LIMIT REACHED"
+                });
+            }
+            const sensorSpec: any = await sensorTypeDetails(payload.device_sub_type);
+            const paramDefinitions = [];
+            for (let index = 0; index < sensorSpec.specs.length; index++) {
+                const param = sensorSpec.specs[index];
+                const definitions = payload.paramDefinitions.find((e: any) => { return e.paramName === param.paramName });
+                param.maxRanges = definitions.maxRanges
+                if (definitions.hasOwnProperty('filterType')) {
+                    param.filteringMethod = definitions['filterType'];
+                    param.filteringMethodDef = {
+                        "weightT0": definitions['filter']['weightT0'],
+                        "weightT1": definitions['filter']['weightT1']
+                    }
+                }
+                if (definitions.hasOwnProperty('calibrationType')) {
+                    param.calibration = {
+                        type: definitions['calibrationType'],
+                        "data": [
+                            {
+                                "offset": parseInt(definitions['calibration']['offset']),
+                                "min": parseInt(definitions['calibration']['min']),
+                                "max": parseInt(definitions['calibration']['max'])
+                            }
+                        ]
+                    }
+                }
+                paramDefinitions.push(param)
+            }
+
+            const device = new Devices({
+                paramDefinitions: paramDefinitions,
+                deviceId: payload.device_id,
+                type: payload.device_type,
+                devFamily: payload.device_family,
+                subType: Types.ObjectId(payload.device_sub_type),
+                customerName: payload.customer_name,
+                lotNo: payload.lot_no,
+                serialNo: payload.serial_no,
+                grade: payload.device_grade,
+                deployment: payload.device_deployment,
+                location: {
+                    locId: payload.location_id,
+                    city: payload.city,
+                    zone: payload.zone,
+                    landMark: payload.land_mark,
+                    latitude: payload.latitude,
+                    longitude: payload.longitude,
+                    building: payload.building,
+                    floor: payload.floor
+                },
+                timeZone: payload.device_timezone,
+                organizationId: Types.ObjectId(payload.device_organization),
+            })
+
+            device.save(function (err: any, data: any) {
+                if (err) {
+                    return res.status(StatusCodes.BAD_REQUEST).json({
+                        status: "BAD REQUEST",
+                        message: "",
+                        error: err
+                    });
+                }
+                else {
+                    return res.status(StatusCodes.OK).json({
+                        success: true,
+                        message: "Device successfully added",
+                        device_details: data
+                    });
+                }
+            })
         }
     })
-
 }
 
 
