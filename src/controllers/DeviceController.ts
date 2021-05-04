@@ -78,6 +78,7 @@ export const addDevice = (req: Request, res: Response) => {
                 serialNo: payload.serial_no,
                 grade: payload.device_grade,
                 deployment: payload.device_deployment,
+                activated: payload.device_status === 'enabled' ? true : false,
                 location: {
                     locId: payload.location_id,
                     city: payload.city,
@@ -258,7 +259,9 @@ export const updateDevice = async (req: Request, res: Response) => {
     payload.longitude ? update.location.longitude = payload.longitude : ''
     payload.building ? update.location.building = payload.building : ''
     payload.floor ? update.location.floor = payload.floor : ''
-
+    if (payload.device_status) {
+        payload.device_status === 'enabled' ? update.activated = true : update.activated = false
+    }
     payload.device_type ? update.type = payload.device_type : ''
     payload.device_family ? update.devFamily = payload.device_family : ''
     payload.device_sub_type ? update.subType = Types.ObjectId(payload.device_sub_type) : ''
