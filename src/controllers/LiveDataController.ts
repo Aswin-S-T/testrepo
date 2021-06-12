@@ -16,9 +16,14 @@ export const getLiveData = async (req: Request, res: Response) => {
     const { devs, params, skip, limit, startdate, enddate, deviceIds } = req.query;
     let devices: any = '';
     let devDetails: any = '';
-    deviceIds? devDetails = await deviceDetails({ "deviceId": deviceIds }): devDetails = await deviceDetails({ "_id": devs })
-    devs? devices = devs: devices = (devDetails._id).toString() ;
-    
+    if (deviceIds) {
+        devDetails = await deviceDetails({ "deviceId": deviceIds })
+        devices = (devDetails._id).toString()
+    } else if (devs) {
+        const deviceId: any = devs
+        devices = devs
+        devDetails = await deviceDetails({ "_id": Types.ObjectId(deviceId) })
+    }
     const start: any = startdate;
     const end: any = enddate;
     const pageSkip: any = skip || 0;
