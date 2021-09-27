@@ -20,19 +20,19 @@ module.exports = shipit => {
             servers: 'user@localhost',
             buildCmd: 'start:dev',
             forntendBuildCmd: 'build:dev',
-            pm2AppNames: process.env.PM2_APP_NAME
+            pm2AppNames: 'Envitus-Dev'
         },
         stage: {
             servers: 'user@localhost',
             buildCmd: 'start:stage',
             forntendBuildCmd: 'build:staging',
-            pm2AppNames: process.env.PM2_APP_NAME
+            pm2AppNames: 'Envitus-Stage'
         },
         prod: {
             servers: 'user@localhost',
             buildCmd: 'start:prod',
             forntendBuildCmd: 'build:prod',
-            pm2AppNames: process.env.PM2_APP_NAME
+            pm2AppNames: 'Envitus-Prod'
         },
     });
 
@@ -54,7 +54,9 @@ module.exports = shipit => {
 
     shipit.blTask('startES', async () => {
         return shipit.local([
-            'cd ' + shipit.config.frontendAppPath,
+            'cd ' + process.env.PWD,
+            'cd ..',
+            'cd envitusplatformfrontend',
             'rm -rf build',
             'yarn install',
             'yarn run ' + shipit.config.forntendBuildCmd,
@@ -70,7 +72,9 @@ module.exports = shipit => {
 
     shipit.blTask('startDocker', async () => {
         return shipit.local([
-            'cd ' + shipit.config.frontendAppPath,
+            'cd '  + process.env.PWD,
+            'cd ..',
+            'cd envitusplatformfrontend',
             'yarn install',
             'yarn run ' + shipit.config.forntendBuildCmd,
             'cp -r build/  ' + shipit.config.backendAppPath + '/src/public/',
