@@ -5,16 +5,11 @@ module.exports = shipit => {
         default: {
             branch: process.env.GIT_BRANCH || 'master',
             workspace: '/tmp/github-monitor',
-            deployTo: '/root/AHU',
-            repositoryUrl: 'https://' + process.env.GIT_USERNAME + ':' + process.env.GIT_TOKEN + '@github.com/abdulalcodex/envitusplatformbackend.git',
             ignores: ['.git', 'node_modules'],
             keepReleases: 3,
-            key: '~/.ssh/nikhil-alcdx2',
             shallowClone: true,
             frontendAppPath: process.env.FRONTEND_APP_PATH || '$HOME/work/alcodex/envitusplatformfrontend',
             backendAppPath: process.env.PWD,
-            frontendAppRepositoryUrl: 'https://' + process.env.GIT_USERNAME + ':' + process.env.GIT_TOKEN + '@github.com/abdulalcodex/envitusplatformfrontend.git',
-            frontendAppbranch: process.env.FRONTEND_APP_BRANCH || 'master',
         },
         dev: {
             servers: 'user@localhost',
@@ -67,6 +62,24 @@ module.exports = shipit => {
             'pm2 stop ' + shipit.config.pm2AppNames + ' || true',
             'pm2 delete ' + shipit.config.pm2AppNames + ' || true',
             'yarn run ' + shipit.config.buildCmd
+        ].join('&&'));
+    });
+
+
+    shipit.blTask('build', async () => {
+        return shipit.local([
+            'rm -rf ' + process.env.PWD + '/dist/',
+            'yarn run build',
+            'cd ..',
+            'cd envitusplatformfrontend',
+            'rm -rf build',
+            'yarn run ' + shipit.config.forntendBuildCmd,
+            'mv  build/  ' + shipit.config.backendAppPath + '/dist/public/',
+            'cd '+ shipit.config.backendAppPath ,
+            'pm2 stop ' + shipit.config.pm2AppNames + ' || true',
+            'pm2 delete ' + shipit.config.pm2AppNames + ' || true',
+            'yarn run ' + shipit.config.buildCmd,
+            'pm2 save'
         ].join('&&'));
     });
 

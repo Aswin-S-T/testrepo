@@ -4,6 +4,7 @@
     "sourceMap": false
   },
   "exclude": [
-    "spec"
+    "spec",
+    "src/public"
   ]
 }
