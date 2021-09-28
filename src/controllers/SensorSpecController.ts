@@ -5,7 +5,7 @@ import { SensorParameters } from "../models/SensorParameters";
 import { getPagination } from '@utils';
 import { Types } from 'mongoose';
 import { validationResult } from 'express-validator';
-import { Devices } from 'src/models/Devices';
+import { Devices } from '../models/Devices';
 import { SensorSpec } from '@helpers';
 
 

@@ -3,8 +3,8 @@ import { Request, Response } from 'express';
 import { validationResult } from 'express-validator';
 import { StatusCodes } from 'http-status-codes';
 import { Types } from 'mongoose';
-import { Devices } from 'src/models/Devices';
-import { User } from 'src/models/Users';
+import { Devices } from '../models/Devices';
+import { User } from '../models/Users';
 import { Organization } from '../models/Organization';
 
 

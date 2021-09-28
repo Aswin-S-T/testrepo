@@ -1,5 +1,5 @@
 import { ApiKey } from '../models/ApiKey';
-import { ApiLog } from 'src/models/ApiLog';
+import { ApiLog } from '../models/ApiLog';
 import { scheduleJob } from 'node-schedule';
 
 export const livedataApiLimit = async (req: any) => {

@@ -1,10 +1,10 @@
 import { Request, Response } from 'express';
 import { StatusCodes } from "http-status-codes";
-import { AlarmRule } from 'src/models/AlarmRule';
+import { AlarmRule } from '../models/AlarmRule';
 import { getPagination } from '@utils';
 import { validationResult } from 'express-validator';
-import mongoose from 'src/database/db';
-import { Devices } from 'src/models/Devices';
+import mongoose from '../database/db';
+import { Devices } from '../models/Devices';
 
 // Alarm Rule - List
 export const listAlarmRule = (req: Request, res: Response) => {

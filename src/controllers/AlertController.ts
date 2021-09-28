@@ -1,8 +1,8 @@
 import { Request, Response } from 'express';
 import { getRules } from './AlarmRuleController';
-import { Alert } from 'src/models/Alerts';
+import { Alert } from '../models/Alerts';
 import { getPagination } from '@utils';
-import { socketEmit } from 'src/utils/SocketService';
+import { socketEmit } from '../utils/SocketService';
 import { StatusCodes } from 'http-status-codes';
 import { postAlertsToUrls } from './WebhookController';
 
