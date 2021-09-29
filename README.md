@@ -21,6 +21,7 @@ This project is Node based back end app for AQMS.
    yarn install
    npm install pm2@4.2.3 -g
    pm2 install typescript
+   npm install -g typescript
    ```
 
 ## Deployment Development

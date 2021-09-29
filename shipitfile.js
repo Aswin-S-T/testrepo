@@ -31,23 +31,7 @@ module.exports = shipit => {
         },
     });
 
-    shipit.blTask('startDev', async () => {
-        return shipit.local([
-            'cd ' + shipit.config.frontendAppPath,
-            'rm -rf build',
-            'yarn install',
-            'yarn run ' + shipit.config.forntendBuildCmd,
-            'rm -rf ' + shipit.config.backendAppPath + '/src/public/',
-            'mv  build/  ' + shipit.config.backendAppPath + '/src/public/',
-            'cd ' + shipit.config.backendAppPath,
-            'yarn install',
-            'pm2 stop ' + shipit.config.pm2AppNames + ' || true',
-            'pm2 delete ' + shipit.config.pm2AppNames + ' || true',
-            'yarn run ' + shipit.config.buildCmd
-        ].join('&&'));
-    });
-
-    shipit.blTask('startES', async () => {
+    shipit.blTask('start', async () => {
         return shipit.local([
             'cd ' + process.env.PWD,
             'cd ..',
@@ -82,6 +66,24 @@ module.exports = shipit => {
             'pm2 save'
         ].join('&&'));
     });
+
+    shipit.blTask('docker', async () => {
+        return shipit.local([
+            'rm -rf ' + process.env.PWD + '/dist/',
+            'yarn run build',
+            'cd ..',
+            'cd envitusplatformfrontend',
+            'rm -rf build',
+            'yarn run ' + shipit.config.forntendBuildCmd,
+            'mv  build/  ' + shipit.config.backendAppPath + '/dist/public/',
+            'cd '+ shipit.config.backendAppPath ,
+            'docker container stop $(docker container ls -a -q --filter name=envitus) || true',
+            'docker rm $(docker container ls -a -q --filter name=envitus) || true',
+            'docker rmi $(docker images "envitus" -q | uniq) || true',
+            'docker build -t envitus . ',
+            'docker run -d --name envitus --network host envitus'
+        ].join('&&'));
+    })
 
     shipit.blTask('startDocker', async () => {
         return shipit.local([
