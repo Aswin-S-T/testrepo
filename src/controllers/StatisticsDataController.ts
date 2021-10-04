@@ -42,6 +42,7 @@ export const getStatistics = async(req: Request, res: Response) => {
                 paramName: devParams[i].paramName,
                 displayName: devParams[i].displayName,
                 displayImage: devParams[i].displayImage,
+                unitDisplayHtml: devParams[i].unitDisplayHtml,
                 unit: devParams[i].unit,
                 avg: "$" + devParams[i].paramName + '_avg',
                 max: "$" + devParams[i].paramName + '_max',

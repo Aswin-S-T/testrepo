@@ -40,7 +40,8 @@ export const getLiveData = async (req: Request, res: Response) => {
                 displayImage: devParams[i].displayImage,
                 unit: devParams[i].unit,
                 value: "$data." + devParams[i].paramName,
-                precision: devParams[i].valuePrecision
+                precision: devParams[i].valuePrecision,
+                unitDisplayHtml: devParams[i].unitDisplayHtml
             });
         }
     }
