@@ -57,6 +57,7 @@ module.exports = shipit => {
             'cd ..',
             'cd envitusplatformfrontend',
             'rm -rf build',
+            'yarn install',
             'yarn run ' + shipit.config.forntendBuildCmd,
             'mv  build/  ' + shipit.config.backendAppPath + '/dist/public/',
             'cd '+ shipit.config.backendAppPath ,
