@@ -56,7 +56,9 @@ export const SensorSpec = [
                 color: "800000",
                 description: "Extremely Hot"
             }
-        ]
+        ],
+        filteringMethod : "",
+        filteringMethodDef : {}
     },
     {
         paramName: "pressure",
@@ -93,7 +95,9 @@ export const SensorSpec = [
                 color: "800000",
                 description: "High"
             }
-        ]
+        ],
+        filteringMethod : "",
+        filteringMethodDef : {}
     },
     {
         paramName: "humidity",
@@ -130,7 +134,9 @@ export const SensorSpec = [
                 color: "FFFF00",
                 description: "Moist"
             }
-        ]
+        ],
+        filteringMethod : "",
+        filteringMethodDef : {}
     },
     {
         paramName: "PM10",
@@ -186,7 +192,9 @@ export const SensorSpec = [
                 color: "800000",
                 description: "Severe"
             }
-        ]
+        ],
+        filteringMethod : "",
+        filteringMethodDef : {}
     },
     {
         paramName: "PM2p5",
@@ -242,7 +250,9 @@ export const SensorSpec = [
                 color: "800000",
                 description: "Severe"
             }
-        ]
+        ],
+        filteringMethod : "",
+        filteringMethodDef : {}
     },
     {
         paramName: "CO2",
@@ -292,7 +302,9 @@ export const SensorSpec = [
                 color: "FF0000",
                 description: "Very Poor"
             }
-        ]
+        ],
+        filteringMethod : "",
+        filteringMethodDef : {}
     },
     {
         paramName: "CO",
@@ -304,7 +316,6 @@ export const SensorSpec = [
         isFilteringEnabled: false,
         needsLiveData: true,
         isPrimary: false,
-        filteringMethod: null,
         isDisplayEnabled: true,
         valuePrecision: 3,
         isCsvParam: true,
@@ -350,7 +361,9 @@ export const SensorSpec = [
                 color: "800000",
                 description: "Severe"
             }
-        ]
+        ],
+        filteringMethod : "",
+        filteringMethodDef : {}
     },
     {
         paramName: "NO2",
@@ -405,7 +418,9 @@ export const SensorSpec = [
                 color: "800000",
                 description: "Severe"
             }
-        ]
+        ],
+        filteringMethod : "",
+        filteringMethodDef : {}
     },
     {
         paramName: "SO2",
@@ -460,7 +475,9 @@ export const SensorSpec = [
                 color: "800000",
                 description: "Severe"
             }
-        ]
+        ],
+        filteringMethod : "",
+        filteringMethodDef : {}
     },
     {
         paramName: "O3",
@@ -514,7 +531,9 @@ export const SensorSpec = [
                 color: "800000",
                 description: "Severe"
             }
-        ]
+        ],
+        filteringMethod : "",
+        filteringMethodDef : {}
     },
     {
         paramName: "noise",
@@ -562,7 +581,9 @@ export const SensorSpec = [
                 color: "ff0000",
                 description: "Intolerable"
             }
-        ]
+        ],
+        filteringMethod : "",
+        filteringMethodDef : {}
     },
     {
         paramName: "rain",
@@ -606,7 +627,9 @@ export const SensorSpec = [
                 color: "ff0000",
                 description: "Violent"
             }
-        ]
+        ],
+        filteringMethod : "",
+        filteringMethodDef : {}
     },
     {
         paramName: "UV",
@@ -642,7 +665,9 @@ export const SensorSpec = [
                 color: "b51807",
                 description: "Tanning"
             }
-        ]
+        ],
+        filteringMethod : "",
+        filteringMethodDef : {}
     },
     {
         paramName: "lux",
@@ -720,7 +745,9 @@ export const SensorSpec = [
                 color: "ff1a00",
                 description: "Equivalent to summer"
             }
-        ]
+        ],
+        filteringMethod : "",
+        filteringMethodDef : {}
     },
     {
         paramName: "receivedTime",
@@ -737,7 +764,9 @@ export const SensorSpec = [
         isCsvParam: false,
         isFilterable: false,
         signageDisplayLive: true,
-        valueType: "date"
+        valueType: "date",
+        filteringMethod : "",
+        filteringMethodDef : {}
     },
     {
         paramName: "rawAQI",
@@ -793,7 +822,9 @@ export const SensorSpec = [
                 color: "800000",
                 description: "Severe"
             }
-        ]
+        ],
+        filteringMethod : "",
+        filteringMethodDef : {}
     },
     {
         paramName: "AQI",
@@ -850,7 +881,9 @@ export const SensorSpec = [
                 color: "800000",
                 description: "Severe"
             }
-        ]
+        ],
+        filteringMethod : "",
+        filteringMethodDef : {}
     },
     {
         paramName: "prominentPollutant",
@@ -868,7 +901,9 @@ export const SensorSpec = [
         isFilterable: false,
         signageDisplayAqiParam: true,
         isDerived: true,
-        valueType: "string"
+        valueType: "string",
+        filteringMethod : "",
+        filteringMethodDef : {}
     }
 
 ]

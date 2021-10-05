@@ -57,9 +57,9 @@ export const addDevice = (req: Request, res: Response) => {
                         type: definitions['calibrationType'],
                         "data": [
                             {
-                                "offset": parseInt(definitions['calibration']['offset']),
-                                "min": parseInt(definitions['calibration']['min']),
-                                "max": parseInt(definitions['calibration']['max'])
+                                "offset": parseFloat(definitions['calibration']['offset']),
+                                "min": parseFloat(definitions['calibration']['min']),
+                                "max": parseFloat(definitions['calibration']['max'])
                             }
                         ]
                     }
@@ -236,9 +236,9 @@ export const updateDevice = async (req: Request, res: Response) => {
                 type: definitions['calibrationType'],
                 "data": [
                     {
-                        "offset": parseInt(definitions['calibration']['offset']),
-                        "min": parseInt(definitions['calibration']['min']),
-                        "max": parseInt(definitions['calibration']['max'])
+                        "offset": parseFloat(definitions['calibration']['offset']),
+                        "min": parseFloat(definitions['calibration']['min']),
+                        "max": parseFloat(definitions['calibration']['max'])
                     }
                 ]
             }
