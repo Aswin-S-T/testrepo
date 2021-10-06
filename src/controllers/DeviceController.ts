@@ -223,24 +223,26 @@ export const updateDevice = async (req: Request, res: Response) => {
     for (let index = 0; index < sensorSpec.specs.length; index++) {
         const param = sensorSpec.specs[index];
         const definitions = payload.paramDefinitions.find((e: any) => { return e.paramName === param.paramName });
-        param.maxRanges = definitions.maxRanges
-        if (definitions.hasOwnProperty('filterType') && definitions['filterType'] != 'none') {
-            param.filteringMethod = definitions['filterType'];
-            param.filteringMethodDef = {
-                "weightT0": definitions['filteringMethodDef']['weightT0'],
-                "weightT1": definitions['filteringMethodDef']['weightT1']
+        if (definitions) {
+            param.maxRanges = definitions.maxRanges
+            if (definitions.hasOwnProperty('filterType') && definitions['filterType'] != 'none') {
+                param.filteringMethod = definitions['filterType'];
+                param.filteringMethodDef = {
+                    "weightT0": definitions['filteringMethodDef']['weightT0'],
+                    "weightT1": definitions['filteringMethodDef']['weightT1']
+                }
             }
-        }
-        if (definitions.hasOwnProperty('calibrationType') && definitions['calibrationType'] != 'none') {
-            param.calibration = {
-                type: definitions['calibrationType'],
-                "data": [
-                    {
-                        "offset": parseFloat(definitions['calibration']['offset']),
-                        "min": parseFloat(definitions['calibration']['min']),
-                        "max": parseFloat(definitions['calibration']['max'])
-                    }
-                ]
+            if (definitions.hasOwnProperty('calibrationType') && definitions['calibrationType'] != 'none') {
+                param.calibration = {
+                    type: definitions['calibrationType'],
+                    "data": [
+                        {
+                            "offset": parseFloat(definitions['calibration']['offset']),
+                            "min": parseFloat(definitions['calibration']['min']),
+                            "max": parseFloat(definitions['calibration']['max'])
+                        }
+                    ]
+                }
             }
         }
         paramDefinitions.push(param)

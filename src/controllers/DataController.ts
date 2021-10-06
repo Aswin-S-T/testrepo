@@ -257,10 +257,10 @@ const parseData = (data: any, device: any, paramDefinitions: any) => {
             }
             filterResult[paramDefinitions[i].paramName] = processCalibration(filterResult[paramDefinitions[i].paramName], paramDefinitions[i]);
 
-            if (paramDefinitions[i].filteringMethod == "WMAFilter") {
+            if (paramDefinitions[i] && paramDefinitions[i].filteringMethod == "WMAFilter") {
                 const originalVal = filterResult[paramDefinitions[i].paramName];
                 SensorData.findOne({ deviceId: Types.ObjectId(device._id), isDeleted: 0 }, { sort: { 'createdAt': -1 } }, {}, function (err: any, oldData: any) {
-                    if (oldData && oldData[paramDefinitions[i].paramName] != null) {
+                    if (oldData && paramDefinitions[i] && oldData[paramDefinitions[i].paramName] != null) {
                         var oldValue = data[paramDefinitions[i].paramName];
                         var newValue = processCalibration(originalVal, paramDefinitions[i]);;
                         var res = WMAFilter(oldValue, newValue, paramDefinitions[i].filteringMethodDef);
