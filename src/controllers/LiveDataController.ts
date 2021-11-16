@@ -5,7 +5,7 @@ import { Types } from 'mongoose';
 import { getPagination } from '@utils';
 import { StatusCodes } from 'http-status-codes';
 import { SensorSpec } from '@helpers';
-import { deviceDetails } from '@controllers';
+import { deviceDetails, getDeviceLastHourAQI } from '@controllers';
 
 /**
  * Get device livedata
@@ -86,11 +86,29 @@ export const getLiveData = async (req: Request, res: Response) => {
                 }
                 response.list = data[0].data
             }
+            const deviceLastData: any = await getDeviceLastHourAQI(devDetails._id);
+            if (deviceLastData) {
+                response.aqi = Math.round(deviceLastData.aqi)
+            }
             return res.status(StatusCodes.OK).json({
                 success: true,
                 message: "Successfully retrived data",
                 livedata: response.list,
-                pagination: response.pagination
+                pagination: response.pagination,
+                device_details: {
+                    description: devDetails.description,
+                    aqi: response.aqi || 0,
+                    rawAqi: devDetails.rawAqi,
+                    deviceId: devDetails.deviceId,
+                    type: devDetails.type,
+                    devFamily: devDetails.devFamily,
+                    customerName: devDetails.customerName,
+                    lotNo: devDetails.lotNo,
+                    serialNo: devDetails.serialNo,
+                    grade: devDetails.grade,
+                    deployment: devDetails.deployment,
+                    location: devDetails.location
+                }
             });
         })
     });
