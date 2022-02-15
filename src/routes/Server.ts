@@ -1,6 +1,6 @@
 import { Router } from 'express';
 
-import { getServerPreferences } from 'src/controllers/ServerController';
+import { getServerPreferences } from '../controllers/ServerController';
 
 const router = Router();
 router.get('/preferences', getServerPreferences);
